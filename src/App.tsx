@@ -4,6 +4,7 @@ import { SideBar } from '@/components/SideBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconButton } from '@/components/ui/IconButton'
 import { MoonIcon, SunIcon } from '@/components/ui/Icons'
+import { CellarScreen } from '@/features/cellar/CellarScreen'
 import { ToastProvider } from '@/hooks/useToast'
 import { useTheme } from '@/hooks/useTheme'
 import { activeNav, type NavId } from '@/nav'
@@ -26,6 +27,7 @@ function useHashRoute(): string {
 }
 
 function Screen({ route }: { route: NavId }) {
+  if (route === 'cava') return <CellarScreen />
   return <EmptyState title={TITLES[route]} description="Pantalla en construcción." />
 }
 
