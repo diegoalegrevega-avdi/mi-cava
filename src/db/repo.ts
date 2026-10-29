@@ -141,6 +141,10 @@ export async function adjustStock(wineId: string, target: number): Promise<Stock
   })
 }
 
+export async function setEventNote(eventId: string, note: string): Promise<void> {
+  await db.events.update(eventId, { note })
+}
+
 export async function listActiveConsumptions(): Promise<Array<{ wine: WineWithStock; event: StockEvent }>> {
   const events = await db.events.toArray()
   const undone = new Set(

@@ -8,11 +8,13 @@ export function WineRow({
   year,
   onAdd,
   onConsume,
+  onOpen,
 }: {
   wine: WineWithStock
   year: number
   onAdd: () => void
   onConsume: () => void
+  onOpen?: () => void
 }) {
   const meta = [wine.winery, wine.region].filter(Boolean).join(' · ')
 
@@ -29,7 +31,7 @@ export function WineRow({
           {wine.location ? <span className="text-xs text-muted">{wine.location}</span> : null}
         </div>
       </div>
-      <StockStepper wine={wine} onAdd={onAdd} onConsume={onConsume} />
+      <StockStepper wine={wine} onAdd={onAdd} onConsume={onConsume} onOpen={onOpen} />
     </li>
   )
 }

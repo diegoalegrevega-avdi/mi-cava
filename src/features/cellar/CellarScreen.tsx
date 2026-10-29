@@ -6,14 +6,17 @@ import { useToast } from '@/hooks/useToast'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { SearchBar } from './SearchBar'
+import { WineDetailSheet } from './WineDetailSheet'
 import { WineRow } from './WineRow'
 
 export function CellarScreen() {
   const { wines, loading } = useWines()
   const { show } = useToast()
   const [query, setQuery] = useState('')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const visible = useMemo(() => visibleWines(wines, query), [wines, query])
+  const selected = wines.find((w) => w.id === selectedId) ?? null
   const total = wines.reduce((sum, w) => sum + Math.max(w.stock, 0), 0)
   const year = new Date().getFullYear()
 
@@ -74,9 +77,21 @@ export function CellarScreen() {
               year={year}
               onAdd={() => void handleAdd(wine)}
               onConsume={() => void handleConsume(wine)}
+              onOpen={() => setSelectedId(wine.id)}
             />
           ))}
         </ul>
+      ) : null}
+
+      {selected ? (
+        <WineDetailSheet
+          key={selected.id}
+          wine={selected}
+          open
+          onClose={() => setSelectedId(null)}
+          onAdd={() => void handleAdd(selected)}
+          onConsume={() => void handleConsume(selected)}
+        />
       ) : null}
     </div>
   )
