@@ -1,5 +1,5 @@
 import { db } from './db'
-import type { StockEvent, Wine, WineDraft, WineWithStock } from './schema'
+import type { CellarBundle, StockEvent, Wine, WineDraft, WineWithStock } from './schema'
 import { findDuplicate } from '@/domain/dedupe'
 
 const now = () => new Date().toISOString()
@@ -160,6 +160,90 @@ export async function listActiveConsumptions(): Promise<Array<{ wine: WineWithSt
 export async function totalBottles(): Promise<number> {
   const events = await db.events.toArray()
   return stockOf(events)
+}
+
+/** Quita `stock`/`history` (derivados) de una fila del bundle. */
+function toWine(row: Wine & { stock: number; history: string[] }): Wine {
+  return {
+    id: row.id,
+    name: row.name,
+    winery: row.winery,
+    vintage: row.vintage,
+    region: row.region,
+    country: row.country,
+    varietals: row.varietals,
+    type: row.type,
+    purchasedAt: row.purchasedAt,
+    priceCents: row.priceCents,
+    location: row.location,
+    drinkFrom: row.drinkFrom,
+    drinkUntil: row.drinkUntil,
+    notes: row.notes,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  }
+}
+
+export async function exportBundle(): Promise<CellarBundle> {
+  const [wines, events] = await Promise.all([db.wines.toArray(), db.events.toArray()])
+  const undone = new Set(
+    events.filter((e) => e.kind === 'undo').map((e) => e.undoOf).filter((id): id is string => Boolean(id)),
+  )
+  return {
+    schemaVersion: 1,
+    exportedAt: now(),
+    app: 'mi-cava',
+    wines: wines
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+      .map((wine) => {
+        const own = events.filter((e) => e.wineId === wine.id)
+        return {
+          ...wine,
+          stock: stockOf(own),
+          history: own
+            .filter((e) => e.kind === 'consume' && !undone.has(e.id))
+            .map((e) => e.at)
+            .sort(),
+        }
+      }),
+    events: events.sort((a, b) => a.at.localeCompare(b.at)),
+  }
+}
+
+/** Por `id`: reemplaza el vino y sus eventos. Nunca suma stock. */
+export async function restoreBundle(bundle: CellarBundle): Promise<{ created: number; updated: number }> {
+  return db.transaction('rw', db.wines, db.events, async () => {
+    let created = 0
+    let updated = 0
+    for (const row of bundle.wines) {
+      const wine = toWine(row)
+      const exists = await db.wines.get(wine.id)
+      await db.wines.put(wine)
+      if (exists) updated++
+      else created++
+      await db.events.where('wineId').equals(wine.id).delete()
+      const own = bundle.events.filter((e) => e.wineId === wine.id)
+      if (own.length > 0) await db.events.bulkPut(own)
+    }
+    return { created, updated }
+  })
+}
+
+export async function clearAll(): Promise<void> {
+  await db.transaction('rw', db.wines, db.events, async () => {
+    await db.events.clear()
+    await db.wines.clear()
+  })
+}
+
+const EXPORT_KEY = 'micava.lastExport'
+
+export function getLastExportAt(): string | null {
+  return globalThis.localStorage?.getItem(EXPORT_KEY) ?? null
+}
+
+export function setLastExportAt(iso: string): void {
+  globalThis.localStorage?.setItem(EXPORT_KEY, iso)
 }
 
 export async function _resetForTests(): Promise<void> {
