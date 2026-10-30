@@ -1,5 +1,8 @@
 import type { WineType } from '@/db/schema'
 import { geminiScan } from './gemini'
+import { createOcr, type Ocr } from './ocr'
+import { extractLabelFields, toLabelDraft, type DetectedField } from './labelFields'
+import { type OcrProgress } from './ocr'
 
 export interface LabelDraft {
   name?: string
@@ -11,24 +14,24 @@ export interface LabelDraft {
   type?: WineType | null
 }
 
-export interface LabelScanner {
-  readonly enabled: boolean
-  readonly reason?: string
-  scan(file: File): Promise<LabelDraft>
+export interface LabelReading {
+  text: string
+  fields: DetectedField[]
+  draft: LabelDraft
 }
 
-export const NO_KEY_REASON = 'Añade una clave de Gemini en Ajustes para escanear etiquetas.'
+export function readGeminiKey(): string | null {
+  const value = (globalThis as { localStorage?: Storage }).localStorage?.getItem('micava.geminiKey')
+  return value ? value.trim() : null
+}
 
-export function getScanner(getKey: () => string | null, fetchImpl: typeof fetch = fetch): LabelScanner {
-  const key = getKey()?.trim()
-  if (!key) {
-    return {
-      enabled: false,
-      reason: NO_KEY_REASON,
-      scan: async () => {
-        throw new Error(NO_KEY_REASON)
-      },
-    }
-  }
-  return { enabled: true, scan: (file) => geminiScan(file, key, fetchImpl) }
+export async function scanLabel(file: File, ocr?: Ocr, onProgress?: (p: OcrProgress) => void): Promise<LabelReading> {
+  const engine = ocr ?? createOcr()
+  const text = await engine(file, onProgress)
+  const fields = extractLabelFields(text, new Date().getFullYear())
+  return { text, fields, draft: toLabelDraft(fields) }
+}
+
+export async function geminiDraft(file: File, key: string, fetchImpl?: typeof fetch): Promise<LabelDraft> {
+  return geminiScan(file, key, fetchImpl)
 }

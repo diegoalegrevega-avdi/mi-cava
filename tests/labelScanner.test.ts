@@ -1,44 +1,18 @@
 import { describe, expect, it, vi } from 'vitest'
-import { getScanner } from '@/services/labelScanner'
-import { mockScan } from '@/services/mockScanner'
+import { scanLabel } from '@/services/labelScanner'
 
-describe('label scanner', () => {
-  it('sin clave el escáner está desactivado y no llama a la red', async () => {
-    const scanner = getScanner(() => null)
-    expect(scanner.enabled).toBe(false)
-    await expect(scanner.scan(new File(['x'], 'l.jpg'))).rejects.toThrow(/clave/i)
+describe('scanLabel', () => {
+  it('lee en local y devuelve texto, campos y borrador sin clave', async () => {
+    const ocr = vi.fn(async () => 'BODEGAS MUGA\nRIOJA 2019\nTEMPRANILLO\nTINTO')
+    const reading = await scanLabel(new File(['x'], 'l.jpg'), ocr)
+    expect(reading.text).toContain('RIOJA')
+    expect(reading.fields.map((f) => f.field)).toContain('region')
+    expect(reading.draft).toMatchObject({ vintage: 2019, type: 'tinto', region: 'Rioja', winery: 'BODEGAS MUGA' })
   })
 
-  it('con clave llama a Gemini y mapea la respuesta, ignorando campos vacíos', async () => {
-    const fetchImpl = vi.fn(
-      async () =>
-        new Response(
-          JSON.stringify({
-            candidates: [
-              {
-                content: {
-                  parts: [
-                    {
-                      text: '{"name":"Rioja Reserva","vintage":2016,"winery":"","region":"Rioja"}',
-                    },
-                  ],
-                },
-              },
-            ],
-          }),
-          { status: 200 },
-        ),
-    )
-    const scanner = getScanner(() => 'k', fetchImpl as unknown as typeof fetch)
-    expect(await scanner.scan(new File(['x'], 'l.jpg'))).toEqual({
-      name: 'Rioja Reserva',
-      vintage: 2016,
-      region: 'Rioja',
-    })
-    expect(fetchImpl).toHaveBeenCalledOnce()
-  })
-
-  it('mock autocompleta un borrador plausible', async () => {
-    expect((await mockScan(new File(['x'], 'l.jpg'))).name).toBeTruthy()
+  it('devuelve un borrador vacío si el OCR no reconoce nada', async () => {
+    const reading = await scanLabel(new File(['x'], 'l.jpg'), vi.fn(async () => '· · ·'))
+    expect(reading.draft).toEqual({})
+    expect(reading.fields).toEqual([])
   })
 })

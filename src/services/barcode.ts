@@ -14,7 +14,7 @@ export async function detectBarcode(file: File, detector?: BarcodeDetectorLike |
   const ctor = (globalThis as { BarcodeDetector?: DetectorCtor }).BarcodeDetector
   const reader =
     detector === undefined
-      ? barcodeSupported(ctor)
+      ? ctor && barcodeSupported(ctor)
         ? new ctor({ formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e'] })
         : null
       : detector
