@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { BottomNav } from '@/components/BottomNav'
 import { SideBar } from '@/components/SideBar'
-import { EmptyState } from '@/components/ui/EmptyState'
 import { IconButton } from '@/components/ui/IconButton'
 import { MoonIcon, SunIcon } from '@/components/ui/Icons'
 import { CellarScreen } from '@/features/cellar/CellarScreen'
 import { AddScreen } from '@/features/add/AddScreen'
 import { HistoryScreen } from '@/features/history/HistoryScreen'
+import { DataPanel } from '@/features/settings/DataPanel'
 import { ToastProvider } from '@/hooks/useToast'
 import { useTheme } from '@/hooks/useTheme'
 import { activeNav, type NavId } from '@/nav'
@@ -32,7 +32,7 @@ function Screen({ route }: { route: NavId }) {
   if (route === 'cava') return <CellarScreen />
   if (route === 'add') return <AddScreen />
   if (route === 'historial') return <HistoryScreen />
-  return <EmptyState title={TITLES[route]} description="Pantalla en construcción." />
+  return <DataPanel />
 }
 
 export default function App() {

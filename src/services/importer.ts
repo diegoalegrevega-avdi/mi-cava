@@ -36,7 +36,7 @@ export interface RowError {
 export interface ImportPlan {
   creates: WineDraft[];
   merges: Array<{ wineId: string; addStock: number; patch: Partial<Wine> }>;
-  possibleDuplicates: Array<{ line: number; name: string; vintage: number | null }>;
+  possibleDuplicates: Array<{ line: number; name: string; vintage: number | null; draft: WineDraft }>;
   errors: RowError[];
 }
 
@@ -199,7 +199,7 @@ export function planImport(
       continue;
     }
     if (match.possible.length > 0) {
-      plan.possibleDuplicates.push({ line, name: draft.name, vintage: draft.vintage });
+      plan.possibleDuplicates.push({ line, name: draft.name, vintage: draft.vintage, draft });
       continue;
     }
     plan.creates.push(draft);

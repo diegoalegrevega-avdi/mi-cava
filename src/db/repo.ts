@@ -1,6 +1,7 @@
 import { db } from './db'
 import type { CellarBundle, StockEvent, Wine, WineDraft, WineWithStock } from './schema'
 import { findDuplicate } from '@/domain/dedupe'
+import type { ImportPlan } from '@/services/importer'
 
 const now = () => new Date().toISOString()
 const newId = () => crypto.randomUUID()
@@ -82,6 +83,43 @@ export async function createWine(draft: WineDraft): Promise<{ wine: Wine; merged
       at,
     })
     return { wine, merged: false }
+  })
+}
+
+export async function applyImportPlan(plan: ImportPlan): Promise<void> {
+  for (const draft of plan.creates) {
+    if (!draft.name.trim()) throw new Error('Fila sin nombre')
+    if (draft.vintage !== null && (draft.vintage < 1900 || draft.vintage > 2100)) {
+      throw new Error('Añada no válida')
+    }
+  }
+
+  await db.transaction('rw', db.wines, db.events, async () => {
+    const at = now()
+
+    for (const merge of plan.merges) {
+      const wine = await db.wines.get(merge.wineId)
+      if (!wine) throw new Error('Vino no encontrado')
+      if (merge.addStock > 0) {
+        await db.wines.put({ ...wine, ...merge.patch, updatedAt: at })
+        await db.events.add({
+          id: newId(),
+          wineId: wine.id,
+          delta: merge.addStock,
+          kind: 'import',
+          at,
+        })
+      }
+    }
+
+    for (const draft of plan.creates) {
+      const { stock = 1, ...fields } = draft
+      const wine: Wine = { ...fields, id: newId(), createdAt: at, updatedAt: at }
+      await db.wines.add(wine)
+      if (stock !== 0) {
+        await db.events.add({ id: newId(), wineId: wine.id, delta: stock, kind: 'import', at })
+      }
+    }
   })
 }
 

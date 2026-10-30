@@ -77,7 +77,9 @@ describe('planImport', () => {
     expect(plan.creates[0]!.stock).toBe(5);
     expect(plan.creates[0]!.priceCents).toBe(123450);
     expect(plan.merges[0]).toMatchObject({ wineId: 'x', addStock: 1 });
-    expect(plan.possibleDuplicates).toEqual([{ line: 6, name: 'Otra', vintage: 2019 }]);
+    expect(plan.possibleDuplicates).toHaveLength(1)
+    expect(plan.possibleDuplicates[0]).toMatchObject({ line: 6, name: 'Otra', vintage: 2019 })
+    expect(plan.possibleDuplicates[0]!.draft.stock).toBe(1);
     expect(countPlan(plan)).toEqual({ creates: 1, merges: 1, duplicates: 1, errors: 1 });
   });
 
