@@ -6,7 +6,7 @@ import { MoonIcon, SunIcon } from '@/components/ui/Icons'
 import { CellarScreen } from '@/features/cellar/CellarScreen'
 import { AddScreen } from '@/features/add/AddScreen'
 import { HistoryScreen } from '@/features/history/HistoryScreen'
-import { DataPanel } from '@/features/settings/DataPanel'
+import { SettingsScreen } from '@/features/settings/SettingsScreen'
 import { ToastProvider } from '@/hooks/useToast'
 import { useTheme } from '@/hooks/useTheme'
 import { activeNav, type NavId } from '@/nav'
@@ -32,7 +32,7 @@ function Screen({ route }: { route: NavId }) {
   if (route === 'cava') return <CellarScreen />
   if (route === 'add') return <AddScreen />
   if (route === 'historial') return <HistoryScreen />
-  return <DataPanel />
+  return <SettingsScreen />
 }
 
 export default function App() {
