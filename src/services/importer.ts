@@ -36,9 +36,13 @@ export interface RowError {
 export interface ImportPlan {
   creates: WineDraft[];
   merges: Array<{ wineId: string; addStock: number; patch: Partial<Wine> }>;
-  possibleDuplicates: Array<{ line: number; name: string; vintage: number | null; draft: WineDraft }>;
+  possibleDuplicates: Array<{ line: number; name: string; vintage: number | null; wineId: string; draft: WineDraft }>;
   errors: RowError[];
 }
+
+export type JsonImport =
+  | { kind: 'bundle'; bundle: CellarBundle }
+  | { kind: 'drafts'; drafts: Array<{ draft: WineDraft; line: number }>; errors: RowError[] };
 
 const ALIASES: Record<Field, string[]> = {
   name: ['wine', 'name', 'nombre', 'vino', 'wine name'],
@@ -66,10 +70,23 @@ for (const [field, aliases] of Object.entries(ALIASES) as Array<[Field, string[]
 
 export function parseCsv(text: string): ParsedTable {
   const clean = text.replace(/^\uFEFF/, '');
-  const delimiter = clean.includes(',') ? ',' : clean.includes(';') ? ';' : '\t';
-  const parsed = Papa.parse<string[]>(clean, { delimiter, skipEmptyLines: true });
+  const parsed = Papa.parse<string[]>(clean, { delimiter: detectDelimiter(clean), skipEmptyLines: true });
   const [headers = [], ...rows] = parsed.data.map((row) => row.map((cell) => String(cell ?? '')));
   return { headers, rows };
+}
+
+// Spanish spreadsheets use ';' and a decimal comma, so a bare "," must not win.
+function detectDelimiter(text: string): string {
+  const counts: Record<string, number> = { ',': 0, ';': 0, '\t': 0 };
+  for (const line of text.split(/\r?\n/).filter((l) => l.trim()).slice(0, 5)) {
+    let quoted = false;
+    for (const ch of line) {
+      if (ch === '"') quoted = !quoted;
+      else if (!quoted && ch in counts) counts[ch] = (counts[ch] ?? 0) + 1;
+    }
+  }
+  const best = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  return best && best[1] > 0 ? best[0]! : ',';
 }
 
 export function autoMap(headers: string[]): Array<Field | null> {
@@ -184,6 +201,16 @@ export function planImport(
     drafts.push({ draft, line });
   });
 
+  return planDrafts(drafts, existing, plan.errors);
+}
+
+/** Same merge/duplicate rules for drafts that did not come from a CSV row. */
+export function planDrafts(
+  drafts: Array<{ draft: WineDraft; line: number }>,
+  existing: Wine[],
+  seedErrors: RowError[] = [],
+): ImportPlan {
+  const plan: ImportPlan = { creates: [], merges: [], possibleDuplicates: [], errors: [...seedErrors] };
   for (const { draft, line } of drafts) {
     if ((draft.stock ?? 0) === 0) continue;
     const match = findDuplicate(existing, draft);
@@ -199,12 +226,17 @@ export function planImport(
       continue;
     }
     if (match.possible.length > 0) {
-      plan.possibleDuplicates.push({ line, name: draft.name, vintage: draft.vintage, draft });
+      plan.possibleDuplicates.push({
+        line,
+        name: draft.name,
+        vintage: draft.vintage,
+        wineId: match.possible[0]!.id,
+        draft,
+      });
       continue;
     }
     plan.creates.push(draft);
   }
-
   return plan;
 }
 
@@ -243,48 +275,123 @@ export function countPlan(plan: ImportPlan): { creates: number; merges: number; 
   };
 }
 
-export function readBundleFile(text: string): CellarBundle {
+export function readJsonFile(text: string): JsonImport {
   const parsed: unknown = JSON.parse(text);
-  if (isBundle(parsed)) return parsed;
+  if (isBundle(parsed)) return { kind: 'bundle', bundle: sanitizeBundle(parsed) };
   const flat: unknown[] = Array.isArray(parsed)
     ? parsed
     : typeof parsed === 'object' && parsed !== null && Array.isArray((parsed as { wines?: unknown }).wines)
-      ? ((parsed as { wines: unknown[] }).wines)
+      ? (parsed as { wines: unknown[] }).wines
       : [];
-  const now = new Date().toISOString();
-  const wines: CellarBundle['wines'] = [];
-  const events: StockEvent[] = [];
-  for (const item of flat) {
-    if (typeof item !== 'object' || item === null) continue;
+  const drafts: Array<{ draft: WineDraft; line: number }> = [];
+  const errors: RowError[] = [];
+  flat.forEach((item, index) => {
+    const line = index + 1;
+    if (typeof item !== 'object' || item === null) {
+      errors.push({ line, message: 'fila no válida' });
+      return;
+    }
     const raw = item as Record<string, unknown>;
-    const name = typeof raw.name === 'string' ? raw.name.trim() : '';
-    if (!name) continue;
-    const id = crypto.randomUUID();
-    const stock = typeof raw.stock === 'number' && Number.isFinite(raw.stock) ? Math.trunc(raw.stock) : 1;
-    const wine: CellarBundle['wines'][number] = {
-      id,
-      name,
-      winery: str(raw.winery),
-      vintage: typeof raw.vintage === 'number' ? raw.vintage : null,
-      region: str(raw.region),
-      country: str(raw.country),
-      varietals: Array.isArray(raw.varietals) ? raw.varietals.filter((v): v is string => typeof v === 'string') : [],
-      type: TYPES.find((t) => t === raw.type) ?? null,
-      purchasedAt: typeof raw.purchasedAt === 'string' ? raw.purchasedAt : null,
-      priceCents: typeof raw.priceCents === 'number' ? raw.priceCents : null,
-      location: str(raw.location),
-      drinkFrom: typeof raw.drinkFrom === 'number' ? raw.drinkFrom : null,
-      drinkUntil: typeof raw.drinkUntil === 'number' ? raw.drinkUntil : null,
-      notes: str(raw.notes),
-      createdAt: now,
-      updatedAt: now,
-      stock,
-      history: [],
-    };
-    wines.push(wine);
-    events.push({ id: crypto.randomUUID(), wineId: id, delta: stock, kind: 'import', at: now });
+    const name = str(raw.name).trim();
+    if (!name) {
+      errors.push({ line, message: 'falta el nombre' });
+      return;
+    }
+    const vintage = vintageFrom(raw.vintage);
+    if (vintage === 'error') {
+      errors.push({ line, message: 'añada no válida' });
+      return;
+    }
+    const stock = stockFrom(raw.stock);
+    if (stock === 'error') {
+      errors.push({ line, message: 'stock no válido' });
+      return;
+    }
+    drafts.push({
+      line,
+      draft: {
+        name,
+        winery: str(raw.winery),
+        vintage,
+        region: str(raw.region),
+        country: str(raw.country),
+        varietals: Array.isArray(raw.varietals)
+          ? raw.varietals.filter((v): v is string => typeof v === 'string')
+          : [],
+        type: TYPES.find((t) => t === raw.type) ?? null,
+        purchasedAt: typeof raw.purchasedAt === 'string' ? raw.purchasedAt : null,
+        priceCents: typeof raw.priceCents === 'number' && Number.isFinite(raw.priceCents) ? raw.priceCents : null,
+        location: str(raw.location),
+        drinkFrom: typeof raw.drinkFrom === 'number' ? raw.drinkFrom : null,
+        drinkUntil: typeof raw.drinkUntil === 'number' ? raw.drinkUntil : null,
+        notes: str(raw.notes),
+        stock,
+      },
+    });
+  });
+  return { kind: 'drafts', drafts, errors };
+}
+
+function vintageFrom(value: unknown): number | null | 'error' {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'string') return parseVintage(value);
+  if (typeof value !== 'number' || !Number.isInteger(value)) return 'error';
+  const year = new Date().getFullYear();
+  return value >= 1900 && value <= year + 1 ? value : 'error';
+}
+
+function stockFrom(value: unknown): number | 'error' {
+  if (value === null || value === undefined) return 1;
+  if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) return 'error';
+  return value;
+}
+
+// A foreign or hand-edited bundle must not crash the figures or the search.
+function sanitizeBundle(bundle: CellarBundle): CellarBundle {
+  const fallback = str(bundle.exportedAt) || new Date().toISOString();
+  const wines = bundle.wines
+    .filter((w) => typeof w === 'object' && w !== null && str(w.name).trim() !== '')
+    .map((w) => {
+      const vintage = vintageFrom(w.vintage);
+      return {
+        ...w,
+        id: str(w.id) || crypto.randomUUID(),
+        name: str(w.name).trim(),
+        winery: str(w.winery),
+        vintage: vintage === 'error' ? null : vintage,
+        region: str(w.region),
+        country: str(w.country),
+        varietals: Array.isArray(w.varietals) ? w.varietals.filter((v) => typeof v === 'string') : [],
+        type: TYPES.find((t) => t === w.type) ?? null,
+        purchasedAt: typeof w.purchasedAt === 'string' ? w.purchasedAt : null,
+        priceCents: typeof w.priceCents === 'number' && Number.isFinite(w.priceCents) ? Math.trunc(w.priceCents) : null,
+        location: str(w.location),
+        drinkFrom: typeof w.drinkFrom === 'number' ? w.drinkFrom : null,
+        drinkUntil: typeof w.drinkUntil === 'number' ? w.drinkUntil : null,
+        notes: str(w.notes),
+        createdAt: str(w.createdAt) || fallback,
+        updatedAt: str(w.updatedAt) || fallback,
+        stock: 0,
+        history: Array.isArray(w.history) ? w.history.filter((h) => typeof h === 'string') : [],
+      };
+    });
+  const ids = new Set(wines.map((w) => w.id));
+  const events: StockEvent[] = bundle.events
+    .filter((e) => typeof e === 'object' && e !== null && ids.has(e.wineId) && Number.isInteger(e.delta))
+    .map((e) => ({
+      ...e,
+      id: str(e.id) || crypto.randomUUID(),
+      at: str(e.at) || fallback,
+      note: typeof e.note === 'string' ? e.note : undefined,
+      undoOf: typeof e.undoOf === 'string' ? e.undoOf : undefined,
+    }));
+  for (const wine of wines) {
+    const total = events.filter((e) => e.wineId === wine.id).reduce((sum, e) => sum + e.delta, 0);
+    // No stock below zero, even from a tampered file.
+    if (total < 0) events.push({ id: crypto.randomUUID(), wineId: wine.id, delta: -total, kind: 'import', at: fallback });
+    wine.stock = Math.max(0, total);
   }
-  return { schemaVersion: 1, exportedAt: now, app: 'mi-cava', wines, events };
+  return { ...bundle, exportedAt: fallback, wines, events };
 }
 
 function str(value: unknown): string {

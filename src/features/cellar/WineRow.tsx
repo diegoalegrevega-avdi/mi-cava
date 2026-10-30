@@ -20,7 +20,12 @@ export function WineRow({
 
   return (
     <li className="flex items-center gap-3 border-b border-border bg-surface px-3 py-3">
-      <div className="min-w-0 flex-1">
+      <button
+        type="button"
+        className="min-w-0 flex-1 text-left"
+        onClick={onOpen}
+        aria-label={`Ver ficha de ${wine.name}`}
+      >
         <div className="flex items-baseline gap-2">
           <span className="truncate font-medium text-text">{wine.name}</span>
           <span className="text-sm tabular-nums text-muted">{wine.vintage ?? 'NV'}</span>
@@ -30,7 +35,7 @@ export function WineRow({
           <DrinkBadge status={drinkStatus(wine, year)} />
           {wine.location ? <span className="text-xs text-muted">{wine.location}</span> : null}
         </div>
-      </div>
+      </button>
       <StockStepper wine={wine} onAdd={onAdd} onConsume={onConsume} onOpen={onOpen} />
     </li>
   )

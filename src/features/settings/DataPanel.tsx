@@ -128,6 +128,7 @@ export function DataPanel() {
       <Sheet open={imported !== null} onClose={() => setImported(null)} title="Importar">
         {imported && (
           <ImportScreen
+            key={imported.fileName + imported.content}
             fileName={imported.fileName}
             content={imported.content}
             onClose={() => {

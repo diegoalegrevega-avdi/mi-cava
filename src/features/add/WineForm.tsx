@@ -58,6 +58,7 @@ export function WineForm({
   const [confirming, setConfirming] = useState(false)
   const [saving, setSaving] = useState(false)
   const nameRef = useRef<HTMLInputElement>(null)
+  const busy = useRef(false)
 
   function set<K extends keyof WineFormValues>(key: K, value: WineFormValues[K]) {
     setValues((prev) => ({ ...prev, [key]: value }))
@@ -107,25 +108,28 @@ export function WineForm({
   }
 
   async function submit(confirmed = false) {
+    if (busy.current) return
     const result = validateWineForm(values, currentYear)
     setErrors(result.errors)
     if (!result.draft) return
 
-    if (!confirmed) {
-      const { possible } = findDuplicate(await listWines(), result.draft)
-      if (possible.length > 0) {
-        setConfirming(true)
-        return
-      }
-    }
-
-    setSaving(true)
+    busy.current = true
     try {
+      if (!confirmed) {
+        const { possible } = findDuplicate(await listWines(), result.draft)
+        if (possible.length > 0) {
+          setConfirming(true)
+          return
+        }
+      }
+
+      setSaving(true)
       await onSubmit(result.draft)
       setValues(emptyWineForm())
       setConfirming(false)
       setErrors({})
     } finally {
+      busy.current = false
       setSaving(false)
     }
   }

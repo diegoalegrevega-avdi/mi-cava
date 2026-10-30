@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { liveQuery } from 'dexie'
 import type { WineWithStock } from '@/db/schema'
 import { adjustStock, listEvents, setEventNote, updateWine } from '@/db/repo'
+import { lastConsumption } from '@/domain/journal'
 import { Sheet } from '@/components/ui/Sheet'
 import { Field } from '@/components/ui/Field'
 import { Button } from '@/components/ui/Button'
@@ -44,7 +45,7 @@ export function WineDetailSheet({
     return () => sub.unsubscribe()
   }, [wine.id])
 
-  const lastConsume = events.filter((e) => e.kind === 'consume' && !e.undoOf).at(-1)
+  const lastConsume = lastConsumption(events)
 
   async function saveNotes() {
     if (notes === wine.notes) return

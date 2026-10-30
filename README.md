@@ -9,8 +9,8 @@ cuentas ni servidores: todo vive en el navegador del móvil o del ordenador.
 
 - **Mi cava**: lista con buscador instantáneo (sin acentos ni mayúsculas), semáforo
   de apogeo (Listo · Guardar · Pronto · Sin datos) y botones `−` / `+` en cada fila.
-  El número de botellas abre la ficha del vino: notas de cata, ubicación, ventana de
-  consumo, ajuste de stock y todos sus movimientos.
+  Toca la fila (o el número de botellas) para abrir la ficha del vino: notas de cata,
+  ubicación, ventana de consumo, ajuste de stock y todos sus movimientos.
 - **Añadir**: alta rápida con la fecha de hoy ya puesta. La añada rellena sola la
   ventana de consumo (añada + 3 a añada + 12). Si ya existe el mismo vino, la botella
   se suma en vez de duplicar la fila.
@@ -62,12 +62,16 @@ cero botellas. Para restaurar, usa el JSON.
 **Ajustes → Importar archivo** acepta `.csv` o `.json`.
 
 - CSV con cabecera: se detectan solas las columnas habituales (CellarTracker,
-  exportaciones propias, hojas de cálculo). Si algo no encaja, la pantalla de mapeo
-  deja asignar cada columna a mano y elegir si las fechas son `dd/mm/aaaa` o
-  `mm/dd/aaaa`.
+  exportaciones propias, hojas de cálculo). Acepta `,` `;` o tabulador como separador,
+  también con coma decimal (`18,90`). Si algo no encaja, la pantalla de mapeo deja
+  asignar cada columna a mano y elegir si las fechas son `dd/mm/aaaa` o `mm/dd/aaaa`.
+- JSON propio (el de **Exportar JSON**) se restaura tal cual, con su historial.
+- JSON plano (solo una lista de vinos, sin `id`) se fusiona por nombre, añada y bodega.
+  Su `history` no se importa: para conservar los descorches usa el JSON propio.
 - Antes de escribir nada verás un resumen: vinos nuevos, vinos que se suman a uno
   existente (mismo nombre, añada y bodega), posibles duplicados de otra bodega y
-  líneas con error.
+  líneas con error. Cada posible duplicado se puede añadir como vino nuevo o fusionar
+  con el existente.
 - Las filas se fusionan sumando botellas: importar dos veces el mismo archivo
   duplica el stock, así que revisa el resumen antes de aplicar.
 

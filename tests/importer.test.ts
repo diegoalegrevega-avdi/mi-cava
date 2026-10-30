@@ -6,7 +6,7 @@ import {
   parseStamp,
   parseVintage,
   planImport,
-  readBundleFile,
+  readJsonFile,
 } from '@/services/importer';
 import type { Wine } from '@/db/schema';
 
@@ -99,18 +99,57 @@ describe('planImport', () => {
   });
 });
 
-describe('readBundleFile', () => {
-  it('convierte un JSON plano del pedido en un bundle con eventos', () => {
-    const flat = JSON.stringify([{ name: 'Muga', vintage: 2019, winery: 'Muga', stock: 3 }]);
-    const bundle = readBundleFile(flat);
-    expect(bundle.schemaVersion).toBe(1);
-    expect(bundle.wines[0]!.name).toBe('Muga');
-    expect(bundle.wines[0]!.stock).toBe(3);
-    expect(bundle.events[0]).toMatchObject({ delta: 3, kind: 'import' });
+describe('readJsonFile bundle', () => {
+  it('sanea arrays y números ausentes en un bundle ajeno', () => {
+    const result = readJsonFile(
+      JSON.stringify({
+        schemaVersion: 1,
+        app: 'mi-cava',
+        exportedAt: 'x',
+        wines: [{ id: 'w', name: 'Muga' }],
+        events: [{ id: 'e', wineId: 'w', delta: 2, kind: 'import', at: 'x' }],
+      }),
+    );
+    expect(result.kind).toBe('bundle');
+    if (result.kind !== 'bundle') return;
+    expect(result.bundle.wines[0]?.varietals).toEqual([]);
+    expect(result.bundle.wines[0]?.stock).toBe(2);
   });
+});
 
-  it('acepta un bundle propio sin tocarlo', () => {
-    const bundle = readBundleFile(JSON.stringify({ schemaVersion: 1, app: 'mi-cava', exportedAt: 'x', wines: [], events: [] }));
-    expect(bundle.events).toEqual([]);
+describe('parseCsv con punto y coma', () => {
+  it('no se deja engañar por la coma decimal del precio', () => {
+    const table = parseCsv('Nombre;Añada;Bodega;Cantidad;Precio\r\nMuga Reserva;2019;Bodegas Muga;2;18,90');
+    expect(table.headers).toEqual(['Nombre', 'Añada', 'Bodega', 'Cantidad', 'Precio']);
+    expect(table.rows[0]?.[4]).toBe('18,90');
+  });
+});
+
+describe('readJsonFile plano', () => {
+  it('rechaza añadas imposibles y stock negativo en lugar de importarlos', () => {
+    const result = readJsonFile(
+      JSON.stringify([
+        { name: 'Muga', vintage: 20199, stock: 1 },
+        { name: 'Otra', vintage: 'NV', stock: -2 },
+        { name: 'Buena', vintage: 2019, stock: 2 },
+      ]),
+    );
+    expect(result.kind).toBe('drafts');
+    if (result.kind !== 'drafts') return;
+    expect(result.drafts.map((d) => d.draft.name)).toEqual(['Buena']);
+    expect(result.errors.map((e) => e.line)).toEqual([1, 2]);
+  });
+});
+
+describe('posibles duplicados', () => {
+  it('conserva el id del vino existente para poder fusionar al confirmar', () => {
+    const other = [{ id: 'w1', name: 'Reserva', vintage: 2019, winery: 'Otra' } as Wine];
+    const plan = planImport(
+      { headers: ['Nombre', 'Añada', 'Bodega'], rows: [['Reserva', '2019', 'Muga']] },
+      ['name', 'vintage', 'winery'],
+      'dmy',
+      other,
+    );
+    expect(plan.possibleDuplicates[0]?.wineId).toBe('w1');
   });
 });

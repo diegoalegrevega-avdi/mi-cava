@@ -3,7 +3,7 @@ import { applyImportPlan, listWines, restoreBundle } from '@/db/repo'
 import type { CellarBundle } from '@/db/schema'
 import { Button } from '@/components/ui/Button'
 import { Field as FieldRow } from '@/components/ui/Field'
-import { autoMap, countPlan, parseCsv, planImport, readBundleFile } from '@/services/importer'
+import { autoMap, countPlan, parseCsv, planDrafts, planImport, readJsonFile } from '@/services/importer'
 import type { DateOrder, Field, ImportPlan } from '@/services/importer'
 
 const FIELDS: Array<[Field, string]> = [
@@ -37,7 +37,7 @@ export function ImportScreen({
   const parsed = useMemo(() => {
     if (isJson) {
       try {
-        return { bundle: readBundleFile(content) }
+        return { json: readJsonFile(content) }
       } catch {
         return { error: 'El archivo JSON no se puede leer.' }
       }
@@ -51,15 +51,22 @@ export function ImportScreen({
   const [dateOrder, setDateOrder] = useState<DateOrder>('dmy')
   const [plan, setPlan] = useState<ImportPlan | null>(null)
   const [included, setIncluded] = useState<number[]>([])
+  const [mergedIds, setMergedIds] = useState<string[]>([])
   const [result, setResult] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [runError, setRunError] = useState<string | null>(null)
 
-  const bundle: CellarBundle | undefined = parsed.bundle
+  const bundle: CellarBundle | undefined = parsed.json?.kind === 'bundle' ? parsed.json.bundle : undefined
+  const jsonDrafts = parsed.json?.kind === 'drafts' ? parsed.json : undefined
 
   async function review() {
+    const existing = await listWines()
+    if (jsonDrafts) {
+      setPlan(planDrafts(jsonDrafts.drafts, existing, jsonDrafts.errors))
+      return
+    }
     if (!parsed.table) return
-    setPlan(planImport(parsed.table, map, dateOrder, await listWines()))
+    setPlan(planImport(parsed.table, map, dateOrder, existing))
   }
 
   async function apply() {
@@ -73,7 +80,14 @@ export function ImportScreen({
         const extra = plan.possibleDuplicates
           .filter((d) => included.includes(d.line))
           .map((d) => d.draft)
-        const finalPlan = { ...plan, creates: [...plan.creates, ...extra] }
+        const extraMerges = plan.possibleDuplicates
+          .filter((d) => mergedIds.includes(d.wineId))
+          .map((d) => ({ wineId: d.wineId, addStock: d.draft.stock ?? 1, patch: {} }))
+        const finalPlan = {
+          ...plan,
+          creates: [...plan.creates, ...extra],
+          merges: [...plan.merges, ...extraMerges],
+        }
         await applyImportPlan(finalPlan)
         const counts = countPlan(finalPlan)
         setResult(`Importado: ${counts.creates} vinos nuevos, ${counts.merges} actualizados.`)
@@ -140,7 +154,7 @@ export function ImportScreen({
       <div className="flex flex-col gap-4">
         <dl className="grid grid-cols-2 gap-2 text-sm">
           <Stat label="Vinos nuevos" value={counts.creates + included.length} />
-          <Stat label="Se suman a existentes" value={counts.merges} />
+          <Stat label="Se suman a existentes" value={counts.merges + mergedIds.length} />
           <Stat label="Filas con error" value={counts.errors} />
           <Stat label="Posibles duplicados" value={counts.duplicates} />
         </dl>
@@ -158,24 +172,44 @@ export function ImportScreen({
         {plan.possibleDuplicates.length > 0 && (
           <fieldset className="flex flex-col gap-2">
             <legend className="mb-1 text-sm text-muted">
-              Mismo nombre y añada en otra bodega. Márcalos para añadirlos como vinos nuevos.
+              Mismo nombre y añada en otra bodega. Elige en cada uno si es el mismo vino (suma
+              botellas) o uno distinto (se añade).
             </legend>
             {plan.possibleDuplicates.map((duplicate) => (
-              <label key={duplicate.line} className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  className="size-5 accent-wine"
-                  checked={included.includes(duplicate.line)}
-                  onChange={(event) =>
-                    setIncluded((current) =>
-                      event.target.checked
-                        ? [...current, duplicate.line]
-                        : current.filter((line) => line !== duplicate.line),
+              <div key={duplicate.line} className="flex flex-wrap items-center gap-3 text-sm">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="size-5 accent-wine"
+                    checked={included.includes(duplicate.line)}
+                    onChange={(event) =>
+                      setIncluded((current) =>
+                        event.target.checked
+                          ? [...current, duplicate.line]
+                          : current.filter((line) => line !== duplicate.line),
+                      )
+                    }
+                  />
+                  Es otro vino
+                </label>
+                <span className="text-text">
+                  {duplicate.name} {duplicate.vintage ?? 'NV'}
+                </span>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  aria-pressed={mergedIds.includes(duplicate.wineId)}
+                  onClick={() =>
+                    setMergedIds((current) =>
+                      current.includes(duplicate.wineId)
+                        ? current.filter((id) => id !== duplicate.wineId)
+                        : [...current, duplicate.wineId],
                     )
                   }
-                />
-                {duplicate.name} {duplicate.vintage ?? 'NV'}
-              </label>
+                >
+                  Es el mismo
+                </Button>
+              </div>
             ))}
           </fieldset>
         )}
@@ -187,11 +221,36 @@ export function ImportScreen({
         )}
 
         <div className="flex gap-2">
-          <Button onClick={apply} disabled={busy || counts.creates + counts.merges + included.length === 0}>
+          <Button
+            onClick={apply}
+            disabled={busy || counts.creates + counts.merges + included.length + mergedIds.length === 0}
+          >
             {busy ? 'Importando…' : 'Aplicar'}
           </Button>
           <Button variant="ghost" onClick={() => setPlan(null)}>
             Volver
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  if (jsonDrafts) {
+    return (
+      <div className="flex flex-col gap-4">
+        <p className="text-sm text-muted">
+          {jsonDrafts.drafts.length} vinos en el archivo. Se revisan contra tu cava: los que ya
+          tienes suman botellas, los demás se añaden. Nada se escribe hasta que pulses Aplicar.
+        </p>
+        {runError && (
+          <p role="alert" className="text-sm text-wine">
+            {runError}
+          </p>
+        )}
+        <div className="flex gap-2">
+          <Button onClick={review}>Ver resumen</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
           </Button>
         </div>
       </div>

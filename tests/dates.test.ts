@@ -4,11 +4,16 @@ import { formatDate, formatDateTime, formatMonth, todayIso } from '@/lib/dates'
 describe('dates', () => {
   it('formatea una fecha ISO como dd/mm/aaaa', () => {
     expect(formatDate('2026-03-05')).toBe('05/03/2026')
-    expect(formatDate('2026-03-05T18:30:00.000Z')).toBe('05/03/2026')
+    expect(formatDate(new Date(2026, 2, 5, 18, 30).toISOString())).toBe('05/03/2026')
   })
 
-  it('formatea fecha y hora sin desplazar la zona horaria', () => {
-    expect(formatDateTime('2026-03-05T18:30:00.000Z')).toBe('05/03/2026 18:30')
+  it('muestra la hora y el día locales, no los de UTC', () => {
+    const lateNight = new Date(2026, 2, 5, 23, 30).toISOString()
+    expect(formatDateTime(lateNight)).toBe('05/03/2026 23:30')
+    expect(formatMonth(lateNight)).toBe('marzo 2026')
+    const afterMidnight = new Date(2026, 0, 1, 0, 30).toISOString()
+    expect(formatDate(afterMidnight)).toBe('01/01/2026')
+    expect(formatMonth(afterMidnight)).toBe('enero 2026')
   })
 
   it('todayIso devuelve la fecha local en formato YYYY-MM-DD', () => {
