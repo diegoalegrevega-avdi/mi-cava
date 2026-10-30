@@ -7,7 +7,8 @@ import { CellarScreen } from '@/features/cellar/CellarScreen'
 import { AddScreen } from '@/features/add/AddScreen'
 import { HistoryScreen } from '@/features/history/HistoryScreen'
 import { SettingsScreen } from '@/features/settings/SettingsScreen'
-import { ToastProvider } from '@/hooks/useToast'
+import { ToastProvider, useToast } from '@/hooks/useToast'
+import { useRegisterSW } from 'virtual:pwa-register/react'
 import { useTheme } from '@/hooks/useTheme'
 import { activeNav, type NavId } from '@/nav'
 
@@ -28,6 +29,24 @@ function useHashRoute(): string {
   return hash
 }
 
+function PwaUpdate() {
+  const {
+    needRefresh: [needRefresh],
+    updateServiceWorker,
+  } = useRegisterSW()
+  const { show } = useToast()
+
+  useEffect(() => {
+    if (!needRefresh) return
+    show('Nueva versión disponible', {
+      label: 'Recargar',
+      onClick: () => void updateServiceWorker(true),
+    })
+  }, [needRefresh, show, updateServiceWorker])
+
+  return null
+}
+
 function Screen({ route }: { route: NavId }) {
   if (route === 'cava') return <CellarScreen />
   if (route === 'add') return <AddScreen />
@@ -42,6 +61,7 @@ export default function App() {
 
   return (
     <ToastProvider>
+      <PwaUpdate />
       <div className="min-h-dvh bg-bg text-text md:flex">
         <SideBar active={route} className="hidden md:flex" />
         <div className="flex min-w-0 flex-1 flex-col">
