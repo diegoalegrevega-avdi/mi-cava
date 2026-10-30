@@ -27,7 +27,7 @@ export function StockStepper({
           type="button"
           onClick={onOpen}
           aria-label={`Ver ficha de ${wine.name}`}
-          className="min-h-11 min-w-8 rounded-lg px-1 text-center tabular-nums hover:bg-surface-2"
+          className="min-h-11 min-w-11 rounded-lg px-1 text-center tabular-nums hover:bg-surface-2"
         >
           {wine.stock}
         </button>

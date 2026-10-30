@@ -5,7 +5,9 @@ import { listWines } from '@/db/repo'
 import { filterWines } from '@/domain/search'
 
 export function visibleWines(wines: WineWithStock[], query: string): WineWithStock[] {
-  return [...filterWines(wines, query)].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+  return filterWines(wines, query)
+    .filter((w) => w.stock > 0)
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
 }
 
 export function useWines(): {

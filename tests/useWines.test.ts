@@ -38,4 +38,10 @@ describe('visibleWines', () => {
     expect(visibleWines([rioja, rias], 'muga').map((w) => w.name)).toEqual(['Rioja Reserva'])
     expect(visibleWines([rioja, rias], 'ALBARINO').map((w) => w.name)).toEqual(['Albariño'])
   })
+
+  test('leaves out wines with no bottles left: they live in Historial', () => {
+    const empty = wine({ name: 'Vacío', stock: 0 })
+    const full = wine({ name: 'Lleno', stock: 1 })
+    expect(visibleWines([empty, full], '').map((w) => w.name)).toEqual(['Lleno'])
+  })
 })
