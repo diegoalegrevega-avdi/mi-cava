@@ -5,6 +5,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { IconButton } from '@/components/ui/IconButton'
 import { MoonIcon, SunIcon } from '@/components/ui/Icons'
 import { CellarScreen } from '@/features/cellar/CellarScreen'
+import { AddScreen } from '@/features/add/AddScreen'
 import { ToastProvider } from '@/hooks/useToast'
 import { useTheme } from '@/hooks/useTheme'
 import { activeNav, type NavId } from '@/nav'
@@ -28,6 +29,7 @@ function useHashRoute(): string {
 
 function Screen({ route }: { route: NavId }) {
   if (route === 'cava') return <CellarScreen />
+  if (route === 'add') return <AddScreen />
   return <EmptyState title={TITLES[route]} description="Pantalla en construcción." />
 }
 
