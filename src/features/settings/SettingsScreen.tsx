@@ -55,9 +55,13 @@ export function SettingsScreen() {
 
       <section className="rounded-xl border border-border bg-surface p-4">
         <h2 className="mb-3 font-serif text-xl">Escáner de etiquetas</h2>
+        <p className="mb-3 text-sm text-muted">
+          La lectura se hace en el propio dispositivo con Tesseract. La primera vez descarga los modelos (≈9 MB) y los guarda
+          en el navegador; después funciona sin red. La foto no se guarda en ningún sitio.
+        </p>
         <Field
           label="Clave de Google Gemini"
-          hint="Opcional. Se guarda solo en este navegador y se envía únicamente a Google al escanear una etiqueta."
+          hint="Opcional. Se guarda solo en este navegador y se envía únicamente a Google para reintentar lecturas que el motor local no ha podido completar."
         >
           <input
             type="password"
@@ -89,6 +93,11 @@ export function SettingsScreen() {
         <a className="mt-1 inline-block text-gold underline" href={REPO_URL} target="_blank" rel="noreferrer">
           Código en GitHub
         </a>
+        <p className="mt-2">
+          <a className="text-gold underline" href="https://world.openfoodfacts.org" target="_blank" rel="noreferrer">
+            Datos de Open Food Facts (ODbL)
+          </a>
+        </p>
       </section>
     </div>
   )

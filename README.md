@@ -75,13 +75,24 @@ cero botellas. Para restaurar, usa el JSON.
 - Las filas se fusionan sumando botellas: importar dos veces el mismo archivo
   duplica el stock, así que revisa el resumen antes de aplicar.
 
-## Escáner de etiquetas (opcional)
+## Escáner de etiquetas y código de barras (opcional)
 
-En **Añadir** puedes fotografiar la etiqueta y rellenar nombre, bodega, añada,
-región y varietales automáticamente. Necesita una clave de API de Google Gemini,
-que se guarda solo en este navegador (`localStorage`) y se envía únicamente a
-Google al escanear. Sin clave no se envía nada: la app funciona igual escribiendo
-los datos a mano.
+En **Añadir** hay dos formas de rellenar el formulario sin escribir:
+
+- **Fotografiar la etiqueta.** La lectura se hace en el propio dispositivo con
+  Tesseract (WASM). La primera vez descarga los modelos (≈9 MB) y los guarda en
+  el navegador; después funciona sin red. No se inventa el nombre del vino: solo
+  propone añada, tipo, región, país, variedades y bodega, y se rellenan los campos
+  que estén vacíos. La foto no se guarda en ningún sitio.
+- **Código de barras.** Busca un EAN/UPC y completa nombre y bodega desde
+  [Open Food Facts](https://world.openfoodfacts.org) (datos ODbL). Solo se toman
+  nombre y marca: el país del producto no se aplica, porque la base de datos
+  registra dónde se vende, no de dónde viene.
+
+La clave de Google Gemini es **opcional**: se guarda solo en este navegador y se
+envía únicamente a Google para reintentar lecturas que el motor local no ha podido
+completar. Sin clave la app funciona igual, escribiendo los datos a mano o con el
+código de barras.
 
 ## Estructura
 
