@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { WineDraft, WineType } from '@/db/schema'
 import { listWines } from '@/db/repo'
 import { defaultWindow } from '@/domain/drinkWindow'
 import { findDuplicate } from '@/domain/dedupe'
 import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
+import type { LabelDraft } from '@/services/labelScanner'
+import { LabelScannerField } from './LabelScannerField'
 import { VintagePicker } from './VintagePicker'
 import { emptyWineForm, validateWineForm, type WineFormValues } from './validation'
 
@@ -55,6 +57,7 @@ export function WineForm({
   const [errors, setErrors] = useState<ReturnType<typeof validateWineForm>['errors']>({})
   const [confirming, setConfirming] = useState(false)
   const [saving, setSaving] = useState(false)
+  const nameRef = useRef<HTMLInputElement>(null)
 
   function set<K extends keyof WineFormValues>(key: K, value: WineFormValues[K]) {
     setValues((prev) => ({ ...prev, [key]: value }))
@@ -82,6 +85,25 @@ export function WineForm({
       drinkUntil: nv ? '' : prev.drinkUntil,
     }))
     setConfirming(false)
+  }
+
+  function applyDraft(draft: LabelDraft) {
+    const year = draft.vintage ?? null
+    const window = year ? defaultWindow(year) : { drinkFrom: null, drinkUntil: null }
+    setValues((prev) => ({
+      ...prev,
+      name: prev.name || draft.name || '',
+      winery: prev.winery || draft.winery || '',
+      region: prev.region || draft.region || '',
+      country: prev.country || draft.country || '',
+      varietals: prev.varietals || draft.varietals?.join(', ') || '',
+      type: prev.type || draft.type || '',
+      vintage: prev.vintage || (year ? String(year) : ''),
+      drinkFrom: prev.drinkFrom || (window.drinkFrom ? String(window.drinkFrom) : ''),
+      drinkUntil: prev.drinkUntil || (window.drinkUntil ? String(window.drinkUntil) : ''),
+    }))
+    setConfirming(false)
+    if (!draft.name) nameRef.current?.focus()
   }
 
   async function submit(confirmed = false) {
@@ -119,8 +141,11 @@ export function WineForm({
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-medium uppercase tracking-wide text-muted">Lo esencial</h2>
 
+        <LabelScannerField onDraft={applyDraft} />
+
         <Field label="Nombre" error={errors.name}>
           <input
+            ref={nameRef}
             value={values.name}
             onChange={(e) => set('name', e.target.value)}
             placeholder="Muga Reserva"
