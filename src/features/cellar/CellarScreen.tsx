@@ -18,7 +18,6 @@ export function CellarScreen() {
   const visible = useMemo(() => visibleWines(wines, query), [wines, query])
   const selected = wines.find((w) => w.id === selectedId) ?? null
   const total = wines.reduce((sum, w) => sum + Math.max(w.stock, 0), 0)
-  const year = new Date().getFullYear()
 
   async function handleAdd(wine: WineWithStock) {
     try {
@@ -40,7 +39,12 @@ export function CellarScreen() {
 
   return (
     <div className="flex w-full flex-col gap-3">
-      <SearchBar value={query} onChange={setQuery} />
+      <div className="flex items-center justify-between gap-2">
+        <SearchBar value={query} onChange={setQuery} />
+        <Button variant="secondary" onClick={() => (window.location.hash = '#/cava3d')}>
+          Ver cava 3D
+        </Button>
+      </div>
 
       {total >= 250 ? (
         <p className="rounded-xl border border-gold/40 bg-gold/10 px-3 py-2 text-sm text-gold">
@@ -74,7 +78,7 @@ export function CellarScreen() {
             <WineRow
               key={wine.id}
               wine={wine}
-              year={year}
+              year={new Date().getFullYear()}
               onAdd={() => void handleAdd(wine)}
               onConsume={() => void handleConsume(wine)}
               onOpen={() => setSelectedId(wine.id)}

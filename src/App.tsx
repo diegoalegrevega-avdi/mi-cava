@@ -4,6 +4,7 @@ import { SideBar } from '@/components/SideBar'
 import { IconButton } from '@/components/ui/IconButton'
 import { MoonIcon, SunIcon } from '@/components/ui/Icons'
 import { CellarScreen } from '@/features/cellar/CellarScreen'
+import { Cave3DScreen } from '@/features/cellar/Cave3DScreen'
 import { AddScreen } from '@/features/add/AddScreen'
 import { HistoryScreen } from '@/features/history/HistoryScreen'
 import { SettingsScreen } from '@/features/settings/SettingsScreen'
@@ -17,6 +18,7 @@ const TITLES: Record<NavId, string> = {
   add: 'Añadir vino',
   historial: 'Historial',
   ajustes: 'Ajustes y datos',
+  cava3d: 'Cava 3D',
 }
 
 function useHashRoute(): string {
@@ -51,6 +53,7 @@ function Screen({ route }: { route: NavId }) {
   if (route === 'cava') return <CellarScreen />
   if (route === 'add') return <AddScreen />
   if (route === 'historial') return <HistoryScreen />
+  if (route === 'cava3d') return <Cave3DScreen />
   return <SettingsScreen />
 }
 
