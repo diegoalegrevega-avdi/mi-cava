@@ -56,12 +56,12 @@ export function CaveBottle({ wine, width, height, onClick, semaphore }: CaveBott
         fill={color}
         opacity="0.9"
       />
-      {/* Semaphore ring */}
+      {/* Semaphore tag */}
       {semaphore && (
         <circle
-          cx={cx}
-          cy={cy + bodyHeight / 2 + 4}
-          r={6}
+          cx={width - 7}
+          cy={7}
+          r={5}
           fill={semColor}
           stroke="white"
           strokeWidth="1.5"

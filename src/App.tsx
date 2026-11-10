@@ -12,7 +12,7 @@ import { ToastProvider, useToast } from '@/hooks/useToast'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { useTheme } from '@/hooks/useTheme'
 import { useI18n } from '@/hooks/useI18n'
-import { activeNav, type NavId } from '@/nav'
+import { activeNav, screenRoute, type NavId } from '@/nav'
 import logoMark from '@/assets/logo-mark.svg'
 
 function useHashRoute(): string {
@@ -103,7 +103,8 @@ function Screen({ route }: { route: NavId }) {
 
 export default function App() {
   const hash = useHashRoute()
-  const route = activeNav(hash)
+  const route = screenRoute(hash)
+  const active = activeNav(hash)
   const { theme, toggle } = useTheme()
   const { t } = useI18n()
 
@@ -120,12 +121,12 @@ export default function App() {
       <PwaUpdate />
       <InstallPrompt />
       <div className="min-h-dvh bg-bg text-text md:flex">
-        <SideBar active={route} className="hidden md:flex" />
+        <SideBar active={active} className="hidden md:flex" />
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-border bg-bg/95 px-4 py-3 backdrop-blur md:px-6">
             <div className="flex min-w-0 items-center gap-2">
               <img src={logoMark} alt="" className="size-7 shrink-0 md:hidden" />
-              <h1 className="truncate font-serif text-2xl">{TITLES[activeNav(hash)]}</h1>
+              <h1 className="truncate font-serif text-2xl">{TITLES[route]}</h1>
             </div>
             <div className="flex items-center gap-2">
               <IconButton label={theme === 'dark' ? 'Tema claro' : 'Tema oscuro'} onClick={toggle}>
@@ -138,7 +139,7 @@ export default function App() {
             <Screen route={route} />
           </main>
         </div>
-        <BottomNav active={route} className="md:hidden" />
+        <BottomNav active={active} className="md:hidden" />
       </div>
     </ToastProvider>
   )

@@ -9,9 +9,14 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'ajustes', hash: '#/ajustes', label: 'Ajustes' },
 ]
 
+/** Which tab to highlight. `#/cava3d` belongs to the cava tab. */
 export function activeNav(hash: string): NavId {
+  if (hash.startsWith('#/cava3d')) return 'cava'
   const found = NAV_ITEMS.find((item) => hash === item.hash || hash.startsWith(`${item.hash}/`))
-  // cava3d is not in bottom nav, but we want to highlight 'cava' when on cava3d
-  if (hash === '#/cava3d') return 'cava'
   return found?.id ?? 'cava'
+}
+
+/** Which screen to render. Differs from `activeNav` for routes that are not tabs. */
+export function screenRoute(hash: string): NavId {
+  return hash.startsWith('#/cava3d') ? 'cava3d' : activeNav(hash)
 }

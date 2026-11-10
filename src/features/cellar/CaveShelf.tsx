@@ -17,7 +17,7 @@ export function CaveShelf({ shelf, cellWidth, cellHeight, onBottleClick, getSema
         row.map((cell, widthIndex) => (
           <g
             key={`${depthIndex}-${widthIndex}`}
-            transform={`translate(${widthIndex * cellWidth}, ${depthIndex * cellHeight})`}
+            transform={`translate(${depthIndex * cellWidth}, ${widthIndex * cellHeight})`}
           >
             {/* Cell border */}
             <rect
