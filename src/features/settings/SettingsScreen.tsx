@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
 import { DataPanel } from '@/features/settings/DataPanel'
 import { StatsSection } from '@/features/settings/StatsSection'
+import { CaveConfigPanel } from '@/features/settings/CaveConfig'
 import { useToast } from '@/hooks/useToast'
 import { useTheme } from '@/hooks/useTheme'
 import { useWines } from '@/hooks/useWines'
@@ -54,6 +55,8 @@ export function SettingsScreen() {
           </Button>
         </div>
       </section>
+
+      <CaveConfigPanel />
 
       <section className="rounded-xl border border-border bg-surface p-4">
         <h2 className="mb-3 font-serif text-xl">Escáner de etiquetas</h2>
