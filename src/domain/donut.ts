@@ -9,17 +9,34 @@ export const TYPE_LABEL: Record<WineType, string> = {
   fortificado: 'Fortificado',
 }
 
+// Vivid palette: readable on both the cream (light) and near-black (dark) surfaces.
 export const TYPE_COLOR: Record<WineType, string> = {
-  tinto: '#7a2233',
-  blanco: '#c2a369',
-  rosado: '#d48a8a',
-  espumoso: '#a8c4e8',
-  dulce: '#e8c4a8',
-  fortificado: '#8a6d2f',
+  tinto: '#c4163f',
+  blanco: '#e9b42e',
+  rosado: '#ff9b7a',
+  espumoso: '#3fb8d4',
+  dulce: '#b07ce8',
+  fortificado: '#8b4a2f',
 }
 
 export const SIN_TIPO_LABEL = 'Sin tipo'
-export const SIN_TIPO_COLOR = '#6b625a'
+export const SIN_TIPO_COLOR = '#8a8078'
+
+export const DONUT_RADIUS = 50
+const CENTER = 50
+
+function polar(deg: number): [number, number] {
+  const rad = (deg * Math.PI) / 180
+  return [CENTER + DONUT_RADIUS * Math.cos(rad), CENTER + DONUT_RADIUS * Math.sin(rad)]
+}
+
+/** SVG slice path for the 100×100 donut viewBox. Angles: -90 is 12 o'clock, growing clockwise. */
+export function donutPath(startAngle: number, endAngle: number): string {
+  const [x0, y0] = polar(startAngle)
+  const [x1, y1] = polar(endAngle)
+  const largeArc = endAngle - startAngle > 180 ? 1 : 0
+  return `M ${CENTER} ${CENTER} L ${x0.toFixed(2)} ${y0.toFixed(2)} A ${DONUT_RADIUS} ${DONUT_RADIUS} 0 ${largeArc} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`
+}
 
 export type DonutType = WineType | 'sinTipo'
 

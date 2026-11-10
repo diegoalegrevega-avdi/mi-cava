@@ -1,6 +1,6 @@
 import type { WineWithStock } from '@/db/schema'
 import { computeStats } from '@/domain/stats'
-import { donutSegments } from '@/domain/donut'
+import { donutSegments, donutPath, DONUT_RADIUS } from '@/domain/donut'
 import { DRINK_LABEL } from '@/domain/drinkWindow'
 import { formatEuros } from '@/lib/money'
 import { MonthlyChart } from './MonthlyChart'
@@ -51,14 +51,32 @@ export function StatsSection({ wines, events }: StatsSectionProps) {
           <h3 className="mb-3 font-medium text-center">{t.stats.distributionTitle}</h3>
           <div className="relative h-48 w-full max-w-xs mx-auto">
             <svg viewBox="0 0 100 100" className="w-full h-full">
-              {donut.map((seg, i) => (
-                <path
-                  key={i}
-                  d={`M 50 50 L 50 0 A 50 50 0 ${seg.percent > 50 ? 1 : 0} 1 ${50 + 50 * Math.cos((seg.endAngle - 90) * Math.PI / 180)} ${50 + 50 * Math.sin((seg.endAngle - 90) * Math.PI / 180)} Z`}
-                  fill={seg.color}
-                />
-              ))}
-              <circle cx="50" cy="50" r="30" fill="#191614" />
+              {donut.length === 1 ? (
+                <circle cx="50" cy="50" r={DONUT_RADIUS} fill={donut[0]!.color} />
+              ) : (
+                donut.map((seg) => (
+                  <path
+                    key={seg.type}
+                    d={donutPath(seg.startAngle, seg.endAngle)}
+                    fill={seg.color}
+                    stroke="var(--surface-2)"
+                    strokeWidth={1.5}
+                  />
+                ))
+              )}
+              <circle cx="50" cy="50" r="30" fill="var(--surface-2)" />
+              <text
+                x="50"
+                y="50"
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize="16"
+                fontWeight="600"
+                fill="var(--text)"
+                fontFamily="system-ui"
+              >
+                {stats.bottles}
+              </text>
             </svg>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-1 text-xs">

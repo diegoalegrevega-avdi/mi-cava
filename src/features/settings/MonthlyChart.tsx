@@ -15,6 +15,9 @@ export function MonthlyChart({ events, year }: MonthlyChartProps) {
   const gap = 8
   const chartHeight = 80
   const chartWidth = 12 * (30 + 8)
+  const max = Math.max(1, ...data.map((d) => d.count))
+  // Leave headroom so the tallest bar still shows its count label.
+  const barHeight = (count: number) => (count / max) * chartHeight * 0.85
 
   return (
     <div className="w-full" role="img" aria-label={t.monthly.ariaLabel(year)}>
@@ -24,24 +27,30 @@ export function MonthlyChart({ events, year }: MonthlyChartProps) {
         viewBox={`0 0 ${chartWidth} ${chartHeight + 30}`}
         className="w-full h-auto"
       >
+        <defs>
+          <linearGradient id="barGradient" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stopColor="#8f1030" />
+            <stop offset="100%" stopColor="#e0466f" />
+          </linearGradient>
+        </defs>
         {/* Bars */}
         <g>
           {data.map((d, i) => (
             <g key={i} transform={`translate(${i * (barWidth + gap)}, 0)`}>
               <rect
                 x={0}
-                y={chartHeight - (d.count / Math.max(1, Math.max(...data.map(d => d.count)))) * chartHeight}
+                y={chartHeight - barHeight(d.count)}
                 width={barWidth}
-                height={(d.count / Math.max(1, Math.max(...data.map(d => d.count)))) * chartHeight}
-                fill="#7a2233"
-                rx={2}
+                height={barHeight(d.count)}
+                fill="url(#barGradient)"
+                rx={3}
               />
               <text
                 x={barWidth / 2}
                 y={chartHeight + 20}
                 textAnchor="middle"
                 fontSize="10"
-                fill="#a69c92"
+                fill="var(--muted)"
                 fontFamily="system-ui"
               >
                 {MONTHS[i]}
@@ -49,10 +58,10 @@ export function MonthlyChart({ events, year }: MonthlyChartProps) {
               {d.count > 0 && (
                 <text
                   x={barWidth / 2}
-                  y={chartHeight - (d.count / Math.max(1, Math.max(...data.map(d => d.count)))) * chartHeight - 4}
+                  y={chartHeight - barHeight(d.count) - 4}
                   textAnchor="middle"
                   fontSize="9"
-                  fill="#f2ede7"
+                  fill="var(--text)"
                   fontFamily="system-ui"
                 >
                   {d.count}

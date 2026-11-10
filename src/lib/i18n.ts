@@ -235,6 +235,13 @@ export type Dictionary = {
     yes: string
     no: string
   }
+  // Support prompt
+  support: {
+    title: string
+    body: string
+    coffee: string
+    later: string
+  }
 }
 
 export const DICTIONARIES: Record<Locale, Dictionary> = {
@@ -435,6 +442,12 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       errors: { noName: 'falta el nombre', noVintage: 'añada no válida', invalidStock: 'stock no válido', notFound: 'Ese código no está en Open Food Facts', notWine: 'Ese código no es un vino en Open Food Facts' },
     },
     common: { save: 'Guardar', cancel: 'Cancelar', delete: 'Borrar', confirm: 'Confirmar', close: 'Cerrar', loading: 'Cargando…', error: 'Error', yes: 'Sí', no: 'No' },
+    support: {
+      title: '¿Te resulta útil Mi Cava?',
+      body: 'Es gratis y sin anuncios. Si te ahorra tiempo, invítame a un café y ayudo a mantenerla viva.',
+      coffee: 'Invítame a un café',
+      later: 'Ahora no',
+    },
   },
   en: {
     nav: { cava: 'My Cellar', add: 'Add', historial: 'History', ajustes: 'Settings' },
@@ -574,6 +587,12 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       errors: { noName: 'missing name', noVintage: 'invalid vintage', invalidStock: 'invalid stock', notFound: 'That code is not in Open Food Facts', notWine: 'That code is not a wine in Open Food Facts' },
     },
     common: { save: 'Save', cancel: 'Cancel', delete: 'Delete', confirm: 'Confirm', close: 'Close', loading: 'Loading…', error: 'Error', yes: 'Yes', no: 'No' },
+    support: {
+      title: 'Finding Mi Cava useful?',
+      body: 'It is free and ad-free. If it saves you time, buy me a coffee and help keep it running.',
+      coffee: 'Buy me a coffee',
+      later: 'Not now',
+    },
     cave3d: {
       depthLabel: (n) => `F${n}`,
       shelfLabel: (n) => `Shelf ${n}`,
@@ -772,6 +791,12 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       errors: { noName: 'nom manquant', noVintage: 'millésime invalide', invalidStock: 'stock invalide', notFound: 'Ce code n\'est pas dans Open Food Facts', notWine: 'Ce code n\'est pas un vin dans Open Food Facts' },
     },
     common: { save: 'Enregistrer', cancel: 'Annuler', delete: 'Supprimer', confirm: 'Confirmer', close: 'Fermer', loading: 'Chargement…', error: 'Erreur', yes: 'Oui', no: 'Non' },
+    support: {
+      title: 'Mi Cava vous est utile ?',
+      body: 'C’est gratuit et sans publicité. Si ça vous fait gagner du temps, offrez-moi un café pour m’aider à la maintenir.',
+      coffee: 'Offrez-moi un café',
+      later: 'Pas maintenant',
+    },
     cave3d: {
       depthLabel: (n) => `R${n}`,
       shelfLabel: (n) => `Étage ${n}`,

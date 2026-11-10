@@ -8,6 +8,7 @@ import { Cave3DScreen } from '@/features/cellar/Cave3DScreen'
 import { AddScreen } from '@/features/add/AddScreen'
 import { HistoryScreen } from '@/features/history/HistoryScreen'
 import { SettingsScreen } from '@/features/settings/SettingsScreen'
+import { SupportPrompt } from '@/features/support/SupportPrompt'
 import { ToastProvider, useToast } from '@/hooks/useToast'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { useTheme } from '@/hooks/useTheme'
@@ -120,6 +121,7 @@ export default function App() {
     <ToastProvider>
       <PwaUpdate />
       <InstallPrompt />
+      <SupportPrompt />
       <div className="min-h-dvh bg-bg text-text md:flex">
         <SideBar active={active} className="hidden md:flex" />
         <div className="flex min-w-0 flex-1 flex-col">
