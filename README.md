@@ -1,7 +1,11 @@
 # Mi Cava
 
+> Complex problems, simple tools
+
 Cava doméstica para hasta 250 botellas. Meter y sacar stock con un toque, sin
 cuentas ni servidores: todo vive en el navegador del móvil o del ordenador.
+
+**[Probar la app →](https://diegoalegrevega-avdi.github.io/mi-cava/)** · disponible en español, inglés y francés.
 
 ![Mi Cava en el móvil](docs/screenshots/cava-390.png)
 
@@ -22,6 +26,16 @@ cuentas ni servidores: todo vive en el navegador del móvil o del ordenador.
   por tipo, apogeo y evolución mensual), tema claro/oscuro, importación/exportación,
   **configuración de la Cava 3D** (profundidad, ancho, pisos, modo de relleno) y
   escáner de etiquetas.
+
+## Idiomas y datos de demo
+
+- **Español, inglés y francés.** El botón del idioma en la cabecera cicla entre
+  los tres; la elección se guarda en el navegador. En el primer arranque se
+  detecta el idioma del sistema.
+- **Cava de ejemplo.** Con la cava vacía, el botón de demo carga 10 vinos
+  españoles variados (tintos, blancos, distintas añadas y existencias) para ver
+  la lista, la vista 3D y las estadísticas con contenido. Solo se ejecuta si no
+  hay ningún vino: nunca sobrescribe datos reales.
 
 ## Cómo correrlo
 
