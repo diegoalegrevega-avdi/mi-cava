@@ -11,14 +11,17 @@ cuentas ni servidores: todo vive en el navegador del móvil o del ordenador.
   de apogeo (Listo · Guardar · Pronto · Sin datos) y botones `−` / `+` en cada fila.
   Toca la fila (o el número de botellas) para abrir la ficha del vino: notas de cata,
   ubicación, ventana de consumo, ajuste de stock y todos sus movimientos.
+  **Botón "Ver cava 3D"** abre la vista tridimensional configurable.
 - **Añadir**: alta rápida con la fecha de hoy ya puesta. La añada rellena sola la
   ventana de consumo (añada + 3 a añada + 12). Si ya existe el mismo vino, la botella
   se suma en vez de duplicar la fila.
 - **Historial**: cada descorche con su fecha y su nota, agrupado por mes. Los vinos
   que se quedan a cero pasan a "Fuera de la cava" sin perder nada, con un botón para
   devolverlos.
-- **Ajustes**: estadísticas (botellas, referencias, valor estimado, reparto por tipo
-  y por estado), tema claro/oscuro e importación/exportación.
+- **Ajustes**: estadísticas completas (botellas, referencias, valor estimado, reparto
+  por tipo, apogeo y evolución mensual), tema claro/oscuro, importación/exportación,
+  **configuración de la Cava 3D** (profundidad, ancho, pisos, modo de relleno) y
+  escáner de etiquetas.
 
 ## Cómo correrlo
 
@@ -93,6 +96,21 @@ La clave de Google Gemini es **opcional**: se guarda solo en este navegador y se
 envía únicamente a Google para reintentar lecturas que el motor local no ha podido
 completar. Sin clave la app funciona igual, escribiendo los datos a mano o con el
 código de barras.
+
+## Cava 3D
+
+En **Ajustes → Cava 3D** puedes configurar la vista tridimensional:
+- **Profundidad** (1–20), **Ancho** (1–4), **Pisos** (1–8) — define la cuadrícula de la cava.
+- **Modo de relleno**: *Por vino* agrupa botellas del mismo vino en celdas contiguas; *Por tipo* agrupa por color (tinto, blanco, rosado...).
+- Capacidad máxima 320 botellas; si la config supera ese límite se muestra un aviso y la vista se recorta.
+- En **Mi Cava** pulsa **Ver cava 3D** para abrir la vista: botellas como cilindros coloreados por tipo, huecos punteados, pila de sobrantes con contador.
+- Toca una botella para abrir su ficha; botón **Volver a la lista** regresa a la lista principal.
+
+En **Ajustes → Estadísticas** verás:
+- Cuatro cifras: botellas, referencias, valor estimado, última exportación.
+- Donut de distribución por tipo (incluye "Sin tipo").
+- Tarjetas de apogeo: Listos, Para guardar, Pasados, Sin datos.
+- Gráfico de barras mensual de descorches (últimos 12 meses).
 
 ## Estructura
 
