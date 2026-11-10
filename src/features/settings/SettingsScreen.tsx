@@ -2,10 +2,11 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
 import { DataPanel } from '@/features/settings/DataPanel'
-import { StatsPanel } from '@/features/settings/StatsPanel'
+import { StatsSection } from '@/features/settings/StatsSection'
 import { useToast } from '@/hooks/useToast'
 import { useTheme } from '@/hooks/useTheme'
 import { useWines } from '@/hooks/useWines'
+import { useEvents } from '@/hooks/useEvents'
 import { APP_VERSION, REPO_URL } from '@/lib/appInfo'
 
 const KEY_STORAGE = 'micava.geminiKey'
@@ -16,6 +17,7 @@ function readKey(): string {
 
 export function SettingsScreen() {
   const { wines } = useWines()
+  const { events } = useEvents()
   const { theme, toggle } = useTheme()
   const { show } = useToast()
   const [key, setKey] = useState(readKey)
@@ -39,8 +41,8 @@ export function SettingsScreen() {
   return (
     <div className="flex w-full flex-col gap-4">
       <section className="rounded-xl border border-border bg-surface p-4">
-        <h2 className="mb-3 font-serif text-xl">Tu cava en números</h2>
-        <StatsPanel wines={wines} />
+        <h2 className="mb-3 font-serif text-xl">Estadísticas</h2>
+        <StatsSection wines={wines} events={events} />
       </section>
 
       <section className="rounded-xl border border-border bg-surface p-4">
