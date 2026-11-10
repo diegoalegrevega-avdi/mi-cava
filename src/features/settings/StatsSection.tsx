@@ -5,6 +5,7 @@ import { DRINK_LABEL } from '@/domain/drinkWindow'
 import { formatEuros } from '@/lib/money'
 import { MonthlyChart } from './MonthlyChart'
 import { useMemo } from 'react'
+import { useI18n } from '@/hooks/useI18n'
 import type { StockEvent } from '@/db/schema'
 
 interface StatsSectionProps {
@@ -13,6 +14,7 @@ interface StatsSectionProps {
 }
 
 export function StatsSection({ wines, events }: StatsSectionProps) {
+  const { t } = useI18n()
   const stats = useMemo(() => computeStats(wines, new Date().getFullYear()), [wines])
 
   // Donut data
@@ -32,21 +34,21 @@ export function StatsSection({ wines, events }: StatsSectionProps) {
 
   return (
     <section className="rounded-xl border border-border bg-surface p-4">
-      <h2 className="mb-4 font-serif text-xl">Estadísticas</h2>
+      <h2 className="mb-4 font-serif text-xl">{t.settings.stats.title}</h2>
 
       {/* Four figures */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <Figure label="Botellas" value={stats.bottles} />
-        <Figure label="Referencias" value={stats.references} />
-        <Figure label="Valor estimado" value={formatEuros(stats.valueCents)} />
-        <Figure label="Última exportación" value="—" />
+        <Figure label={t.settings.stats.bottles} value={stats.bottles} />
+        <Figure label={t.settings.stats.references} value={stats.references} />
+        <Figure label={t.settings.stats.value} value={formatEuros(stats.valueCents)} />
+        <Figure label={t.settings.stats.lastExport} value="—" />
       </div>
 
       {/* Donut + Apogeo */}
       <div className="grid md:grid-cols-2 gap-6 mb-6">
         {/* Donut */}
         <div className="rounded-lg border border-border bg-surface-2 p-4">
-          <h3 className="mb-3 font-medium text-center">Distribución por tipo</h3>
+          <h3 className="mb-3 font-medium text-center">{t.stats.distributionTitle}</h3>
           <div className="relative h-48 w-full max-w-xs mx-auto">
             <svg viewBox="0 0 100 100" className="w-full h-full">
               {donut.map((seg, i) => (
@@ -63,7 +65,7 @@ export function StatsSection({ wines, events }: StatsSectionProps) {
             {donut.map((seg) => (
               <div key={seg.type} className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded" style={{ backgroundColor: seg.color }} />
-                <span className="text-muted">{seg.type === 'sinTipo' ? 'Sin tipo' : seg.type}</span>
+                <span className="text-muted">{seg.type === 'sinTipo' ? t.stats.noType : seg.type}</span>
                 <span>{seg.count} ({seg.percent}%)</span>
               </div>
             ))}
@@ -72,7 +74,7 @@ export function StatsSection({ wines, events }: StatsSectionProps) {
 
         {/* Apogeo cards */}
         <div className="space-y-2">
-          <h3 className="font-medium">Apogeo</h3>
+          <h3 className="font-medium">{t.settings.stats.apogeo}</h3>
           <div className="grid grid-cols-2 gap-2">
             {[
               { key: 'ready', label: DRINK_LABEL.ready, color: '#4b8a5c' },
@@ -95,7 +97,7 @@ export function StatsSection({ wines, events }: StatsSectionProps) {
 
       {/* Monthly chart */}
       <div>
-        <h3 className="mb-3 font-medium">Evolución mensual de descorches</h3>
+        <h3 className="mb-3 font-medium">{t.stats.evolutionTitle}</h3>
         <MonthlyChart events={events} year={new Date().getFullYear()} />
       </div>
     </section>

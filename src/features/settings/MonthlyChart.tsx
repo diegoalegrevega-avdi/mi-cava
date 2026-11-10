@@ -1,25 +1,23 @@
 import { monthlyConsumptions } from '@/domain/monthly'
 import type { StockEvent } from '@/db/schema'
+import { useI18n } from '@/hooks/useI18n'
 
 interface MonthlyChartProps {
   events: StockEvent[]
   year: number
 }
 
-const MONTHS = [
-  'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-  'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
-]
-
 export function MonthlyChart({ events, year }: MonthlyChartProps) {
+  const { t } = useI18n()
   const data = monthlyConsumptions(events, year)
+  const MONTHS = t.monthly.months
   const barWidth = 30
   const gap = 8
   const chartHeight = 80
   const chartWidth = 12 * (30 + 8)
 
   return (
-    <div className="w-full" role="img" aria-label={`Evolución mensual de descorches ${year}`}>
+    <div className="w-full" role="img" aria-label={t.monthly.ariaLabel(year)}>
       <svg
         width={chartWidth}
         height={chartHeight + 30}
@@ -65,7 +63,7 @@ export function MonthlyChart({ events, year }: MonthlyChartProps) {
         </g>
       </svg>
       <p className="text-xs text-muted text-center mt-1">
-        {data.reduce((a, b) => a + b.count, 0)} descorches en {year}
+        {t.monthly.total(data.reduce((a, b) => a + b.count, 0), year)}
       </p>
     </div>
   )

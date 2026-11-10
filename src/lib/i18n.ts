@@ -11,6 +11,9 @@ export type Dictionary = {
     empty: { title: string; description: string; action: string }
     full: string
     button3d: string
+    loading: string
+    noResults: { title: string; description: string; action: string }
+    addWine: string
   }
   // Wine row / detail
   wine: {
@@ -136,6 +139,72 @@ export type Dictionary = {
       fillTypeHint: string
     }
   }
+  // Cave3D
+  cave3d: {
+    depthLabel: (n: number) => string
+    shelfLabel: (n: number) => string
+    overflow: string
+    legend: {
+      depth: string
+      width: string
+      shelves: string
+      capacity: string
+    }
+  }
+  // Stats
+  stats: {
+    distributionTitle: string
+    apogeoTitle: string
+    evolutionTitle: string
+    noType: string
+  }
+  // Monthly chart
+  monthly: {
+    months: string[]
+    ariaLabel: (year: number) => string
+    total: (count: number, year: number) => string
+  }
+  // Cave config
+  caveConfig: {
+    title: string
+    depth: string
+    width: string
+    shelves: string
+    fill: string
+    fillWine: string
+    fillType: string
+    fillWineHint: string
+    fillTypeHint: string
+    depthHint: string
+    widthHint: string
+    shelvesHint: string
+    capacity: string
+    overCapacity: string
+    autoSave: string
+  }
+  // Cellar screen
+  cellarScreen: {
+    full: string
+    loading: string
+    noResults: { title: string; description: string; action: string }
+    empty: { title: string; description: string; action: string }
+  }
+  // Cave3D screen
+  cave3dScreen: {
+    title: string
+    back: string
+  }
+  // Settings screen
+  settingsScreen: {
+    title: string
+    stats: string
+    appearance: string
+    scanner: string
+    scannerInfo: string
+    data: string
+    about: string
+    cave3d: string
+  }
   // Import/Export
   importer: {
     title: string
@@ -177,6 +246,9 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       empty: { title: 'Tu cava está vacía', description: 'Añade tu primera botella y empieza a llevar la cuenta.', action: 'Añadir vino' },
       full: 'Cava llena · {count} botellas',
       button3d: 'Ver cava 3D',
+      loading: 'Cargando…',
+      noResults: { title: 'Nada coincide', description: 'Prueba con otro nombre, bodega o región.', action: 'Borrar búsqueda' },
+      addWine: 'Añadir vino',
     },
     wine: {
       stock: 'Botellas',
@@ -293,6 +365,65 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         fillTypeHint: 'Agrupa por tipo: tinto, blanco, rosado...',
       },
     },
+    cave3d: {
+      depthLabel: (n) => `F${n}`,
+      shelfLabel: (n) => `Piso ${n}`,
+      overflow: 'Sobrantes',
+      legend: {
+        depth: 'Profundidad',
+        width: 'Ancho',
+        shelves: 'Pisos',
+        capacity: 'Capacidad',
+      },
+    },
+    stats: {
+      distributionTitle: 'Distribución por tipo',
+      apogeoTitle: 'Apogeo',
+      evolutionTitle: 'Evolución mensual de descorches',
+      noType: 'Sin tipo',
+    },
+    monthly: {
+      months: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      ariaLabel: (year) => `Evolución mensual de descorches ${year}`,
+      total: (count, year) => `${count} descorches en ${year}`,
+    },
+    caveConfig: {
+      title: 'Cava 3D',
+      depth: 'Profundidad (botellas)',
+      width: 'Ancho (botellas)',
+      shelves: 'Pisos',
+      fill: 'Modo de relleno',
+      fillWine: 'Por vino (agrupa cada vino junto)',
+      fillType: 'Por tipo (agrupa por color)',
+      fillWineHint: 'Agrupa botellas del mismo vino en celdas contiguas',
+      fillTypeHint: 'Agrupa por tipo: tinto, blanco, rosado...',
+      depthHint: 'Filas de fondo (1-20)',
+      widthHint: 'Botellas por fila (1-4)',
+      shelvesHint: 'Altura en pisos (1-8)',
+      capacity: 'Capacidad total: {count} botellas',
+      overCapacity: '⚠ Supera 320 (se recortará visualmente)',
+      autoSave: 'Los cambios se guardan automáticamente. La vista 3D se actualiza al instante.',
+    },
+    cellarScreen: {
+      full: 'Cava llena · {count} botellas',
+      loading: 'Cargando…',
+      noResults: { title: 'Nada coincide', description: 'Prueba con otro nombre, bodega o región.', action: 'Borrar búsqueda' },
+      empty: { title: 'Tu cava está vacía', description: 'Añade tu primera botella y empieza a llevar la cuenta.', action: 'Añadir vino' },
+    },
+    cave3dScreen: {
+      title: 'Cava 3D',
+      back: 'Volver a la lista',
+    },
+    settingsScreen: {
+      title: 'Ajustes',
+      stats: 'Estadísticas',
+      appearance: 'Apariencia',
+      scanner: 'Escáner de etiquetas',
+      scannerInfo: 'La lectura se hace en el propio dispositivo con Tesseract. La primera vez descarga los modelos (≈9 MB) y los guarda en el navegador; después funciona sin red. La foto no se guarda en ningún sitio.',
+      data: 'Tus datos',
+      about: 'Acerca de',
+      cave3d: 'Cava 3D',
+    },
     importer: {
       title: 'Importar',
       step1: 'Paso 1: Mapeo de columnas',
@@ -313,6 +444,9 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       empty: { title: 'Your cellar is empty', description: 'Add your first bottle and start tracking.', action: 'Add wine' },
       full: 'Cellar full · {count} bottles',
       button3d: 'View 3D cellar',
+      loading: 'Loading…',
+      noResults: { title: 'No matches', description: 'Try another name, winery, or region.', action: 'Clear search' },
+      addWine: 'Add wine',
     },
     wine: {
       stock: 'Bottles',
@@ -440,6 +574,65 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       errors: { noName: 'missing name', noVintage: 'invalid vintage', invalidStock: 'invalid stock', notFound: 'That code is not in Open Food Facts', notWine: 'That code is not a wine in Open Food Facts' },
     },
     common: { save: 'Save', cancel: 'Cancel', delete: 'Delete', confirm: 'Confirm', close: 'Close', loading: 'Loading…', error: 'Error', yes: 'Yes', no: 'No' },
+    cave3d: {
+      depthLabel: (n) => `F${n}`,
+      shelfLabel: (n) => `Shelf ${n}`,
+      overflow: 'Overflow',
+      legend: {
+        depth: 'Depth',
+        width: 'Width',
+        shelves: 'Shelves',
+        capacity: 'Capacity',
+      },
+    },
+    stats: {
+      distributionTitle: 'Distribution by type',
+      apogeoTitle: 'Peak',
+      evolutionTitle: 'Monthly uncorking evolution',
+      noType: 'No type',
+    },
+    monthly: {
+      months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      ariaLabel: (year) => `Monthly uncorking evolution ${year}`,
+      total: (count, year) => `${count} uncorkings in ${year}`,
+    },
+    caveConfig: {
+      title: '3D Cellar',
+      depth: 'Depth (bottles)',
+      width: 'Width (bottles)',
+      shelves: 'Shelves',
+      fill: 'Fill mode',
+      fillWine: 'By wine (group each wine together)',
+      fillType: 'By type (group by color)',
+      fillWineHint: 'Groups bottles of the same wine in contiguous cells',
+      fillTypeHint: 'Groups by type: red, white, rosé…',
+      depthHint: 'Depth rows (1-20)',
+      widthHint: 'Bottles per row (1-4)',
+      shelvesHint: 'Height in shelves (1-8)',
+      capacity: 'Total capacity: {count} bottles',
+      overCapacity: '⚠ Exceeds 320 (will be clipped)',
+      autoSave: 'Changes are saved automatically. The 3D view updates instantly.',
+    },
+    cellarScreen: {
+      full: 'Cellar full · {count} bottles',
+      loading: 'Loading…',
+      noResults: { title: 'No matches', description: 'Try another name, winery, or region.', action: 'Clear search' },
+      empty: { title: 'Your cellar is empty', description: 'Add your first bottle and start tracking.', action: 'Add wine' },
+    },
+    cave3dScreen: {
+      title: '3D Cellar',
+      back: 'Back to list',
+    },
+    settingsScreen: {
+      title: 'Settings',
+      stats: 'Statistics',
+      appearance: 'Appearance',
+      scanner: 'Label scanner',
+      scannerInfo: 'Scanning runs on-device with Tesseract. First time downloads models (≈9 MB) and caches them; then works offline. The photo is never stored.',
+      data: 'Your data',
+      about: 'About',
+      cave3d: '3D Cellar',
+    },
   },
   fr: {
     nav: { cava: 'Ma Cave', add: 'Ajouter', historial: 'Historique', ajustes: 'Réglages' },
@@ -449,6 +642,9 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       empty: { title: 'Votre cave est vide', description: 'Ajoutez votre première bouteille et commencez le suivi.', action: 'Ajouter un vin' },
       full: 'Cave pleine · {count} bouteilles',
       button3d: 'Voir la cave 3D',
+      loading: 'Chargement…',
+      noResults: { title: 'Aucun résultat', description: 'Essayez un autre nom, domaine ou région.', action: 'Effacer la recherche' },
+      addWine: 'Ajouter un vin',
     },
     wine: {
       stock: 'Bouteilles',
@@ -576,5 +772,64 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       errors: { noName: 'nom manquant', noVintage: 'millésime invalide', invalidStock: 'stock invalide', notFound: 'Ce code n\'est pas dans Open Food Facts', notWine: 'Ce code n\'est pas un vin dans Open Food Facts' },
     },
     common: { save: 'Enregistrer', cancel: 'Annuler', delete: 'Supprimer', confirm: 'Confirmer', close: 'Fermer', loading: 'Chargement…', error: 'Erreur', yes: 'Oui', no: 'Non' },
+    cave3d: {
+      depthLabel: (n) => `R${n}`,
+      shelfLabel: (n) => `Étage ${n}`,
+      overflow: 'Excédent',
+      legend: {
+        depth: 'Profondeur',
+        width: 'Largeur',
+        shelves: 'Étages',
+        capacity: 'Capacité',
+      },
+    },
+    stats: {
+      distributionTitle: 'Distribution par type',
+      apogeoTitle: 'Apogée',
+      evolutionTitle: 'Évolution mensuelle des débouchages',
+      noType: 'Sans type',
+    },
+    monthly: {
+      months: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+      ariaLabel: (year) => `Évolution mensuelle des débouchages ${year}`,
+      total: (count, year) => `${count} débouchages en ${year}`,
+    },
+    caveConfig: {
+      title: 'Cave 3D',
+      depth: 'Profondeur (bouteilles)',
+      width: 'Largeur (bouteilles)',
+      shelves: 'Étages',
+      fill: 'Mode de remplissage',
+      fillWine: 'Par vin (regroupe chaque vin)',
+      fillType: 'Par type (regroupe par couleur)',
+      fillWineHint: 'Regroupe les bouteilles du même vin en cases contiguës',
+      fillTypeHint: 'Regroupe par type : rouge, blanc, rosé…',
+      depthHint: 'Rangs de fond (1-20)',
+      widthHint: 'Bouteilles par rang (1-4)',
+      shelvesHint: 'Hauteur en étages (1-8)',
+      capacity: 'Capacité totale : {count} bouteilles',
+      overCapacity: '⚠ Dépasse 320 (sera rogné visuellement)',
+      autoSave: 'Les changements sont enregistrés automatiquement. La vue 3D se met à jour instantanément.',
+    },
+    cellarScreen: {
+      full: 'Cave pleine · {count} bouteilles',
+      loading: 'Chargement…',
+      noResults: { title: 'Aucun résultat', description: 'Essayez un autre nom, domaine ou région.', action: 'Effacer la recherche' },
+      empty: { title: 'Votre cave est vide', description: 'Ajoutez votre première bouteille et commencez le suivi.', action: 'Ajouter un vin' },
+    },
+    cave3dScreen: {
+      title: 'Cave 3D',
+      back: 'Retour à la liste',
+    },
+    settingsScreen: {
+      title: 'Réglages',
+      stats: 'Statistiques',
+      appearance: 'Apparence',
+      scanner: 'Scanner d\'étiquettes',
+      scannerInfo: 'La lecture se fait sur l\'appareil avec Tesseract. La première fois, les modèles (≈9 Mo) sont téléchargés et mis en cache ; ensuite cela fonctionne hors ligne. La photo n\'est jamais stockée.',
+      data: 'Vos données',
+      about: 'À propos',
+      cave3d: 'Cave 3D',
+    },
   },
 }

@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import type { WineWithStock } from '@/db/schema'
-import { addBottles, consumeBottle, undoEvent } from '@/db/repo'
+import { addBottles, consumeBottle, undoEvent, seedDemoWines } from '@/db/repo'
 import { useWines, visibleWines } from '@/hooks/useWines'
 import { useToast } from '@/hooks/useToast'
+import { useI18n } from '@/hooks/useI18n'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { SearchBar } from './SearchBar'
@@ -12,6 +13,7 @@ import { WineRow } from './WineRow'
 export function CellarScreen() {
   const { wines, loading } = useWines()
   const { show } = useToast()
+  const { t } = useI18n()
   const [query, setQuery] = useState('')
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
@@ -22,18 +24,27 @@ export function CellarScreen() {
   async function handleAdd(wine: WineWithStock) {
     try {
       const event = await addBottles(wine.id, 1)
-      show('Botella añadida', { label: 'Deshacer', onClick: () => void undoEvent(event.id) })
+      show(t.wine.toast.added.replace('{name}', wine.name), { label: t.wine.toast.undo, onClick: () => void undoEvent(event.id) })
     } catch {
-      show('No se pudo añadir')
+      show(t.cellarScreen.loading)
     }
   }
 
   async function handleConsume(wine: WineWithStock) {
     try {
       const event = await consumeBottle(wine.id)
-      show('Descorchada', { label: 'Deshacer', onClick: () => void undoEvent(event.id) })
+      show(t.wine.toast.consumed, { label: t.wine.toast.undo, onClick: () => void undoEvent(event.id) })
     } catch {
-      show('Sin stock')
+      show(t.wine.toast.noStock)
+    }
+  }
+
+  async function handleSeedDemo() {
+    try {
+      await seedDemoWines()
+      show(t.common.save)
+    } catch {
+      show(t.common.error)
     }
   }
 
@@ -42,31 +53,34 @@ export function CellarScreen() {
       <div className="flex items-center justify-between gap-2">
         <SearchBar value={query} onChange={setQuery} />
         <Button variant="secondary" onClick={() => (window.location.hash = '#/cava3d')}>
-          Ver cava 3D
+          {t.cellar.button3d}
         </Button>
       </div>
 
       {total >= 250 ? (
         <p className="rounded-xl border border-gold/40 bg-gold/10 px-3 py-2 text-sm text-gold">
-          Cava llena · {total} botellas
+          {t.cellar.full.replace('{count}', String(total))}
         </p>
       ) : null}
 
-      {loading ? <p className="p-3 text-sm text-muted">Cargando…</p> : null}
+      {loading ? <p className="p-3 text-sm text-muted">{t.cellarScreen.loading}</p> : null}
 
       {!loading && visible.length === 0 ? (
         query ? (
           <EmptyState
-            title="Nada coincide"
-            description="Prueba con otro nombre, bodega o región."
-            action={<Button onClick={() => setQuery('')}>Borrar búsqueda</Button>}
+            title={t.cellarScreen.noResults.title}
+            description={t.cellarScreen.noResults.description}
+            action={<Button onClick={() => setQuery('')}>{t.cellarScreen.noResults.action}</Button>}
           />
         ) : (
           <EmptyState
-            title="Tu cava está vacía"
-            description="Añade tu primera botella y empieza a llevar la cuenta."
+            title={t.cellarScreen.empty.title}
+            description={t.cellarScreen.empty.description}
             action={
-              <Button onClick={() => (window.location.hash = '#/add')}>Añadir vino</Button>
+              <div className="flex gap-2">
+                <Button onClick={() => (window.location.hash = '#/add')}>{t.cellarScreen.empty.action}</Button>
+                <Button variant="secondary" onClick={handleSeedDemo}>{t.common.save} demo</Button>
+              </div>
             }
           />
         )

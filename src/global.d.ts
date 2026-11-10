@@ -4,6 +4,10 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
 }
 
+interface Crypto {
+  randomUUID(): string
+}
+
 interface WindowEventMap {
   beforeinstallprompt: BeforeInstallPromptEvent
 }

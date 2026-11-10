@@ -292,3 +292,34 @@ export async function _resetForTests(): Promise<void> {
   await db.wines.clear()
   await db.events.clear()
 }
+
+/** Crea 10 vinos de demo si la cava está vacía. */
+export async function seedDemoWines(): Promise<void> {
+  const wines = await db.wines.toArray()
+  if (wines.length > 0) return
+
+  const now = new Date().toISOString()
+  const demoWines = [
+    { name: 'Muga Reserva', winery: 'Bodegas Muga', vintage: 2019, region: 'Rioja', country: 'España', varietals: ['Tempranillo', 'Garnacha', 'Mazuelo', 'Graciano'], type: 'tinto', purchasedAt: '2026-01-15', priceCents: 2490, location: 'Estante 1', drinkFrom: 2022, drinkUntil: 2032, notes: 'Notas a frutos rojos y vainilla', stock: 3 },
+    { name: 'Vega Sicilia Único', winery: 'Vega Sicilia', vintage: 2015, region: 'Ribera del Duero', country: 'España', varietals: ['Tempranillo', 'Cabernet Sauvignon'], type: 'tinto', purchasedAt: '2025-11-20', priceCents: 35900, location: 'Estante 2', drinkFrom: 2025, drinkUntil: 2045, notes: 'Potente y elegante, gran guarda', stock: 1 },
+    { name: 'Marqués de Murrieta Reserva', winery: 'Marqués de Murrieta', vintage: 2018, region: 'Rioja', country: 'España', varietals: ['Tempranillo', 'Mazuelo', 'Graciano', 'Garnacha'], type: 'tinto', purchasedAt: '2026-03-10', priceCents: 1890, location: 'Estante 1', drinkFrom: 2022, drinkUntil: 2030, notes: 'Elegante, notas a fruta madura', stock: 2 },
+    { name: 'Pazo de Señoráns Albariño', winery: 'Pazo de Señoráns', vintage: 2023, region: 'Rías Baixas', country: 'España', varietals: ['Albariño'], type: 'blanco', purchasedAt: '2026-04-05', priceCents: 1450, location: 'Estante 3', drinkFrom: 2023, drinkUntil: 2027, notes: 'Fresco, notas cítricas', stock: 4 },
+    { name: 'La Rioja Alta Viña Ardanza', winery: 'La Rioja Alta', vintage: 2016, region: 'Rioja', country: 'España', varietals: ['Tempranillo', 'Garnacha'], type: 'tinto', purchasedAt: '2025-12-01', priceCents: 2890, location: 'Estante 2', drinkFrom: 2021, drinkUntil: 2031, notes: 'Clásico de Rioja', stock: 2 },
+    { name: 'Cune Reserva', winery: 'CVNE', vintage: 2019, region: 'Rioja', country: 'España', varietals: ['Tempranillo', 'Garnacha', 'Mazuelo', 'Graciano'], type: 'tinto', purchasedAt: '2026-02-14', priceCents: 1690, location: 'Estante 1', drinkFrom: 2023, drinkUntil: 2033, notes: 'Equilibrado y persistente', stock: 3 },
+    { name: 'Terras Gauda Albariño', winery: 'Terras Gauda', vintage: 2023, region: 'Rías Baixas', country: 'España', varietals: ['Albariño', 'Loureiro', 'Caiño'], type: 'blanco', purchasedAt: '2026-05-20', priceCents: 1350, location: 'Estante 3', drinkFrom: 2023, drinkUntil: 2026, notes: 'Aromático y fresco', stock: 5 },
+    { name: 'Torres Mas La Plana', winery: 'Familia Torres', vintage: 2018, region: 'Penedès', country: 'España', varietals: ['Cabernet Sauvignon'], type: 'tinto', purchasedAt: '2025-10-10', priceCents: 4290, location: 'Estante 2', drinkFrom: 2022, drinkUntil: 2035, notes: 'Potente, buena estructura', stock: 1 },
+    { name: 'Protos Roble', winery: 'Protos', vintage: 2022, region: 'Ribera del Duero', country: 'España', varietals: ['Tempranillo'], type: 'tinto', purchasedAt: '2026-06-01', priceCents: 1190, location: 'Estante 1', drinkFrom: 2023, drinkUntil: 2027, notes: 'Joven y afrutado', stock: 6 },
+    { name: 'Marques de Riscal Reserva', winery: 'Marqués de Riscal', vintage: 2019, region: 'Rioja', country: 'España', varietals: ['Tempranillo', 'Graciano', 'Mazuelo'], type: 'tinto', purchasedAt: '2026-03-20', priceCents: 1790, location: 'Estante 1', drinkFrom: 2023, drinkUntil: 2031, notes: 'Clásico moderno', stock: 2 },
+  ]
+
+  await db.transaction('rw', db.wines, db.events, async () => {
+    for (const wine of demoWines) {
+      const { stock = 1, ...fields } = wine
+      const wineData = { ...fields, id: crypto.randomUUID(), createdAt: now(), updatedAt: now() } as import('./schema').Wine
+      await db.wines.add(wineData)
+      if (stock !== 0) {
+        await db.events.add({ id: crypto.randomUUID(), wineId: wineData.id, delta: stock, kind: 'add', at: now() })
+      }
+    }
+  })
+}

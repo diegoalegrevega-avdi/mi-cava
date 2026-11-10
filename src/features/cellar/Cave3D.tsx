@@ -3,6 +3,7 @@ import { layoutCave, type CaveConfig } from '@/domain/caveLayout'
 import { drinkStatus } from '@/domain/drinkWindow'
 import { CaveShelf } from './CaveShelf'
 import { useMemo } from 'react'
+import { useI18n } from '@/hooks/useI18n'
 
 interface Cave3DProps {
   wines: WineWithStock[]
@@ -13,13 +14,16 @@ interface Cave3DProps {
 export function Cave3D({ wines, config, onOpen }: Cave3DProps) {
   const { depth, shelves } = config
   const layout = useMemo(() => layoutCave(wines, config), [wines, config])
+  const { t } = useI18n()
+  const svgWidth = depth * 60 + 80
+  const svgHeight = shelves * 80 + (shelves - 1) * 20 + 60
 
   return (
-    <div className="w-full" role="img" aria-label={`Cava 3D: ${config.shelves} pisos, ${config.depth} fondo, ${config.width} ancho`}>
+    <div className="w-full" role="img" aria-label={t.cave3d.legend.depth + ': ' + depth + ', ' + t.cave3d.legend.width + ': ' + config.width + ', ' + t.cave3d.legend.shelves + ': ' + shelves}>
       <svg
-        width={depth * 60 + 80}
-        height={shelves * 80 + (shelves - 1) * 20 + 60}
-        viewBox={`-40 -30 ${depth * 60 + 80} ${shelves * 80 + (shelves - 1) * 20 + 60}`}
+        width={svgWidth}
+        height={svgHeight}
+        viewBox={`-40 -30 ${svgWidth} ${svgHeight}`}
         className="w-full h-auto"
         style={{ background: 'transparent' }}
       >
@@ -35,7 +39,7 @@ export function Cave3D({ wines, config, onOpen }: Cave3DProps) {
               fill="#a69c92"
               fontFamily="system-ui"
             >
-              F{i + 1}
+              {t.cave3d.depthLabel(i + 1)}
             </text>
           ))}
         </g>
@@ -57,7 +61,7 @@ export function Cave3D({ wines, config, onOpen }: Cave3DProps) {
                 fontFamily="system-ui"
                 fontWeight="500"
               >
-                Piso {shelfIndex + 1}
+                {t.cave3d.shelfLabel(shelfIndex + 1)}
               </text>
 
               <CaveShelf
@@ -87,7 +91,7 @@ export function Cave3D({ wines, config, onOpen }: Cave3DProps) {
                 fontFamily="system-ui"
                 fontWeight="500"
               >
-                Sobrantes
+                {t.cave3d.overflow}
               </text>
               <g transform="translate(0, 10)">
                 {layout.overflow.map((item, i) => (
@@ -112,10 +116,10 @@ export function Cave3D({ wines, config, onOpen }: Cave3DProps) {
 
       {/* Legend */}
       <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted">
-        <div>Profundidad: {config.depth}</div>
-        <div>Ancho: {config.width}</div>
-        <div>Pisos: {config.shelves}</div>
-        <div>Capacidad: {config.depth * config.width * config.shelves}</div>
+        <div>{t.cave3d.legend.depth}: {config.depth}</div>
+        <div>{t.cave3d.legend.width}: {config.width}</div>
+        <div>{t.cave3d.legend.shelves}: {config.shelves}</div>
+        <div>{t.cave3d.legend.capacity}: {config.depth * config.width * config.shelves}</div>
       </div>
     </div>
   )
