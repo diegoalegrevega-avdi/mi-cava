@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="424" height="364" viewBox="388 318 424 364" fill="none" role="img" aria-label="Intellilabs">
+  <defs>
+    <linearGradient id="intellilabsGradient" x1="300" y1="300" x2="900" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6D28FF"/>
+      <stop offset="50%" stop-color="#4F7EFF"/>
+      <stop offset="100%" stop-color="#11C5F5"/>
+    </linearGradient>
+  </defs>
+  <path d="M420 500 C520 500 570 430 580 350" stroke="url(#intellilabsGradient)" stroke-width="48" stroke-linecap="round" fill="none"/>
+  <path d="M420 500 C520 500 570 570 580 650" stroke="url(#intellilabsGradient)" stroke-width="48" stroke-linecap="round" fill="none"/>
+  <path d="M780 500 C680 500 630 430 620 350" stroke="url(#intellilabsGradient)" stroke-width="48" stroke-linecap="round" fill="none"/>
+  <path d="M780 500 C680 500 630 570 620 650" stroke="url(#intellilabsGradient)" stroke-width="48" stroke-linecap="round" fill="none"/>
+</svg>

@@ -1,6 +1,7 @@
 import { cn } from '@/lib/cn'
 import { NAV_ITEMS, type NavId } from '@/nav'
 import { NavIcon } from '@/components/ui/Icons'
+import { Brand } from '@/components/Brand'
 
 export function SideBar({ active, className }: { active: NavId; className?: string }) {
   return (
@@ -8,7 +9,7 @@ export function SideBar({ active, className }: { active: NavId; className?: stri
       aria-label="Secciones"
       className={cn('sticky top-0 h-dvh w-56 shrink-0 flex-col gap-1 border-r border-border bg-surface p-3', className)}
     >
-      <p className="px-3 py-4 font-serif text-xl text-text">Mi Cava</p>
+      <Brand className="px-3 py-4" />
       {NAV_ITEMS.map((item) => {
         const on = item.id === active
         return (

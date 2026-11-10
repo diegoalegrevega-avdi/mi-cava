@@ -298,7 +298,7 @@ export async function seedDemoWines(): Promise<void> {
   const wines = await db.wines.toArray()
   if (wines.length > 0) return
 
-  const now = new Date().toISOString()
+  const nowIso = new Date().toISOString()
   const demoWines = [
     { name: 'Muga Reserva', winery: 'Bodegas Muga', vintage: 2019, region: 'Rioja', country: 'España', varietals: ['Tempranillo', 'Garnacha', 'Mazuelo', 'Graciano'], type: 'tinto', purchasedAt: '2026-01-15', priceCents: 2490, location: 'Estante 1', drinkFrom: 2022, drinkUntil: 2032, notes: 'Notas a frutos rojos y vainilla', stock: 3 },
     { name: 'Vega Sicilia Único', winery: 'Vega Sicilia', vintage: 2015, region: 'Ribera del Duero', country: 'España', varietals: ['Tempranillo', 'Cabernet Sauvignon'], type: 'tinto', purchasedAt: '2025-11-20', priceCents: 35900, location: 'Estante 2', drinkFrom: 2025, drinkUntil: 2045, notes: 'Potente y elegante, gran guarda', stock: 1 },
@@ -315,10 +315,10 @@ export async function seedDemoWines(): Promise<void> {
   await db.transaction('rw', db.wines, db.events, async () => {
     for (const wine of demoWines) {
       const { stock = 1, ...fields } = wine
-      const wineData = { ...fields, id: crypto.randomUUID(), createdAt: now(), updatedAt: now() } as import('./schema').Wine
+      const wineData = { ...fields, id: crypto.randomUUID(), createdAt: nowIso, updatedAt: nowIso } as import('./schema').Wine
       await db.wines.add(wineData)
       if (stock !== 0) {
-        await db.events.add({ id: crypto.randomUUID(), wineId: wineData.id, delta: stock, kind: 'add', at: now() })
+        await db.events.add({ id: crypto.randomUUID(), wineId: wineData.id, delta: stock, kind: 'add', at: nowIso })
       }
     }
   })

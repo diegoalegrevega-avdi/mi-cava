@@ -9,6 +9,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useWines } from '@/hooks/useWines'
 import { useEvents } from '@/hooks/useEvents'
 import { APP_VERSION, REPO_URL } from '@/lib/appInfo'
+import { Brand } from '@/components/Brand'
 
 const KEY_STORAGE = 'micava.geminiKey'
 
@@ -94,6 +95,7 @@ export function SettingsScreen() {
 
       <section className="rounded-xl border border-border bg-surface p-4 text-sm text-muted">
         <h2 className="mb-2 font-serif text-xl text-text">Acerca de</h2>
+        <Brand className="mb-3" />
         <p>Mi Cava {APP_VERSION} · software libre bajo licencia MIT.</p>
         <a className="mt-1 inline-block text-gold underline" href={REPO_URL} target="_blank" rel="noreferrer">
           Código en GitHub

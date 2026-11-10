@@ -13,6 +13,7 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
 import { useTheme } from '@/hooks/useTheme'
 import { useI18n } from '@/hooks/useI18n'
 import { activeNav, type NavId } from '@/nav'
+import logoMark from '@/assets/logo-mark.svg'
 
 function useHashRoute(): string {
   const [hash, setHash] = useState(() => window.location.hash)
@@ -122,7 +123,10 @@ export default function App() {
         <SideBar active={route} className="hidden md:flex" />
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-border bg-bg/95 px-4 py-3 backdrop-blur md:px-6">
-            <h1 className="font-serif text-2xl">{TITLES[activeNav(hash)]}</h1>
+            <div className="flex min-w-0 items-center gap-2">
+              <img src={logoMark} alt="" className="size-7 shrink-0 md:hidden" />
+              <h1 className="truncate font-serif text-2xl">{TITLES[activeNav(hash)]}</h1>
+            </div>
             <div className="flex items-center gap-2">
               <IconButton label={theme === 'dark' ? 'Tema claro' : 'Tema oscuro'} onClick={toggle}>
                 {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
