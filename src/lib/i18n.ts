@@ -1,0 +1,580 @@
+export type Locale = 'es' | 'en' | 'fr'
+
+export type Dictionary = {
+  // Navigation
+  nav: { cava: string; add: string; historial: string; ajustes: string }
+  // Titles
+  titles: { cava: string; add: string; historial: string; ajustes: string; cava3d: string }
+  // Cellar
+  cellar: {
+    search: string
+    empty: { title: string; description: string; action: string }
+    full: string
+    button3d: string
+  }
+  // Wine row / detail
+  wine: {
+    stock: string
+    add: string
+    consume: string
+    undo: string
+    vintage: (v: number | null) => string
+    noVintage: string
+    semaphore: { ready: string; keep: string; past: string; unknown: string }
+    detail: {
+      title: string
+      notes: string
+      location: string
+      window: string
+      from: string
+      to: string
+      movements: string
+      adjustStock: string
+      bottles: string
+      adjust: string
+      addNote: string
+      purchased: string
+      close: string
+    }
+    toast: { added: string; consumed: string; undo: string; back: string; noStock: string; notesSaved: string }
+  }
+  // Add form
+  add: {
+    title: string
+    essentials: string
+    tasting: string
+    name: string
+    winery: string
+    vintage: string
+    nv: string
+    type: string
+    varietals: string
+    region: string
+    country: string
+    purchaseDate: string
+    price: string
+    location: string
+    window: string
+    from: string
+    to: string
+    notes: string
+    bottles: string
+    submit: string
+    duplicate: { title: string; message: string; force: string }
+    validation: { nameRequired: string; vintageRange: string; priceInvalid: string }
+    scanner: {
+      title: string
+      drop: string
+      loading: string
+      noKey: string
+      manual: string
+      retry: string
+      error: string
+    }
+  }
+  // History
+  history: {
+    title: string
+    empty: string
+    outOfCellar: string
+    back: string
+    backToast: string
+    monthFormat: (m: number, y: number) => string
+  }
+  // Settings
+  settings: {
+    stats: {
+      title: string
+      bottles: string
+      references: string
+      value: string
+      lastExport: string
+      never: string
+      byType: string
+      apogeo: string
+      apogeoCards: { ready: string; keep: string; past: string; unknown: string }
+      evolution: string
+    }
+    appearance: { title: string; theme: string; toggle: (t: string) => string }
+    scanner: {
+      title: string
+      info: string
+      keyLabel: string
+      keyHint: string
+      save: string
+      delete: string
+      saved: string
+      deleted: string
+    }
+    data: {
+      title: string
+      exportJson: string
+      exportCsv: string
+      import: string
+      empty: { title: string; confirm: string; action: string; toast: string }
+    }
+    about: {
+      title: string
+      version: string
+      github: string
+      offLink: string
+    }
+    cave3d: {
+      title: string
+      depth: string
+      width: string
+      shelves: string
+      fill: string
+      fillWine: string
+      fillType: string
+      capacity: string
+      overCapacity: string
+      depthHint: string
+      widthHint: string
+      shelvesHint: string
+      fillWineHint: string
+      fillTypeHint: string
+    }
+  }
+  // Import/Export
+  importer: {
+    title: string
+    step1: string
+    step2: string
+    step3: string
+    mapping: { header: string; sample: string; ignore: string; dateFormat: string; ddmmyy: string; mmddyy: string }
+    plan: {
+      creates: string
+      merges: string
+      duplicates: string
+      errors: string
+      apply: string
+      disabled: string
+    }
+    result: { restored: string; imported: string }
+    errors: { noName: string; noVintage: string; invalidStock: string; notFound: string; notWine: string }
+  }
+  // Generic
+  common: {
+    save: string
+    cancel: string
+    delete: string
+    confirm: string
+    close: string
+    loading: string
+    error: string
+    yes: string
+    no: string
+  }
+}
+
+export const DICTIONARIES: Record<Locale, Dictionary> = {
+  es: {
+    nav: { cava: 'Mi cava', add: 'Añadir', historial: 'Historial', ajustes: 'Ajustes' },
+    titles: { cava: 'Mi cava', add: 'Añadir vino', historial: 'Historial', ajustes: 'Ajustes y datos', cava3d: 'Cava 3D' },
+    cellar: {
+      search: 'Buscar por nombre, bodega, región…',
+      empty: { title: 'Tu cava está vacía', description: 'Añade tu primera botella y empieza a llevar la cuenta.', action: 'Añadir vino' },
+      full: 'Cava llena · {count} botellas',
+      button3d: 'Ver cava 3D',
+    },
+    wine: {
+      stock: 'Botellas',
+      add: 'Añadir botella de {name}',
+      consume: 'Descorchar {name}',
+      undo: 'Deshacer',
+      vintage: (v) => v ? String(v) : 'S.A.',
+      noVintage: 'S.A.',
+      semaphore: { ready: 'Listo', keep: 'Guardar', past: 'Pronto', unknown: 'Sin datos' },
+      detail: {
+        title: 'Ficha del vino',
+        notes: 'Notas de cata y maridaje',
+        location: 'Ubicación',
+        window: 'Ventana de consumo',
+        from: 'Desde',
+        to: 'Hasta',
+        movements: 'Movimientos',
+        adjustStock: 'Ajustar stock',
+        bottles: 'Botellas reales',
+        adjust: 'Ajustar',
+        addNote: 'Añadir nota al último descorche',
+        purchased: 'Comprado el',
+        close: 'Cerrar',
+      },
+      toast: { added: 'Botella añadida a {name}', consumed: 'Descorchada', undo: 'Deshacer', back: 'De vuelta en la cava', noStock: 'Sin stock', notesSaved: 'Notas guardadas' },
+    },
+    add: {
+      title: 'Añadir vino',
+      essentials: 'Lo esencial',
+      tasting: 'Cata y ubicación',
+      name: 'Nombre',
+      winery: 'Bodega',
+      vintage: 'Añada',
+      nv: 'Sin añada (NV)',
+      type: 'Tipo',
+      varietals: 'Varietales (separados por coma)',
+      region: 'Región',
+      country: 'País',
+      purchaseDate: 'Fecha de compra',
+      price: 'Precio (€, opcional)',
+      location: 'Ubicación',
+      window: 'Ventana de consumo',
+      from: 'Desde',
+      to: 'Hasta',
+      notes: 'Notas de cata y maridaje',
+      bottles: 'Botellas',
+      submit: 'Añadir a la cava',
+      duplicate: { title: 'Posible duplicado', message: 'Ya tienes un vino con ese nombre y añada en otra bodega.', force: 'Guardar de todas formas' },
+      validation: { nameRequired: 'El nombre es obligatorio', vintageRange: 'Añada entre 1900 y {max}, o marca NV', priceInvalid: 'Precio no válido' },
+      scanner: {
+        title: 'Escanear etiqueta',
+        drop: 'o arrastra una foto aquí',
+        loading: 'Leyendo etiqueta…',
+        noKey: 'Añade una clave de Gemini en Ajustes para escanear etiquetas',
+        manual: 'Mientras tanto, puedes escribir los datos a mano.',
+        retry: 'Probar con Gemini',
+        error: 'Error',
+      },
+    },
+    history: {
+      title: 'Historial',
+      empty: 'Todavía no hay descorches',
+      outOfCellar: 'Fuera de la cava',
+      back: 'Volver a la cava',
+      backToast: 'De vuelta en la cava',
+      monthFormat: (m, y) => new Date(y, m, 1).toLocaleDateString('es', { month: 'long', year: 'numeric' }).toUpperCase(),
+    },
+    settings: {
+      stats: {
+        title: 'Estadísticas',
+        bottles: 'Botellas',
+        references: 'Referencias',
+        value: 'Valor estimado',
+        lastExport: 'Última exportación',
+        never: 'Nunca',
+        byType: 'Por tipo',
+        apogeo: 'Apogeo',
+        apogeoCards: { ready: 'Listos', keep: 'Para guardar', past: 'Pasados', unknown: 'Sin datos' },
+        evolution: 'Evolución mensual de descorches',
+      },
+      appearance: { title: 'Apariencia', theme: 'Tema', toggle: (t) => `Cambiar a ${t}` },
+      scanner: {
+        title: 'Escáner de etiquetas',
+        info: 'La lectura se hace en el propio dispositivo con Tesseract. La primera vez descarga los modelos (≈9 MB) y los guarda en el navegador; después funciona sin red. La foto no se guarda en ningún sitio.',
+        keyLabel: 'Clave de Google Gemini',
+        keyHint: 'Opcional. Se guarda solo en este navegador y se envía únicamente a Google para reintentar lecturas que el motor local no ha podido completar.',
+        save: 'Guardar clave',
+        delete: 'Borrar clave',
+        saved: 'Clave guardada',
+        deleted: 'Clave borrada',
+      },
+      data: {
+        title: 'Tus datos',
+        exportJson: 'Exportar JSON',
+        exportCsv: 'Exportar CSV',
+        import: 'Importar archivo',
+        empty: { title: 'Vaciar cava', confirm: 'Escribe BORRAR para confirmar', action: 'Vaciar', toast: 'Cava vaciada · copia descargada' },
+      },
+      about: { title: 'Acerca de', version: 'Mi Cava {version} · software libre bajo licencia MIT.', github: 'Código en GitHub', offLink: 'Datos de Open Food Facts (ODbL)' },
+      cave3d: {
+        title: 'Cava 3D',
+        depth: 'Profundidad (botellas)',
+        width: 'Ancho (botellas)',
+        shelves: 'Pisos',
+        fill: 'Modo de relleno',
+        fillWine: 'Por vino (agrupa cada vino junto)',
+        fillType: 'Por tipo (agrupa por color)',
+        capacity: 'Capacidad total: {count} botellas',
+        overCapacity: '⚠ Supera 320 (se recortará visualmente)',
+        depthHint: 'Filas de fondo (1-20)',
+        widthHint: 'Botellas por fila (1-4)',
+        shelvesHint: 'Altura en pisos (1-8)',
+        fillWineHint: 'Agrupa botellas del mismo vino en celdas contiguas',
+        fillTypeHint: 'Agrupa por tipo: tinto, blanco, rosado...',
+      },
+    },
+    importer: {
+      title: 'Importar',
+      step1: 'Paso 1: Mapeo de columnas',
+      step2: 'Paso 2: Resumen',
+      step3: 'Paso 3: Resultado',
+      mapping: { header: 'Columna', sample: 'Muestra', ignore: 'Ignorar', dateFormat: 'Formato de fecha', ddmmyy: 'dd/mm/aaaa', mmddyy: 'mm/dd/aaaa' },
+      plan: { creates: 'Vinos nuevos', merges: 'Se suman a existentes', duplicates: 'Posibles duplicados', errors: 'Errores', apply: 'Aplicar', disabled: 'Nada que aplicar' },
+      result: { restored: 'Restaurado: {new} vinos nuevos, {updated} actualizados', imported: 'Importado: {creates} nuevos, {merges} actualizados' },
+      errors: { noName: 'falta el nombre', noVintage: 'añada no válida', invalidStock: 'stock no válido', notFound: 'Ese código no está en Open Food Facts', notWine: 'Ese código no es un vino en Open Food Facts' },
+    },
+    common: { save: 'Guardar', cancel: 'Cancelar', delete: 'Borrar', confirm: 'Confirmar', close: 'Cerrar', loading: 'Cargando…', error: 'Error', yes: 'Sí', no: 'No' },
+  },
+  en: {
+    nav: { cava: 'My Cellar', add: 'Add', historial: 'History', ajustes: 'Settings' },
+    titles: { cava: 'My Cellar', add: 'Add Wine', historial: 'History', ajustes: 'Settings', cava3d: '3D Cellar' },
+    cellar: {
+      search: 'Search by name, winery, region…',
+      empty: { title: 'Your cellar is empty', description: 'Add your first bottle and start tracking.', action: 'Add wine' },
+      full: 'Cellar full · {count} bottles',
+      button3d: 'View 3D cellar',
+    },
+    wine: {
+      stock: 'Bottles',
+      add: 'Add bottle of {name}',
+      consume: 'Uncork {name}',
+      undo: 'Undo',
+      vintage: (v) => v ? String(v) : 'NV',
+      noVintage: 'NV',
+      semaphore: { ready: 'Ready', keep: 'Keep', past: 'Past', unknown: 'No data' },
+      detail: {
+        title: 'Wine Details',
+        notes: 'Tasting notes & pairing',
+        location: 'Location',
+        window: 'Drinking window',
+        from: 'From',
+        to: 'To',
+        movements: 'Movements',
+        adjustStock: 'Adjust stock',
+        bottles: 'Real bottles',
+        adjust: 'Adjust',
+        addNote: 'Add note to last uncork',
+        purchased: 'Purchased on',
+        close: 'Close',
+      },
+      toast: { added: 'Bottle added to {name}', consumed: 'Uncorked', undo: 'Undo', back: 'Back in cellar', noStock: 'No stock', notesSaved: 'Notes saved' },
+    },
+    add: {
+      title: 'Add Wine',
+      essentials: 'Essentials',
+      tasting: 'Tasting & Location',
+      name: 'Name',
+      winery: 'Winery',
+      vintage: 'Vintage',
+      nv: 'No vintage (NV)',
+      type: 'Type',
+      varietals: 'Varietals (comma separated)',
+      region: 'Region',
+      country: 'Country',
+      purchaseDate: 'Purchase date',
+      price: 'Price (€, optional)',
+      location: 'Location',
+      window: 'Drinking window',
+      from: 'From',
+      to: 'To',
+      notes: 'Tasting notes & pairing',
+      bottles: 'Bottles',
+      submit: 'Add to cellar',
+      duplicate: { title: 'Possible duplicate', message: 'You already have a wine with that name and vintage from another winery.', force: 'Save anyway' },
+      validation: { nameRequired: 'Name is required', vintageRange: 'Vintage between 1900 and {max}, or mark NV', priceInvalid: 'Invalid price' },
+      scanner: {
+        title: 'Scan label',
+        drop: 'or drop a photo here',
+        loading: 'Reading label…',
+        noKey: 'Add a Gemini key in Settings to scan labels',
+        manual: 'Meanwhile, you can enter data manually.',
+        retry: 'Try with Gemini',
+        error: 'Error',
+      },
+    },
+    history: {
+      title: 'History',
+      empty: 'No uncorkings yet',
+      outOfCellar: 'Out of cellar',
+      back: 'Back to cellar',
+      backToast: 'Back in cellar',
+      monthFormat: (m, y) => new Date(y, m, 1).toLocaleDateString('en', { month: 'long', year: 'numeric' }).toUpperCase(),
+    },
+    settings: {
+      stats: {
+        title: 'Statistics',
+        bottles: 'Bottles',
+        references: 'References',
+        value: 'Estimated value',
+        lastExport: 'Last export',
+        never: 'Never',
+        byType: 'By type',
+        apogeo: 'Peak',
+        apogeoCards: { ready: 'Ready', keep: 'Keep', past: 'Past', unknown: 'No data' },
+        evolution: 'Monthly uncorking evolution',
+      },
+      appearance: { title: 'Appearance', theme: 'Theme', toggle: (t) => `Switch to ${t}` },
+      scanner: {
+        title: 'Label scanner',
+        info: 'Scanning runs on-device with Tesseract. First time downloads models (≈9 MB) and caches them; then works offline. The photo is never stored.',
+        keyLabel: 'Google Gemini API key',
+        keyHint: 'Optional. Stored only in this browser and sent only to Google to retry scans the local engine could not complete.',
+        save: 'Save key',
+        delete: 'Delete key',
+        saved: 'Key saved',
+        deleted: 'Key deleted',
+      },
+      data: {
+        title: 'Your data',
+        exportJson: 'Export JSON',
+        exportCsv: 'Export CSV',
+        import: 'Import file',
+        empty: { title: 'Empty cellar', confirm: 'Type DELETE to confirm', action: 'Empty', toast: 'Cellar emptied · copy downloaded' },
+      },
+      about: { title: 'About', version: 'Mi Cava {version} · open source MIT.', github: 'Code on GitHub', offLink: 'Open Food Facts data (ODbL)' },
+      cave3d: {
+        title: '3D Cellar',
+        depth: 'Depth (bottles)',
+        width: 'Width (bottles)',
+        shelves: 'Shelves',
+        fill: 'Fill mode',
+        fillWine: 'By wine (group each wine together)',
+        fillType: 'By type (group by color)',
+        capacity: 'Total capacity: {count} bottles',
+        overCapacity: '⚠ Exceeds 320 (will be clipped)',
+        depthHint: 'Depth rows (1-20)',
+        widthHint: 'Bottles per row (1-4)',
+        shelvesHint: 'Height in shelves (1-8)',
+        fillWineHint: 'Groups bottles of the same wine in contiguous cells',
+        fillTypeHint: 'Groups by type: red, white, rosé…',
+      },
+    },
+    importer: {
+      title: 'Import',
+      step1: 'Step 1: Column mapping',
+      step2: 'Step 2: Summary',
+      step3: 'Step 3: Result',
+      mapping: { header: 'Column', sample: 'Sample', ignore: 'Ignore', dateFormat: 'Date format', ddmmyy: 'dd/mm/yyyy', mmddyy: 'mm/dd/yyyy' },
+      plan: { creates: 'New wines', merges: 'Merge into existing', duplicates: 'Possible duplicates', errors: 'Errors', apply: 'Apply', disabled: 'Nothing to apply' },
+      result: { restored: 'Restored: {new} new, {updated} updated', imported: 'Imported: {creates} new, {merges} merged' },
+      errors: { noName: 'missing name', noVintage: 'invalid vintage', invalidStock: 'invalid stock', notFound: 'That code is not in Open Food Facts', notWine: 'That code is not a wine in Open Food Facts' },
+    },
+    common: { save: 'Save', cancel: 'Cancel', delete: 'Delete', confirm: 'Confirm', close: 'Close', loading: 'Loading…', error: 'Error', yes: 'Yes', no: 'No' },
+  },
+  fr: {
+    nav: { cava: 'Ma Cave', add: 'Ajouter', historial: 'Historique', ajustes: 'Réglages' },
+    titles: { cava: 'Ma Cave', add: 'Ajouter un vin', historial: 'Historique', ajustes: 'Réglages', cava3d: 'Cave 3D' },
+    cellar: {
+      search: 'Rechercher par nom, domaine, région…',
+      empty: { title: 'Votre cave est vide', description: 'Ajoutez votre première bouteille et commencez le suivi.', action: 'Ajouter un vin' },
+      full: 'Cave pleine · {count} bouteilles',
+      button3d: 'Voir la cave 3D',
+    },
+    wine: {
+      stock: 'Bouteilles',
+      add: 'Ajouter une bouteille de {name}',
+      consume: 'Déboucher {name}',
+      undo: 'Annuler',
+      vintage: (v) => v ? String(v) : 'S.A.',
+      noVintage: 'S.A.',
+      semaphore: { ready: 'Prêt', keep: 'Garder', past: 'Passé', unknown: 'Sans données' },
+      detail: {
+        title: 'Fiche du vin',
+        notes: 'Notes de dégustation & accords',
+        location: 'Emplacement',
+        window: 'Fenêtre de dégustation',
+        from: 'Depuis',
+        to: 'Jusqu\'à',
+        movements: 'Mouvements',
+        adjustStock: 'Ajuster le stock',
+        bottles: 'Bouteilles réelles',
+        adjust: 'Ajuster',
+        addNote: 'Ajouter une note au dernier débouchage',
+        purchased: 'Acheté le',
+        close: 'Fermer',
+      },
+      toast: { added: 'Bouteille ajoutée à {name}', consumed: 'Débouchée', undo: 'Annuler', back: 'De retour dans la cave', noStock: 'Pas de stock', notesSaved: 'Notes sauvegardées' },
+    },
+    add: {
+      title: 'Ajouter un vin',
+      essentials: 'L\'essentiel',
+      tasting: 'Dégustation & Emplacement',
+      name: 'Nom',
+      winery: 'Domaine',
+      vintage: 'Millésime',
+      nv: 'Sans millésime (S.A.)',
+      type: 'Type',
+      varietals: 'Cépages (séparés par virgule)',
+      region: 'Région',
+      country: 'Pays',
+      purchaseDate: 'Date d\'achat',
+      price: 'Prix (€, optionnel)',
+      location: 'Emplacement',
+      window: 'Fenêtre de dégustation',
+      from: 'Depuis',
+      to: 'Jusqu\'à',
+      notes: 'Notes de dégustation & accords',
+      bottles: 'Bouteilles',
+      submit: 'Ajouter à la cave',
+      duplicate: { title: 'Doublon possible', message: 'Vous avez déjà un vin avec ce nom et ce millésime d\'un autre domaine.', force: 'Enregistrer quand même' },
+      validation: { nameRequired: 'Le nom est obligatoire', vintageRange: 'Millésime entre 1900 et {max}, ou cochez S.A.', priceInvalid: 'Prix invalide' },
+      scanner: {
+        title: 'Scanner l\'étiquette',
+        drop: 'ou déposez une photo ici',
+        loading: 'Lecture de l\'étiquette…',
+        noKey: 'Ajoutez une clé Gemini dans les Réglages pour scanner les étiquettes',
+        manual: 'En attendant, vous pouvez saisir les données manuellement.',
+        retry: 'Essayer avec Gemini',
+        error: 'Erreur',
+      },
+    },
+    history: {
+      title: 'Historique',
+      empty: 'Aucun débouchage pour l\'instant',
+      outOfCellar: 'Hors cave',
+      back: 'Retour à la cave',
+      backToast: 'De retour dans la cave',
+      monthFormat: (m, y) => new Date(y, m, 1).toLocaleDateString('fr', { month: 'long', year: 'numeric' }).toUpperCase(),
+    },
+    settings: {
+      stats: {
+        title: 'Statistiques',
+        bottles: 'Bouteilles',
+        references: 'Références',
+        value: 'Valeur estimée',
+        lastExport: 'Dernière exportation',
+        never: 'Jamais',
+        byType: 'Par type',
+        apogeo: 'Apogée',
+        apogeoCards: { ready: 'Prêts', keep: 'À garder', past: 'Passés', unknown: 'Sans données' },
+        evolution: 'Évolution mensuelle des débouchages',
+      },
+      appearance: { title: 'Apparence', theme: 'Thème', toggle: (t) => `Passer en ${t}` },
+      scanner: {
+        title: 'Scanner d\'étiquettes',
+        info: 'La lecture se fait sur l\'appareil avec Tesseract. La première fois, les modèles (≈9 Mo) sont téléchargés et mis en cache ; ensuite cela fonctionne hors ligne. La photo n\'est jamais stockée.',
+        keyLabel: 'Clé API Google Gemini',
+        keyHint: 'Optionnel. Stockée uniquement dans ce navigateur et envoyée uniquement à Google pour retenter les lectures que le moteur local n\'a pas pu compléter.',
+        save: 'Enregistrer la clé',
+        delete: 'Supprimer la clé',
+        saved: 'Clé enregistrée',
+        deleted: 'Clé supprimée',
+      },
+      data: {
+        title: 'Vos données',
+        exportJson: 'Exporter JSON',
+        exportCsv: 'Exporter CSV',
+        import: 'Importer un fichier',
+        empty: { title: 'Vider la cave', confirm: 'Tapez SUPPRIMER pour confirmer', action: 'Vider', toast: 'Cave vidée · copie téléchargée' },
+      },
+      about: { title: 'À propos', version: 'Mi Cava {version} · logiciel libre sous licence MIT.', github: 'Code sur GitHub', offLink: 'Données Open Food Facts (ODbL)' },
+      cave3d: {
+        title: 'Cave 3D',
+        depth: 'Profondeur (bouteilles)',
+        width: 'Largeur (bouteilles)',
+        shelves: 'Étages',
+        fill: 'Mode de remplissage',
+        fillWine: 'Par vin (regroupe chaque vin)',
+        fillType: 'Par type (regroupe par couleur)',
+        capacity: 'Capacité totale : {count} bouteilles',
+        overCapacity: '⚠ Dépasse 320 (sera rogné visuellement)',
+        depthHint: 'Rangs de fond (1-20)',
+        widthHint: 'Bouteilles par rang (1-4)',
+        shelvesHint: 'Hauteur en étages (1-8)',
+        fillWineHint: 'Regroupe les bouteilles du même vin en cases contiguës',
+        fillTypeHint: 'Regroupe par type : rouge, blanc, rosé…',
+      },
+    },
+    importer: {
+      title: 'Importer',
+      step1: 'Étape 1 : Correspondance des colonnes',
+      step2: 'Étape 2 : Résumé',
+      step3: 'Étape 3 : Résultat',
+      mapping: { header: 'Colonne', sample: 'Exemple', ignore: 'Ignorer', dateFormat: 'Format de date', ddmmyy: 'jj/mm/aaaa', mmddyy: 'mm/jj/aaaa' },
+      plan: { creates: 'Nouveaux vins', merges: 'Fusionner dans existants', duplicates: 'Doublons possibles', errors: 'Erreurs', apply: 'Appliquer', disabled: 'Rien à appliquer' },
+      result: { restored: 'Restauré : {new} nouveaux, {updated} mis à jour', imported: 'Importé : {creates} nouveaux, {merges} fusionnés' },
+      errors: { noName: 'nom manquant', noVintage: 'millésime invalide', invalidStock: 'stock invalide', notFound: 'Ce code n\'est pas dans Open Food Facts', notWine: 'Ce code n\'est pas un vin dans Open Food Facts' },
+    },
+    common: { save: 'Enregistrer', cancel: 'Annuler', delete: 'Supprimer', confirm: 'Confirmer', close: 'Fermer', loading: 'Chargement…', error: 'Erreur', yes: 'Oui', no: 'Non' },
+  },
+}
