@@ -30,23 +30,23 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
     servingTemp: 'Joven 12-15°C · Crianza 14-16°C · Reserva/Gran Reserva 16-18°C',
     pairings: [
       {
-        category: 'Carnes rojas y asados',
-        dishes: ['Chuletón a la brasa', 'Cordero lechal asado', 'Cochinillo asado', 'Solomillo de ternera', 'Entrecot', 'Carne de caza (jabalí, ciervo, corzo)'],
+        category: 'carnes',
+        dishes: ['chuleton', 'corderoLechal', 'cochinillo', 'solomillo', 'caza'],
         description: 'Taninos y estructura limpian la grasa y realzan el sabor ahumado.'
       },
       {
-        category: 'Guisos y platos de cuchara',
-        dishes: ['Cocido madrileño', 'Fabada asturiana', 'Lentejas con chorizo', 'Estofado de ternera', 'Rabo de toro', 'Guiso de cordero al chilindrón'],
+        category: 'guisos',
+        dishes: ['cocido', 'fabada', 'lentejas', 'estofado', 'raboToro', 'chilindron'],
         description: 'Crianza (6-12 meses barrica) equilibra intensidad y notas de madera con la untuosidad del guiso.'
       },
       {
-        category: 'Embutidos y quesos curados',
-        dishes: ['Jamón ibérico de bellota', 'Chorizo, salchichón, lomo', 'Queso manchego curado', 'Idiazábal', 'Parmigiano Reggiano'],
+        category: 'embutidos',
+        dishes: ['jamonIberico', 'chorizo', 'manchego', 'idiazabal'],
         description: 'La sequedad del vino contrasta con la grasa infiltrada del ibérico y la intensidad de quesos curados.'
       },
       {
-        category: 'Arroces y legumbres contundentes',
-        dishes: ['Arroz con bogavante', 'Arroz meloso de setas', 'Arroz con verduras y carne', 'Alubias con sacramentos'],
+        category: 'arroces',
+        dishes: ['arrozBogavante', 'arrozSetas', 'alubias'],
         description: 'Vinos con cuerpo (Reserva/Gran Reserva) acompañan la complejidad del arroz caldoso.'
       }
     ],
@@ -61,23 +61,23 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
     servingTemp: 'Joven 6-8°C · Fermentado en barrica 8-10°C · Sobre lías 10-12°C',
     pairings: [
       {
-        category: 'Pescados y mariscos',
-        dishes: ['Merluza a la plancha / en salsa verde', 'Rodaballo al horno', 'Vieiras a la gallega', 'Gambas al ajillo', 'Boquerones fritos', 'Anchoas', 'Ceviche', 'Sashimi'],
+        category: 'pescados',
+        dishes: ['merluza', 'rodaballo', 'vieiras', 'gambas', 'boquerones', 'anchoas', 'ceviche', 'sashimi'],
         description: 'Acidez y frescura limpian el paladar y realzan el sabor yodado sin enmascararlo.'
       },
       {
-        category: 'Arroces marineros y fideuás',
-        dishes: ['Paella de marisco', 'Arroz caldoso de bogavante', 'Fideuá de Gandía', 'Arroz a banda', 'Arroz negro'],
+        category: 'arroces',
+        dishes: ['paellaMarisco', 'fideua', 'arrozCaldoso', 'arrozNegro'],
         description: 'Blancos con cuerpo (fermentados en barrica, Godello, Chardonnay) aguantan la intensidad del caldo y el azafrán.'
       },
       {
-        category: 'Verduras, hortalizas y conservas',
-        dishes: ['Espárragos de Navarra', 'Pimientos del piquillo rellenos', 'Ensalada de tomate y ventresca', 'Alcachofas confitadas', 'Conservas de atún/caballa'],
+        category: 'verduras',
+        dishes: ['esparragos', 'piquillos', 'ensaladaTomate', 'alcachofas', 'conservas'],
         description: 'Blancos aromáticos (Albariño, Verdejo, Sauvignon Blanc) o suaves (Viura, Albillo) según intensidad del plato.'
       },
       {
-        category: 'Aperitivos y cocina fría',
-        dishes: ['Gazpacho y salmorejo', 'Ajo blanco', 'Ensaladas con vinagreta suave', 'Quesos frescos (burgos, mozzarella, ricotta)', 'Tabla de ibéricos (jamón, lomo)'],
+        category: 'aperitivos',
+        dishes: ['gazpacho', 'ajoBlanco', 'quesoFresco'],
         description: 'Fino/Manzanilla funcionan mejor con jamón, pero blancos secos jóvenes son alternativa versátil.'
       }
     ],
@@ -92,23 +92,23 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
     servingTemp: 'Seco y ligero 6-8°C · Con cuerpo 8-10°C · Con toque dulzor 8-10°C',
     pairings: [
       {
-        category: 'Arroces y paellas (el comodín perfecto)',
-        dishes: ['Paella valenciana', 'Paella mixta (pollo + marisco)', 'Paella de verduras', 'Fideuá', 'Arroz con pollo y conejo'],
+        category: 'arroces',
+        dishes: ['paellaValenciana', 'paellaMixta', 'paellaVerduras', 'fideua'],
         description: 'Acidez para el marisco, cuerpo para la carne, frescura para el azafrán y el socarrat. Garnacha de Navarra o Pinot Noir rosado.'
       },
       {
-        category: 'Tapas con tomate, vinagre y especias suaves',
-        dishes: ['Pan con tomate', 'Patatas bravas', 'Pimientos de Padrón', 'Pulpo a la gallega', 'Ensaladilla rusa', 'Tosta de tomate y anchoa'],
+        category: 'tapas',
+        dishes: ['panTomate', 'patatasBravas', 'padrón', 'pulpo', 'ensaladilla', 'tostaTomate'],
         description: 'Tomate y pimentón piden acidez y fruta roja; el rosado no choca con vinagretas ni especias suaves.'
       },
       {
-        category: 'Carnes blancas, embutidos suaves y quesos semicurados',
-        dishes: ['Pollo al ajillo', 'Conejo al ajillo', 'Jamón ibérico', 'Lomo embuchado', 'Queso semicurado', 'Tortilla de patatas'],
+        category: 'carnesBlancas',
+        dishes: ['polloAjillo', 'conejoAjillo', 'lomo', 'tortilla'],
         description: 'Versatilidad: cuerpo para la carne, frescura para la grasa del jamón y el huevo.'
       },
       {
-        category: 'Cocina asiática y picante moderado',
-        dishes: ['Sushi y sashimi', 'Pad thai suave', 'Curry verde ligero', 'Gyozas', 'Tempura'],
+        category: 'asiatica',
+        dishes: ['sushi', 'padThai', 'curry', 'gyozas', 'tempura'],
         description: 'Dulzor natural y baja tannicidad equilibran el picante sin avivar el alcohol (como pasaría con un tinto).'
       }
     ],
@@ -123,23 +123,23 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
     servingTemp: 'Joven/Brut Nature 6-8°C · Reserva/Gran Reserva 8-10°C · Rosado 6-8°C',
     pairings: [
       {
-        category: 'Aperitivo y entrantes fríos (rey del inicio)',
-        dishes: ['Jamón ibérico', 'Aceitunas y frutos secos', 'Tabla de quesos variados', 'Ostras y marisco crudo', 'Sushi', 'Ceviche', 'Hummus con crudités'],
+        category: 'aperitivos',
+        dishes: ['tablaQuesos', 'ostras', 'hummus'],
         description: 'Burbujas y acidez limpian el paladar entre bocado y bocado, estimulan el apetito.'
       },
       {
-        category: 'Platos principales versátiles',
-        dishes: ['Cocido madrileño (Brut Nature Reserva)', 'Cordero asado (Gran Reserva)', 'Cochinillo asado (Extra Brut Gran Reserva)', 'Zarzuela de pescado y marisco', 'Canelones / lasaña', 'Arroz caldoso de bogavante'],
+        category: 'principales',
+        dishes: ['cocidoEspumoso', 'corderoAsado', 'cochinilloAsado', 'zarzuela', 'canelones'],
         description: 'Crianza (Reserva 18m, Gran Reserva 30m) aporta cuerpo y notas tostadas para platos contundentes.'
       },
       {
-        category: 'Postres (según dulzor del espumoso)',
-        dishes: ['Turrón de almendra (Extra Brut Gran Reserva)', 'Turrón de chocolate (Rosado)', 'Panettone de chocolate (Semiseco)', 'Roscón de reyes (Brut Reserva)', 'Tarta de manzana / crema de limón (Semiseco)'],
+        category: 'postres',
+        dishes: ['turronAlmendra', 'turronChocolate', 'panettone', 'roscón', 'tartaManzana'],
         description: 'Dulce con dulce: Semiseco/Dulce para postres azucarados; Brut Rosé para chocolate; Extra Brut para frutos secos.'
       },
       {
-        category: 'Comida picante y exótica',
-        dishes: ['Curry tailandés', 'Comida mexicana (tacos, mole suave)', 'Cocina india no extrema', 'Poke bowl'],
+        category: 'picante',
+        dishes: ['curryThai', 'tacos'],
         description: 'Burbujas y acidez refrescan el paladar frente al picante; azúcar residual (Extra Seco/Semiseco) calma el chile.'
       }
     ],
@@ -154,23 +154,23 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
     servingTemp: 'Moscatel/Malvasía 8-10°C · Pedro Ximénez 10-13°C · Vendimia tardía 8-10°C',
     pairings: [
       {
-        category: 'Postres por afinidad (dulce con dulce)',
-        dishes: ['Chocolate negro (70%+ cacao)', 'Tarta de Santiago', 'Creme brûlée', 'Tarta Tatin', 'Helado de vainilla con PX', 'Flan de huevo', 'Tocino de cielo', 'Yemas de Santa Teresa'],
+        category: 'postres',
+        dishes: ['chocolate', 'tartaSantiago', 'cremeBrulee', 'tartaTatin', 'heladoVainilla', 'flan', 'tocinoCielo', 'yemas'],
         description: 'El azúcar del vino iguala al del postre; notas de pasas, dátiles, higos y frutos secos complementan.'
       },
       {
-        category: 'Quesos azules y de pasta blanda fuerte',
-        dishes: ['Roquefort', 'Cabrales', 'Gorgonzola', 'Stilton', 'Queso de la Serena', 'Queso azul de Valdeón'],
+        category: 'quesosAzules',
+        dishes: ['roquefort', 'cabrales', 'gorgonzola', 'stilton', 'quesoSerena'],
         description: 'Contraste salado-dulce: la sal del queso realza la fruta del vino; untuosidad con untuosidad.'
       },
       {
-        category: 'Foie gras y patés grasos',
-        dishes: ['Foie gras de pato (micuit o fresco)', 'Paté de hígado', 'Terrina de foie con Pedro Ximénez'],
+        category: 'foie',
+        dishes: ['foie', 'pate', 'magret'],
         description: 'Untuosidad del foie + dulzor del PX = armonía clásica. El toque dulce realza sin empalagar.'
       },
       {
-        category: 'Platos salados con toque agridulce / balsámico',
-        dishes: ['Carnes con salsa de Pedro Ximénez', 'Rissotto de setas', 'Soufflé de queso', 'Sopa de cebolla gratinada', 'Magret de pato con reducción de PX'],
+        category: 'salados',
+        dishes: ['pate', 'magret'],
         description: 'Versatilidad inesperada: grasa y acidez balsámica equilibran el dulzor. Evitar platos muy simples (jamón solo).'
       }
     ],
@@ -185,23 +185,23 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
     servingTemp: 'Fino/Manzanilla 6-8°C · Amontillado/Palo Cortado 12-14°C · Oloroso 14-16°C · PX 10-13°C',
     pairings: [
       {
-        category: 'Fino / Manzanilla — Aperitivo, marisco y jamón',
-        dishes: ['Jamón ibérico de bellota (pareja 10)', 'Marisco crudo (ostras, almejas, percebes)', 'Pescaito frito (Manzanilla)', 'Sushi / sashimi', 'Aceitunas, almendras, frutos secos', 'Gazpacho / ajo blanco', 'Ensaladas con vinagreta'],
+        category: 'fino',
+        dishes: ['mariscoCrudo', 'pescaito', 'sushiSashimi'],
         description: 'Secos, salinos, 15% vol. Frío (6-8°C). La sal del jamón y el marisco armoniza con la sequedad y notas almendradas.'
       },
       {
-        category: 'Amontillado / Palo Cortado — Verduras difíciles, especias, ahumados',
-        dishes: ['Alcachofas (incluso a la plancha)', 'Espárragos trigueros', 'Setas y hongos', 'Curry suave / cocina india', 'Ahumados (salmón, bacalao)', 'Quesos semicurados', 'Foie gras'],
+        category: 'amontillado',
+        dishes: ['alcachofasFort', 'esparragosTrigueros', 'setas', 'currySuave', 'ahumados', 'quesoSemicurado'],
         description: 'Crianza mixta (biológica + oxidativa) 16-22% vol. 12-14°C. Cuerpo y complejidad para platos "imposibles" para otros vinos.'
       },
       {
-        category: 'Oloroso — Caza, guisos contundentes, quesos muy curados',
-        dishes: ['Rabo de toro', 'Caza mayor (jabalí, ciervo)', 'Cordero al chilindrón', 'Quesos muy curados (Idiazábal ahumado, Parmigiano 36m, Gouda extra añejo)', 'Quesos de corteza lavada', 'Jamón ibérico de bellota de larga curación'],
+        category: 'oloroso',
+        dishes: ['raboToroFort', 'cazaMayor', 'quesoMuyCurado', 'cortezaLavada'],
         description: 'Oxidativa pura 17-22% vol. 14-16°C. Potencia, cuerpo, notas a nuez y especias. Mejores Q/P del mundo en vinos de 12-15 años solera.'
       },
       {
-        category: 'Pedro Ximénez / Moscatel — Postres, quesos azules, foie',
-        dishes: ['Helado de vainilla bañado en PX', 'Chocolate negro', 'Quesos azules (Cabrales, Roquefort, Valdeón)', 'Foie gras', 'Tarta de Santiago', 'Frutos secos y caramelo', 'Creme brûlée'],
+        category: 'px',
+        dishes: ['heladoPX', 'frutosSecos'],
         description: 'Dulces naturales 100-200 g/L azúcar. 10-13°C. Untuosidad extrema. Ver ficha "Dulce" para detalle completo.'
       }
     ],
