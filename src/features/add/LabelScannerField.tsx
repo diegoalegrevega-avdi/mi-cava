@@ -2,8 +2,10 @@ import { useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { BarcodeLookup } from './BarcodeLookup'
 import { readGeminiKey, scanLabel, geminiDraft, type LabelDraft } from '@/services/labelScanner'
+import { useI18n } from '@/hooks/useI18n'
 
 export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) => void }) {
+  const { t } = useI18n()
   const inputRef = useRef<HTMLInputElement>(null)
   const [phase, setPhase] = useState<'idle' | 'working' | 'done'>('idle')
   const [progress, setProgress] = useState(0)
@@ -26,7 +28,7 @@ export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) =>
       setPhase('done')
     } catch (cause) {
       setPhase('idle')
-      setError(cause instanceof Error ? cause.message : 'No se pudo leer la etiqueta.')
+      setError(cause instanceof Error ? cause.message : t.add.scanner.error)
     }
   }
 
@@ -43,7 +45,7 @@ export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) =>
       setPhase('done')
     } catch (cause) {
       setPhase('idle')
-      setError(cause instanceof Error ? cause.message : 'Gemini no reconoció la etiqueta.')
+      setError(cause instanceof Error ? cause.message : t.add.scanner.failed)
     }
   }
 
@@ -58,9 +60,9 @@ export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) =>
           onClick={() => inputRef.current?.click()}
           disabled={phase === 'working'}
         >
-          {phase === 'working' ? `Leyendo etiqueta… ${Math.round(progress * 100)}%` : 'Escanear etiqueta'}
+          {phase === 'working' ? `${t.add.scanner.loading} ${Math.round(progress * 100)}%` : t.add.scanner.title}
         </Button>
-        <span className="text-xs text-muted">o arrastra una foto aquí</span>
+        <span className="text-xs text-muted">{t.add.scanner.drop}</span>
       </div>
       <input
         ref={inputRef}
@@ -86,7 +88,7 @@ export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) =>
             <>
               {' '}
               <button type="button" onClick={retryWithGemini} className="underline">
-                Probar con Gemini
+                {t.add.scanner.retry}
               </button>
             </>
           )}
@@ -102,12 +104,12 @@ export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) =>
               {f.label}
             </span>
           ))}
-          <span className="self-center text-xs text-muted">Solo se rellenan los campos vacíos.</span>
+          <span className="self-center text-xs text-muted">{t.add.scanner.fillEmpty}</span>
         </div>
       )}
       {phase === 'done' && text && (
         <details>
-          <summary className="cursor-pointer text-xs text-muted">Ver texto leído</summary>
+          <summary className="cursor-pointer text-xs text-muted">{t.add.scanner.viewText}</summary>
           <pre className="mt-1 max-h-24 overflow-auto whitespace-pre-wrap break-words text-xs text-muted">
             {text}
           </pre>

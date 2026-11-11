@@ -1,7 +1,6 @@
 import type { WineWithStock } from '@/db/schema'
 import { computeStats } from '@/domain/stats'
 import { donutSegments, donutPath, DONUT_RADIUS } from '@/domain/donut'
-import { DRINK_LABEL } from '@/domain/drinkWindow'
 import { formatEuros } from '@/lib/money'
 import { MonthlyChart } from './MonthlyChart'
 import { useMemo } from 'react'
@@ -83,7 +82,7 @@ export function StatsSection({ wines, events }: StatsSectionProps) {
             {donut.map((seg) => (
               <div key={seg.type} className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded" style={{ backgroundColor: seg.color }} />
-                <span className="text-muted">{seg.type === 'sinTipo' ? t.stats.noType : seg.type}</span>
+                <span className="text-muted">{t.types[seg.type]}</span>
                 <span>{seg.count} ({seg.percent}%)</span>
               </div>
             ))}
@@ -95,10 +94,10 @@ export function StatsSection({ wines, events }: StatsSectionProps) {
           <h3 className="font-medium">{t.settings.stats.apogeo}</h3>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { key: 'ready', label: DRINK_LABEL.ready, color: '#4b8a5c' },
-              { key: 'keep', label: DRINK_LABEL.keep, color: '#c2a369' },
-              { key: 'past', label: DRINK_LABEL.past, color: '#c0453f' },
-              { key: 'unknown', label: DRINK_LABEL.unknown, color: '#6b625a' },
+              { key: 'ready', label: t.drink.ready, color: '#4b8a5c' },
+              { key: 'keep', label: t.drink.keep, color: '#c2a369' },
+              { key: 'past', label: t.drink.past, color: '#c0453f' },
+              { key: 'unknown', label: t.drink.unknown, color: '#6b625a' },
             ].map(({ key, label, color }) => (
               <div
                 key={key}

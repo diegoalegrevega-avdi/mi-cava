@@ -8,10 +8,17 @@ export interface OffProduct {
   isWine: boolean;
 }
 
-export const OFF_ATTRIBUTION = 'Datos de Open Food Facts';
 export const OFF_URL = 'https://world.openfoodfacts.org';
 
 const NETWORK_ERROR = 'No se pudo consultar Open Food Facts. ¿Tienes conexión?';
+
+/** Attribution string shown next to a barcode lookup result. Keep in sync with
+ * `t.settings.about.offLink` — the same text in the same three locales. */
+export const OFF_ATTRIBUTION: Record<'es' | 'en' | 'fr', string> = {
+  es: 'Datos de Open Food Facts (ODbL)',
+  en: 'Open Food Facts data (ODbL)',
+  fr: "Données Open Food Facts (ODbL)",
+};
 
 const COUNTRY_ES: Record<string, string> = {
   'en:spain': 'España',

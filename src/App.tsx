@@ -32,14 +32,15 @@ function PwaUpdate() {
     updateServiceWorker,
   } = useRegisterSW()
   const { show } = useToast()
+  const { t } = useI18n()
 
   useEffect(() => {
     if (!needRefresh) return
-    show('Nueva versión disponible', {
-      label: 'Recargar',
+    show(t.pwa.update, {
+      label: t.pwa.reload,
       onClick: () => void updateServiceWorker(true),
     })
-  }, [needRefresh, show, updateServiceWorker])
+  }, [needRefresh, show, updateServiceWorker, t])
 
   return null
 }

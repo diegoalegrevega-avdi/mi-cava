@@ -1,14 +1,5 @@
 import type { WineType } from '@/db/schema'
 
-export const TYPE_LABEL: Record<WineType, string> = {
-  tinto: 'Tinto',
-  blanco: 'Blanco',
-  rosado: 'Rosado',
-  espumoso: 'Espumoso',
-  dulce: 'Dulce',
-  fortificado: 'Fortificado',
-}
-
 // Vivid palette: readable on both the cream (light) and near-black (dark) surfaces.
 export const TYPE_COLOR: Record<WineType, string> = {
   tinto: '#c4163f',
@@ -19,7 +10,6 @@ export const TYPE_COLOR: Record<WineType, string> = {
   fortificado: '#8b4a2f',
 }
 
-export const SIN_TIPO_LABEL = 'Sin tipo'
 export const SIN_TIPO_COLOR = '#8a8078'
 
 export const DONUT_RADIUS = 50

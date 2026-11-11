@@ -1,12 +1,14 @@
 export type NavId = 'cava' | 'add' | 'historial' | 'ajustes' | 'cava3d'
 
-export type NavItem = { id: NavId; hash: string; label: string }
+export type NavLabelKey = 'cava' | 'add' | 'historial' | 'ajustes'
+
+export type NavItem = { id: NavId; hash: string; labelKey: NavLabelKey }
 
 export const NAV_ITEMS: NavItem[] = [
-  { id: 'cava', hash: '#/cava', label: 'Mi cava' },
-  { id: 'add', hash: '#/add', label: 'Añadir' },
-  { id: 'historial', hash: '#/historial', label: 'Historial' },
-  { id: 'ajustes', hash: '#/ajustes', label: 'Ajustes' },
+  { id: 'cava', hash: '#/cava', labelKey: 'cava' },
+  { id: 'add', hash: '#/add', labelKey: 'add' },
+  { id: 'historial', hash: '#/historial', labelKey: 'historial' },
+  { id: 'ajustes', hash: '#/ajustes', labelKey: 'ajustes' },
 ]
 
 /** Which tab to highlight. `#/cava3d` belongs to the cava tab. */

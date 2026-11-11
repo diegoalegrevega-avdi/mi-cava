@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import type { WineDraft, WineType } from '@/db/schema'
+import { useI18n } from '@/hooks/useI18n'
 import { listWines } from '@/db/repo'
 import { defaultWindow } from '@/domain/drinkWindow'
 import { findDuplicate } from '@/domain/dedupe'
@@ -13,15 +14,6 @@ import { emptyWineForm, validateWineForm, type WineFormValues } from './validati
 const INPUT =
   'min-h-11 w-full rounded-lg border border-border bg-surface-2 px-3 focus:border-gold focus:outline-none'
 const TYPES: WineType[] = ['tinto', 'blanco', 'rosado', 'espumoso', 'dulce', 'fortificado']
-
-const TYPE_LABEL: Record<WineType, string> = {
-  tinto: 'Tinto',
-  blanco: 'Blanco',
-  rosado: 'Rosado',
-  espumoso: 'Espumoso',
-  dulce: 'Dulce',
-  fortificado: 'Fortificado',
-}
 
 export function WineForm({
   initial,
@@ -55,6 +47,7 @@ export function WineForm({
       : {}),
   }))
   const [errors, setErrors] = useState<ReturnType<typeof validateWineForm>['errors']>({})
+  const { t } = useI18n()
   const [confirming, setConfirming] = useState(false)
   const [saving, setSaving] = useState(false)
   const nameRef = useRef<HTMLInputElement>(null)
@@ -143,11 +136,11 @@ export function WineForm({
       }}
     >
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-muted">Lo esencial</h2>
+        <h2 className="text-sm font-medium uppercase tracking-wide text-muted">{t.add.essentials}</h2>
 
         <LabelScannerField onDraft={applyDraft} />
 
-        <Field label="Nombre" error={errors.name}>
+        <Field label={t.add.name} error={errors.name}>
           <input
             ref={nameRef}
             value={values.name}
@@ -158,7 +151,7 @@ export function WineForm({
           />
         </Field>
 
-        <Field label="Bodega">
+        <Field label={t.add.winery}>
           <input
             value={values.winery}
             onChange={(e) => set('winery', e.target.value)}
@@ -168,7 +161,7 @@ export function WineForm({
           />
         </Field>
 
-        <Field label="Añada" error={errors.vintage}>
+        <Field label={t.add.vintage} error={errors.vintage}>
           <VintagePicker value={values.vintage} onChange={setVintage} disabled={values.nv} currentYear={currentYear} />
           <label className="mt-1 flex items-center gap-2 text-sm text-muted">
             <input
@@ -177,40 +170,40 @@ export function WineForm({
               onChange={(e) => setNoVintage(e.target.checked)}
               className="size-4 accent-[var(--wine)]"
             />
-            Sin añada (NV)
+            {t.add.nv}
           </label>
         </Field>
 
-        <Field label="Tipo">
+        <Field label={t.add.type}>
           <select
             value={values.type}
             onChange={(e) => set('type', e.target.value as WineFormValues['type'])}
             className={INPUT}
           >
-            <option value="">Sin especificar</option>
+            <option value="">{t.types.sinTipo}</option>
             {TYPES.map((type) => (
               <option key={type} value={type}>
-                {TYPE_LABEL[type]}
+                {t.types[type]}
               </option>
             ))}
           </select>
         </Field>
 
-        <Field label="Varietales" hint="Separados por coma">
+        <Field label={t.add.varietals} hint={t.add.varietalsPh}>
           <input
             value={values.varietals}
             onChange={(e) => set('varietals', e.target.value)}
-            placeholder="Tempranillo, Graciano"
+            placeholder={t.add.varietalsPh}
             className={INPUT}
           />
         </Field>
 
-        <Field label="Botellas">
+        <Field label={t.add.bottles}>
           <div className="flex items-center gap-2">
             <Button
               type="button"
               variant="secondary"
-              aria-label="Quitar una botella"
+              aria-label={t.add.bottles}
               onClick={() => set('stock', Math.max(1, values.stock - 1))}
             >
               −
@@ -219,7 +212,7 @@ export function WineForm({
             <Button
               type="button"
               variant="secondary"
-              aria-label="Añadir una botella"
+              aria-label={t.add.bottles}
               onClick={() => set('stock', values.stock + 1)}
             >
               +
@@ -229,10 +222,10 @@ export function WineForm({
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-muted">Cata y ubicación</h2>
+        <h2 className="text-sm font-medium uppercase tracking-wide text-muted">{t.add.tasting}</h2>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Región">
+          <Field label={t.add.region}>
             <input
               value={values.region}
               onChange={(e) => set('region', e.target.value)}
@@ -240,17 +233,17 @@ export function WineForm({
               className={INPUT}
             />
           </Field>
-          <Field label="País">
+          <Field label={t.add.country}>
             <input
               value={values.country}
               onChange={(e) => set('country', e.target.value)}
-              placeholder="España"
+              placeholder={t.add.countryPh}
               className={INPUT}
             />
           </Field>
         </div>
 
-        <Field label="Fecha de compra">
+        <Field label={t.add.purchaseDate}>
           <input
             type="date"
             value={values.purchasedAt}
@@ -259,7 +252,7 @@ export function WineForm({
           />
         </Field>
 
-        <Field label="Precio" hint="En euros, opcional" error={errors.price}>
+        <Field label={t.add.price} hint={t.add.price} error={errors.price}>
           <input
             value={values.price}
             onChange={(e) => set('price', e.target.value)}
@@ -269,23 +262,23 @@ export function WineForm({
           />
         </Field>
 
-        <Field label="Ubicación">
+        <Field label={t.add.location}>
           <input
             value={values.location}
             onChange={(e) => set('location', e.target.value)}
-            placeholder="Balda 2, hueco 4"
+            placeholder={t.wine.detail.locationPh}
             className={INPUT}
           />
         </Field>
 
-        <Field label="Ventana de consumo" hint="Años desde y hasta">
+        <Field label={t.add.window} hint={t.add.windowHint}>
           <div className="flex items-center gap-2">
             <input
               value={values.drinkFrom}
               onChange={(e) => set('drinkFrom', e.target.value.replace(/\D/g, '').slice(0, 4))}
               inputMode="numeric"
-              placeholder="Desde"
-              aria-label="Año desde"
+              placeholder={t.add.from}
+              aria-label={t.add.from}
               className={INPUT}
             />
             <span className="text-muted">–</span>
@@ -293,19 +286,19 @@ export function WineForm({
               value={values.drinkUntil}
               onChange={(e) => set('drinkUntil', e.target.value.replace(/\D/g, '').slice(0, 4))}
               inputMode="numeric"
-              placeholder="Hasta"
-              aria-label="Año hasta"
+              placeholder={t.add.to}
+              aria-label={t.add.to}
               className={INPUT}
             />
           </div>
         </Field>
 
-        <Field label="Notas de cata y maridaje">
+        <Field label={t.add.notes}>
           <textarea
             value={values.notes}
             onChange={(e) => set('notes', e.target.value)}
             rows={3}
-            placeholder="Fruta roja, roble…"
+            placeholder={t.add.varietalsPh}
             className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 focus:border-gold focus:outline-none"
           />
         </Field>
@@ -313,15 +306,15 @@ export function WineForm({
 
       {confirming && (
         <div className="flex flex-col gap-2 rounded-lg border border-gold/50 bg-surface-2 p-3 text-sm">
-          <p className="text-gold">Ya tienes un vino con ese nombre y añada en otra bodega.</p>
+          <p className="text-gold">{t.add.duplicate.message}</p>
           <Button type="button" variant="secondary" onClick={() => void submit(true)} disabled={saving}>
-            Guardar de todas formas
+            {t.add.duplicate.force}
           </Button>
         </div>
       )}
 
       <Button type="submit" disabled={saving}>
-        {saving ? 'Guardando…' : submitLabel}
+        {saving ? t.common.loading : submitLabel}
       </Button>
     </form>
   )

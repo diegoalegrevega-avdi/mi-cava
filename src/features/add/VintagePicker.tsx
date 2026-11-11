@@ -1,4 +1,5 @@
 import { cn } from '@/lib/cn'
+import { useI18n } from '@/hooks/useI18n'
 
 const INPUT =
   'min-h-11 w-full rounded-lg border border-border bg-surface-2 px-3 tabular-nums focus:border-gold focus:outline-none disabled:opacity-40'
@@ -14,6 +15,7 @@ export function VintagePicker({
   disabled?: boolean
   currentYear?: number
 }) {
+  const { t } = useI18n()
   const recent = Array.from({ length: 6 }, (_, i) => currentYear - i)
 
   return (
@@ -46,8 +48,8 @@ export function VintagePicker({
         disabled={disabled}
         inputMode="numeric"
         maxLength={4}
-        placeholder="Añada"
-        aria-label="Añada"
+        placeholder={t.add.vintage}
+        aria-label={t.add.vintage}
         className={INPUT}
       />
     </div>

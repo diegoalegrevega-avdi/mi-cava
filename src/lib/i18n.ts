@@ -21,6 +21,7 @@ export type Dictionary = {
     add: string
     consume: string
     undo: string
+    openDetail: string
     vintage: (v: number | null) => string
     noVintage: string
     semaphore: { ready: string; keep: string; past: string; unknown: string }
@@ -38,6 +39,13 @@ export type Dictionary = {
       addNote: string
       purchased: string
       close: string
+      windowHint: string
+      noWinery: string
+      noRegion: string
+      locationPh: string
+      lastUncork: string
+      noUncorks: string
+      events: { add: string; consume: string; import: string; undo: string }
     }
     toast: { added: string; consumed: string; undo: string; back: string; noStock: string; notesSaved: string }
   }
@@ -73,15 +81,24 @@ export type Dictionary = {
       manual: string
       retry: string
       error: string
+      failed: string
+      fillEmpty: string
+      viewText: string
     }
+    barcode: { label: string; invalid: string; searching: string; search: string; camera: string; noBarcode: string; readError: string; use: string }
+    windowHint: string
+    countryPh: string
+    varietalsPh: string
   }
   // History
   history: {
     title: string
     empty: string
+    emptyDesc: string
     outOfCellar: string
     back: string
     backToast: string
+    addError: string
     monthFormat: (m: number, y: number) => string
   }
   // Settings
@@ -98,7 +115,7 @@ export type Dictionary = {
       apogeoCards: { ready: string; keep: string; past: string; unknown: string }
       evolution: string
     }
-    appearance: { title: string; theme: string; toggle: (t: string) => string }
+    appearance: { title: string; theme: string; light: string; dark: string; toggle: (t: string) => string }
     scanner: {
       title: string
       info: string
@@ -156,8 +173,12 @@ export type Dictionary = {
     distributionTitle: string
     apogeoTitle: string
     evolutionTitle: string
-    noType: string
   }
+  types: Record<
+    'tinto' | 'blanco' | 'rosado' | 'espumoso' | 'dulce' | 'fortificado' | 'sinTipo',
+    string
+  >
+  drink: Record<'ready' | 'keep' | 'past' | 'unknown', string>
   // Monthly chart
   monthly: {
     months: string[]
@@ -222,6 +243,10 @@ export type Dictionary = {
     }
     result: { restored: string; imported: string }
     errors: { noName: string; noVintage: string; invalidStock: string; notFound: string; notWine: string }
+    restore: string
+    restoring: string
+    empty: string
+    lineError: string
   }
   // Generic
   common: {
@@ -242,6 +267,8 @@ export type Dictionary = {
     coffee: string
     later: string
   }
+  // PWA update
+  pwa: { update: string; reload: string }
 }
 
 export const DICTIONARIES: Record<Locale, Dictionary> = {
@@ -262,6 +289,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       add: 'Añadir botella de {name}',
       consume: 'Descorchar {name}',
       undo: 'Deshacer',
+      openDetail: 'Ver ficha de {name}',
       vintage: (v) => v ? String(v) : 'S.A.',
       noVintage: 'S.A.',
       semaphore: { ready: 'Listo', keep: 'Guardar', past: 'Pronto', unknown: 'Sin datos' },
@@ -279,6 +307,13 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         addNote: 'Añadir nota al último descorche',
         purchased: 'Comprado el',
         close: 'Cerrar',
+        windowHint: 'Años desde y hasta',
+        noWinery: 'Sin bodega',
+        noRegion: 'Sin región',
+        locationPh: 'Estante, balda…',
+        lastUncork: 'Último descorche',
+        noUncorks: 'Aún sin descorches',
+        events: { add: 'Botella añadida', consume: 'Descorchada', import: 'Ajuste de stock', undo: 'Deshecho' },
       },
       toast: { added: 'Botella añadida a {name}', consumed: 'Descorchada', undo: 'Deshacer', back: 'De vuelta en la cava', noStock: 'Sin stock', notesSaved: 'Notas guardadas' },
     },
@@ -305,6 +340,10 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       submit: 'Añadir a la cava',
       duplicate: { title: 'Posible duplicado', message: 'Ya tienes un vino con ese nombre y añada en otra bodega.', force: 'Guardar de todas formas' },
       validation: { nameRequired: 'El nombre es obligatorio', vintageRange: 'Añada entre 1900 y {max}, o marca NV', priceInvalid: 'Precio no válido' },
+      barcode: { label: 'Código de barras', invalid: 'Código de barras no válido.', searching: 'Buscando…', search: 'Buscar', camera: 'Leer código de barras con la cámara', noBarcode: 'No he encontrado un código de barras en la foto.', readError: 'No se pudo leer el código.', use: 'Usar' },
+      windowHint: 'Años desde y hasta',
+      countryPh: 'España',
+      varietalsPh: 'Fruta roja, roble…',
       scanner: {
         title: 'Escanear etiqueta',
         drop: 'o arrastra una foto aquí',
@@ -313,14 +352,19 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         manual: 'Mientras tanto, puedes escribir los datos a mano.',
         retry: 'Probar con Gemini',
         error: 'Error',
+        failed: 'Gemini no reconoció la etiqueta.',
+        fillEmpty: 'Solo se rellenan los campos vacíos.',
+        viewText: 'Ver texto leído',
       },
     },
     history: {
       title: 'Historial',
       empty: 'Todavía no hay descorches',
+      emptyDesc: 'Cuando descorches una botella aparecerá aquí, agrupada por mes.',
       outOfCellar: 'Fuera de la cava',
       back: 'Volver a la cava',
       backToast: 'De vuelta en la cava',
+      addError: 'No se pudo añadir',
       monthFormat: (m, y) => new Date(y, m, 1).toLocaleDateString('es', { month: 'long', year: 'numeric' }).toUpperCase(),
     },
     settings: {
@@ -336,7 +380,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         apogeoCards: { ready: 'Listos', keep: 'Para guardar', past: 'Pasados', unknown: 'Sin datos' },
         evolution: 'Evolución mensual de descorches',
       },
-      appearance: { title: 'Apariencia', theme: 'Tema', toggle: (t) => `Cambiar a ${t}` },
+      appearance: { title: 'Apariencia', theme: 'Tema', light: 'claro', dark: 'oscuro', toggle: (t) => `Cambiar a ${t}` },
       scanner: {
         title: 'Escáner de etiquetas',
         info: 'La lectura se hace en el propio dispositivo con Tesseract. La primera vez descarga los modelos (≈9 MB) y los guarda en el navegador; después funciona sin red. La foto no se guarda en ningún sitio.',
@@ -387,8 +431,17 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       distributionTitle: 'Distribución por tipo',
       apogeoTitle: 'Apogeo',
       evolutionTitle: 'Evolución mensual de descorches',
-      noType: 'Sin tipo',
     },
+    types: {
+      tinto: 'Tinto',
+      blanco: 'Blanco',
+      rosado: 'Rosado',
+      espumoso: 'Espumoso',
+      dulce: 'Dulce',
+      fortificado: 'Fortificado',
+      sinTipo: 'Sin tipo',
+    },
+    drink: { ready: 'Listo', keep: 'Guardar', past: 'Pronto', unknown: 'Sin datos' },
     monthly: {
       months: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
       ariaLabel: (year) => `Evolución mensual de descorches ${year}`,
@@ -440,8 +493,13 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       plan: { creates: 'Vinos nuevos', merges: 'Se suman a existentes', duplicates: 'Posibles duplicados', errors: 'Errores', apply: 'Aplicar', disabled: 'Nada que aplicar' },
       result: { restored: 'Restaurado: {new} vinos nuevos, {updated} actualizados', imported: 'Importado: {creates} nuevos, {merges} actualizados' },
       errors: { noName: 'falta el nombre', noVintage: 'añada no válida', invalidStock: 'stock no válido', notFound: 'Ese código no está en Open Food Facts', notWine: 'Ese código no es un vino en Open Food Facts' },
+      restore: 'Restaurar',
+      restoring: 'Restaurando…',
+      empty: 'El CSV está vacío.',
+      lineError: 'Línea {n}: {msg}',
     },
     common: { save: 'Guardar', cancel: 'Cancelar', delete: 'Borrar', confirm: 'Confirmar', close: 'Cerrar', loading: 'Cargando…', error: 'Error', yes: 'Sí', no: 'No' },
+    pwa: { update: 'Nueva versión disponible', reload: 'Recargar' },
     support: {
       title: '¿Te resulta útil Mi Cava?',
       body: 'Es gratis y sin anuncios. Si te ahorra tiempo, invítame a un café y ayudo a mantenerla viva.',
@@ -466,6 +524,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       add: 'Add bottle of {name}',
       consume: 'Uncork {name}',
       undo: 'Undo',
+      openDetail: 'View details for {name}',
       vintage: (v) => v ? String(v) : 'NV',
       noVintage: 'NV',
       semaphore: { ready: 'Ready', keep: 'Keep', past: 'Past', unknown: 'No data' },
@@ -483,6 +542,13 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         addNote: 'Add note to last uncork',
         purchased: 'Purchased on',
         close: 'Close',
+        windowHint: 'From and to (year)',
+        noWinery: 'No winery',
+        noRegion: 'No region',
+        locationPh: 'Shelf, rack…',
+        lastUncork: 'Last uncork',
+        noUncorks: 'No uncorkings yet',
+        events: { add: 'Bottle added', consume: 'Uncorked', import: 'Stock adjustment', undo: 'Undone' },
       },
       toast: { added: 'Bottle added to {name}', consumed: 'Uncorked', undo: 'Undo', back: 'Back in cellar', noStock: 'No stock', notesSaved: 'Notes saved' },
     },
@@ -509,6 +575,10 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       submit: 'Add to cellar',
       duplicate: { title: 'Possible duplicate', message: 'You already have a wine with that name and vintage from another winery.', force: 'Save anyway' },
       validation: { nameRequired: 'Name is required', vintageRange: 'Vintage between 1900 and {max}, or mark NV', priceInvalid: 'Invalid price' },
+      barcode: { label: 'Barcode', invalid: 'Invalid barcode.', searching: 'Searching…', search: 'Search', camera: 'Read barcode with the camera', noBarcode: 'I could not find a barcode in the photo.', readError: 'Could not read the barcode.', use: 'Use' },
+      windowHint: 'From and to (year)',
+      countryPh: 'Spain',
+      varietalsPh: 'Red fruit, oak…',
       scanner: {
         title: 'Scan label',
         drop: 'or drop a photo here',
@@ -517,14 +587,19 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         manual: 'Meanwhile, you can enter data manually.',
         retry: 'Try with Gemini',
         error: 'Error',
+        failed: 'Gemini did not recognize the label.',
+        fillEmpty: 'Only empty fields are filled in.',
+        viewText: 'View read text',
       },
     },
     history: {
       title: 'History',
       empty: 'No uncorkings yet',
+      emptyDesc: 'When you uncork a bottle it will appear here, grouped by month.',
       outOfCellar: 'Out of cellar',
       back: 'Back to cellar',
       backToast: 'Back in cellar',
+      addError: 'Could not add',
       monthFormat: (m, y) => new Date(y, m, 1).toLocaleDateString('en', { month: 'long', year: 'numeric' }).toUpperCase(),
     },
     settings: {
@@ -540,7 +615,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         apogeoCards: { ready: 'Ready', keep: 'Keep', past: 'Past', unknown: 'No data' },
         evolution: 'Monthly uncorking evolution',
       },
-      appearance: { title: 'Appearance', theme: 'Theme', toggle: (t) => `Switch to ${t}` },
+      appearance: { title: 'Appearance', theme: 'Theme', light: 'light', dark: 'dark', toggle: (t) => `Switch to ${t}` },
       scanner: {
         title: 'Label scanner',
         info: 'Scanning runs on-device with Tesseract. First time downloads models (≈9 MB) and caches them; then works offline. The photo is never stored.',
@@ -585,8 +660,13 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       plan: { creates: 'New wines', merges: 'Merge into existing', duplicates: 'Possible duplicates', errors: 'Errors', apply: 'Apply', disabled: 'Nothing to apply' },
       result: { restored: 'Restored: {new} new, {updated} updated', imported: 'Imported: {creates} new, {merges} merged' },
       errors: { noName: 'missing name', noVintage: 'invalid vintage', invalidStock: 'invalid stock', notFound: 'That code is not in Open Food Facts', notWine: 'That code is not a wine in Open Food Facts' },
+      restore: 'Restore',
+      restoring: 'Restoring…',
+      empty: 'The CSV is empty.',
+      lineError: 'Line {n}: {msg}',
     },
     common: { save: 'Save', cancel: 'Cancel', delete: 'Delete', confirm: 'Confirm', close: 'Close', loading: 'Loading…', error: 'Error', yes: 'Yes', no: 'No' },
+    pwa: { update: 'New version available', reload: 'Reload' },
     support: {
       title: 'Finding Mi Cava useful?',
       body: 'It is free and ad-free. If it saves you time, buy me a coffee and help keep it running.',
@@ -608,8 +688,17 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       distributionTitle: 'Distribution by type',
       apogeoTitle: 'Peak',
       evolutionTitle: 'Monthly uncorking evolution',
-      noType: 'No type',
     },
+    types: {
+      tinto: 'Red',
+      blanco: 'White',
+      rosado: 'Rosé',
+      espumoso: 'Sparkling',
+      dulce: 'Sweet',
+      fortificado: 'Fortified',
+      sinTipo: 'No type',
+    },
+    drink: { ready: 'Ready', keep: 'Keep', past: 'Past', unknown: 'No data' },
     monthly: {
       months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       ariaLabel: (year) => `Monthly uncorking evolution ${year}`,
@@ -670,6 +759,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       add: 'Ajouter une bouteille de {name}',
       consume: 'Déboucher {name}',
       undo: 'Annuler',
+      openDetail: 'Voir la fiche de {name}',
       vintage: (v) => v ? String(v) : 'S.A.',
       noVintage: 'S.A.',
       semaphore: { ready: 'Prêt', keep: 'Garder', past: 'Passé', unknown: 'Sans données' },
@@ -687,6 +777,13 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         addNote: 'Ajouter une note au dernier débouchage',
         purchased: 'Acheté le',
         close: 'Fermer',
+        windowHint: 'De et à (année)',
+        noWinery: 'Sans domaine',
+        noRegion: 'Sans région',
+        locationPh: 'Étagère, rangée…',
+        lastUncork: 'Dernier débouchage',
+        noUncorks: 'Aucun débouchage',
+        events: { add: 'Bouteille ajoutée', consume: 'Débouchée', import: 'Ajustement du stock', undo: 'Annulé' },
       },
       toast: { added: 'Bouteille ajoutée à {name}', consumed: 'Débouchée', undo: 'Annuler', back: 'De retour dans la cave', noStock: 'Pas de stock', notesSaved: 'Notes sauvegardées' },
     },
@@ -713,6 +810,10 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       submit: 'Ajouter à la cave',
       duplicate: { title: 'Doublon possible', message: 'Vous avez déjà un vin avec ce nom et ce millésime d\'un autre domaine.', force: 'Enregistrer quand même' },
       validation: { nameRequired: 'Le nom est obligatoire', vintageRange: 'Millésime entre 1900 et {max}, ou cochez S.A.', priceInvalid: 'Prix invalide' },
+      barcode: { label: 'Code-barres', invalid: 'Code-barres invalide.', searching: 'Recherche…', search: 'Rechercher', camera: 'Lire le code-barres avec la caméra', noBarcode: "Je n'ai pas trouvé de code-barres sur la photo.", readError: 'Impossible de lire le code.', use: 'Utiliser' },
+      windowHint: 'De et à (année)',
+      countryPh: 'Espagne',
+      varietalsPh: 'Fruit rouge, bois…',
       scanner: {
         title: 'Scanner l\'étiquette',
         drop: 'ou déposez une photo ici',
@@ -721,14 +822,19 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         manual: 'En attendant, vous pouvez saisir les données manuellement.',
         retry: 'Essayer avec Gemini',
         error: 'Erreur',
+        failed: "Gemini n'a pas reconnu l'étiquette.",
+        fillEmpty: 'Seuls les champs vides sont remplis.',
+        viewText: 'Voir le texte lu',
       },
     },
     history: {
       title: 'Historique',
       empty: 'Aucun débouchage pour l\'instant',
+      emptyDesc: 'Quand vous déboucherez une bouteille, elle apparaîtra ici, groupée par mois.',
       outOfCellar: 'Hors cave',
       back: 'Retour à la cave',
       backToast: 'De retour dans la cave',
+      addError: 'Ajout impossible',
       monthFormat: (m, y) => new Date(y, m, 1).toLocaleDateString('fr', { month: 'long', year: 'numeric' }).toUpperCase(),
     },
     settings: {
@@ -744,7 +850,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         apogeoCards: { ready: 'Prêts', keep: 'À garder', past: 'Passés', unknown: 'Sans données' },
         evolution: 'Évolution mensuelle des débouchages',
       },
-      appearance: { title: 'Apparence', theme: 'Thème', toggle: (t) => `Passer en ${t}` },
+      appearance: { title: 'Apparence', theme: 'Thème', light: 'clair', dark: 'sombre', toggle: (t) => `Passer en ${t}` },
       scanner: {
         title: 'Scanner d\'étiquettes',
         info: 'La lecture se fait sur l\'appareil avec Tesseract. La première fois, les modèles (≈9 Mo) sont téléchargés et mis en cache ; ensuite cela fonctionne hors ligne. La photo n\'est jamais stockée.',
@@ -789,8 +895,13 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       plan: { creates: 'Nouveaux vins', merges: 'Fusionner dans existants', duplicates: 'Doublons possibles', errors: 'Erreurs', apply: 'Appliquer', disabled: 'Rien à appliquer' },
       result: { restored: 'Restauré : {new} nouveaux, {updated} mis à jour', imported: 'Importé : {creates} nouveaux, {merges} fusionnés' },
       errors: { noName: 'nom manquant', noVintage: 'millésime invalide', invalidStock: 'stock invalide', notFound: 'Ce code n\'est pas dans Open Food Facts', notWine: 'Ce code n\'est pas un vin dans Open Food Facts' },
+      restore: 'Restaurer',
+      restoring: 'Restauration…',
+      empty: 'Le CSV est vide.',
+      lineError: 'Ligne {n}: {msg}',
     },
     common: { save: 'Enregistrer', cancel: 'Annuler', delete: 'Supprimer', confirm: 'Confirmer', close: 'Fermer', loading: 'Chargement…', error: 'Erreur', yes: 'Oui', no: 'Non' },
+    pwa: { update: 'Nouvelle version disponible', reload: 'Recharger' },
     support: {
       title: 'Mi Cava vous est utile ?',
       body: 'C’est gratuit et sans publicité. Si ça vous fait gagner du temps, offrez-moi un café pour m’aider à la maintenir.',
@@ -812,8 +923,17 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       distributionTitle: 'Distribution par type',
       apogeoTitle: 'Apogée',
       evolutionTitle: 'Évolution mensuelle des débouchages',
-      noType: 'Sans type',
     },
+    types: {
+      tinto: 'Rouge',
+      blanco: 'Blanc',
+      rosado: 'Rosé',
+      espumoso: 'Effervescent',
+      dulce: 'Moelleux',
+      fortificado: 'Fortifié',
+      sinTipo: 'Sans type',
+    },
+    drink: { ready: 'Prêt', keep: 'Garder', past: 'Passé', unknown: 'Sans données' },
     monthly: {
       months: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
       ariaLabel: (year) => `Évolution mensuelle des débouchages ${year}`,

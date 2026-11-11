@@ -1,5 +1,6 @@
 import type { WineWithStock } from '@/db/schema'
 import { IconButton } from '@/components/ui/IconButton'
+import { useI18n } from '@/hooks/useI18n'
 
 export function StockStepper({
   wine,
@@ -12,10 +13,11 @@ export function StockStepper({
   onConsume: () => void
   onOpen?: () => void
 }) {
+  const { t } = useI18n()
   return (
     <div className="flex items-center gap-1">
       <IconButton
-        label={`Descorchar ${wine.name}`}
+        label={t.wine.consume.replace('{name}', wine.name)}
         onClick={onConsume}
         disabled={wine.stock <= 0}
         className="border border-border"
@@ -26,7 +28,7 @@ export function StockStepper({
         <button
           type="button"
           onClick={onOpen}
-          aria-label={`Ver ficha de ${wine.name}`}
+          aria-label={t.wine.openDetail.replace('{name}', wine.name)}
           className="min-h-11 min-w-11 rounded-lg px-1 text-center tabular-nums hover:bg-surface-2"
         >
           {wine.stock}
@@ -34,7 +36,7 @@ export function StockStepper({
       ) : (
         <span className="min-w-8 text-center tabular-nums">{wine.stock}</span>
       )}
-      <IconButton label={`Añadir botella de ${wine.name}`} onClick={onAdd} className="border border-border">
+      <IconButton label={t.wine.add.replace('{name}', wine.name)} onClick={onAdd} className="border border-border">
         +
       </IconButton>
     </div>

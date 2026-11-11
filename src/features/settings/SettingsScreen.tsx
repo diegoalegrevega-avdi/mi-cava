@@ -8,8 +8,10 @@ import { useToast } from '@/hooks/useToast'
 import { useTheme } from '@/hooks/useTheme'
 import { useWines } from '@/hooks/useWines'
 import { useEvents } from '@/hooks/useEvents'
+import { useI18n } from '@/hooks/useI18n'
 import { APP_VERSION, REPO_URL } from '@/lib/appInfo'
 import { Brand } from '@/components/Brand'
+import { OFF_ATTRIBUTION } from '@/services/openfoodfacts'
 
 const KEY_STORAGE = 'micava.geminiKey'
 
@@ -22,6 +24,7 @@ export function SettingsScreen() {
   const { events } = useEvents()
   const { theme, toggle } = useTheme()
   const { show } = useToast()
+  const { t, locale } = useI18n()
   const [key, setKey] = useState(readKey)
   const [hasKey, setHasKey] = useState(() => readKey() !== '')
 
@@ -30,29 +33,29 @@ export function SettingsScreen() {
     if (trimmed) localStorage.setItem(KEY_STORAGE, trimmed)
     else localStorage.removeItem(KEY_STORAGE)
     setHasKey(trimmed !== '')
-    show(trimmed ? 'Clave guardada' : 'Clave borrada')
+    show(trimmed ? t.settings.scanner.saved : t.settings.scanner.deleted)
   }
 
   function clearKey() {
     localStorage.removeItem(KEY_STORAGE)
     setKey('')
     setHasKey(false)
-    show('Clave borrada')
+    show(t.settings.scanner.deleted)
   }
 
   return (
     <div className="flex w-full flex-col gap-4">
       <section className="rounded-xl border border-border bg-surface p-4">
-        <h2 className="mb-3 font-serif text-xl">Estadísticas</h2>
+        <h2 className="mb-3 font-serif text-xl">{t.settingsScreen.stats}</h2>
         <StatsSection wines={wines} events={events} />
       </section>
 
       <section className="rounded-xl border border-border bg-surface p-4">
-        <h2 className="mb-3 font-serif text-xl">Apariencia</h2>
+        <h2 className="mb-3 font-serif text-xl">{t.settingsScreen.appearance}</h2>
         <div className="flex items-center justify-between gap-3">
-          <p className="text-sm text-muted">Tema {theme === 'dark' ? 'oscuro' : 'claro'}</p>
+          <p className="text-sm text-muted">{t.settings.appearance.theme} {theme === 'dark' ? t.settings.appearance.dark : t.settings.appearance.light}</p>
           <Button variant="secondary" onClick={toggle}>
-            Cambiar a {theme === 'dark' ? 'claro' : 'oscuro'}
+            {t.settings.appearance.toggle(theme === 'dark' ? t.settings.appearance.light : t.settings.appearance.dark)}
           </Button>
         </div>
       </section>
@@ -60,14 +63,11 @@ export function SettingsScreen() {
       <CaveConfigPanel />
 
       <section className="rounded-xl border border-border bg-surface p-4">
-        <h2 className="mb-3 font-serif text-xl">Escáner de etiquetas</h2>
-        <p className="mb-3 text-sm text-muted">
-          La lectura se hace en el propio dispositivo con Tesseract. La primera vez descarga los modelos (≈9 MB) y los guarda
-          en el navegador; después funciona sin red. La foto no se guarda en ningún sitio.
-        </p>
+        <h2 className="mb-3 font-serif text-xl">{t.settingsScreen.scanner}</h2>
+        <p className="mb-3 text-sm text-muted">{t.settingsScreen.scannerInfo}</p>
         <Field
-          label="Clave de Google Gemini"
-          hint="Opcional. Se guarda solo en este navegador y se envía únicamente a Google para reintentar lecturas que el motor local no ha podido completar."
+          label={t.settings.scanner.keyLabel}
+          hint={t.settings.scanner.keyHint}
         >
           <input
             type="password"
@@ -80,29 +80,29 @@ export function SettingsScreen() {
         </Field>
         <div className="mt-3 flex gap-2">
           <Button variant="secondary" onClick={saveKey}>
-            Guardar clave
+            {t.settings.scanner.save}
           </Button>
           <Button variant="ghost" onClick={clearKey} disabled={!hasKey}>
-            Borrar clave
+            {t.settings.scanner.delete}
           </Button>
         </div>
       </section>
 
       <section className="rounded-xl border border-border bg-surface p-4">
-        <h2 className="mb-3 font-serif text-xl">Tus datos</h2>
+        <h2 className="mb-3 font-serif text-xl">{t.settingsScreen.data}</h2>
         <DataPanel />
       </section>
 
       <section className="rounded-xl border border-border bg-surface p-4 text-sm text-muted">
-        <h2 className="mb-2 font-serif text-xl text-text">Acerca de</h2>
+        <h2 className="mb-2 font-serif text-xl text-text">{t.settingsScreen.about}</h2>
         <Brand className="mb-3" />
-        <p>Mi Cava {APP_VERSION} · software libre bajo licencia MIT.</p>
+        <p>{t.settings.about.version.replace('{version}', APP_VERSION)}</p>
         <a className="mt-1 inline-block text-gold underline" href={REPO_URL} target="_blank" rel="noreferrer">
-          Código en GitHub
+          {t.settings.about.github}
         </a>
         <p className="mt-2">
           <a className="text-gold underline" href="https://world.openfoodfacts.org" target="_blank" rel="noreferrer">
-            Datos de Open Food Facts (ODbL)
+            {OFF_ATTRIBUTION[locale]}
           </a>
         </p>
       </section>

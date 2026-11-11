@@ -11,13 +11,7 @@ import { StockStepper } from './StockStepper'
 import { drinkStatus } from '@/domain/drinkWindow'
 import { formatDate, formatDateTime } from '@/lib/dates'
 import { useToast } from '@/hooks/useToast'
-
-const EVENT_LABEL: Record<string, string> = {
-  add: 'Botella añadida',
-  consume: 'Descorchada',
-  import: 'Ajuste de stock',
-  undo: 'Deshecho',
-}
+import { useI18n } from '@/hooks/useI18n'
 
 export function WineDetailSheet({
   wine,
@@ -33,6 +27,7 @@ export function WineDetailSheet({
   onConsume: () => void
 }) {
   const { show } = useToast()
+  const { t } = useI18n()
   const [notes, setNotes] = useState(wine.notes)
   const [location, setLocation] = useState(wine.location)
   const [from, setFrom] = useState(wine.drinkFrom?.toString() ?? '')
@@ -50,7 +45,7 @@ export function WineDetailSheet({
   async function saveNotes() {
     if (notes === wine.notes) return
     await updateWine(wine.id, { notes })
-    show('Notas guardadas')
+    show(t.wine.toast.notesSaved)
   }
 
   async function saveLocation() {
@@ -89,7 +84,7 @@ export function WineDetailSheet({
       <div className="flex flex-col gap-4">
         <div>
           <p className="text-sm text-muted">
-            {wine.vintage ?? 'NV'} · {wine.winery || 'Sin bodega'} · {wine.region || 'Sin región'}
+            {wine.vintage ?? t.wine.noVintage} · {wine.winery || t.wine.detail.noWinery} · {wine.region || t.wine.detail.noRegion}
           </p>
           <div className="mt-2 flex items-center justify-between gap-3">
             <DrinkBadge status={drinkStatus(wine, new Date().getFullYear())} />
@@ -97,24 +92,23 @@ export function WineDetailSheet({
           </div>
         </div>
 
-        <Field label="Ubicación">
+        <Field label={t.wine.detail.location} hint={t.wine.detail.locationPh}>
           <input
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             onBlur={saveLocation}
-            placeholder="Estante, balda…"
             className="min-h-11 w-full rounded-lg border border-border bg-surface-2 px-3"
           />
         </Field>
 
-        <Field label="Ventana de consumo" hint="Años desde y hasta">
+        <Field label={t.wine.detail.window} hint={t.wine.detail.windowHint}>
           <div className="flex items-center gap-2">
             <input
               value={from}
               onChange={(e) => setFrom(e.target.value)}
               onBlur={saveWindow}
               inputMode="numeric"
-              aria-label="Año desde"
+              aria-label={t.wine.detail.from}
               className="min-h-11 w-full rounded-lg border border-border bg-surface-2 px-3 tabular-nums"
             />
             <span className="text-muted">–</span>
@@ -123,13 +117,13 @@ export function WineDetailSheet({
               onChange={(e) => setUntil(e.target.value)}
               onBlur={saveWindow}
               inputMode="numeric"
-              aria-label="Año hasta"
+              aria-label={t.wine.detail.to}
               className="min-h-11 w-full rounded-lg border border-border bg-surface-2 px-3 tabular-nums"
             />
           </div>
         </Field>
 
-        <Field label="Notas de cata y maridaje">
+        <Field label={t.wine.detail.notes}>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
@@ -141,23 +135,23 @@ export function WineDetailSheet({
 
         <div className="flex items-end gap-2">
           <div className="flex-1">
-            <Field label="Ajustar stock" hint={`Ahora: ${wine.stock}`}>
+            <Field label={t.wine.detail.adjustStock} hint={`Ahora: ${wine.stock}`}>
               <input
                 value={target}
                 onChange={(e) => setTarget(e.target.value)}
                 inputMode="numeric"
-                placeholder="Botellas reales"
+                placeholder={t.wine.detail.bottles}
                 className="min-h-11 w-full rounded-lg border border-border bg-surface-2 px-3 tabular-nums"
               />
             </Field>
           </div>
           <Button variant="secondary" onClick={applyStock} disabled={!target.trim()}>
-            Ajustar
+            {t.wine.detail.adjust}
           </Button>
         </div>
 
         <section>
-          <h3 className="mb-2 text-sm font-medium text-muted">Movimientos</h3>
+          <h3 className="mb-2 text-sm font-medium text-muted">{t.wine.detail.movements}</h3>
           {events.length === 0 ? (
             <p className="text-sm text-muted">Sin movimientos.</p>
           ) : (
@@ -165,7 +159,7 @@ export function WineDetailSheet({
               {[...events].reverse().map((e) => (
                 <li key={e.id} className="flex justify-between gap-3 border-b border-border pb-2 last:border-0">
                   <span>
-                    {EVENT_LABEL[e.kind] ?? e.kind}
+                    {t.wine.detail.events[e.kind] ?? e.kind}
                     {e.note ? ` · ${e.note}` : ''}
                   </span>
                   <span className="shrink-0 text-muted tabular-nums">{formatDate(e.at)}</span>
@@ -178,17 +172,17 @@ export function WineDetailSheet({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs text-muted">
             {lastConsume
-              ? `Último descorche: ${formatDateTime(lastConsume.at)}`
-              : 'Aún sin descorches'}
+              ? `${t.wine.detail.lastUncork}: ${formatDateTime(lastConsume.at)}`
+              : t.wine.detail.noUncorks}
           </span>
           {lastConsume && (
             <Button variant="ghost" size="sm" onClick={noteConsumption}>
-              Añadir nota al último descorche
+              {t.wine.detail.addNote}
             </Button>
           )}
         </div>
         <p className="text-xs text-muted">
-          Comprado el {formatDate(wine.purchasedAt ?? '') || '—'}
+          {t.wine.detail.purchased} {formatDate(wine.purchasedAt ?? '') || '—'}
         </p>
       </div>
     </Sheet>

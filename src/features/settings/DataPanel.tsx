@@ -17,10 +17,12 @@ import {
   listWines,
   setLastExportAt,
 } from '@/db/repo'
+import { useI18n } from '@/hooks/useI18n'
 
 export function DataPanel() {
   const { wines, reload } = useWines()
   const { show } = useToast()
+  const { t } = useI18n()
   const [imported, setImported] = useState<{ fileName: string; content: string } | null>(null)
   const [confirmText, setConfirmText] = useState('')
 
@@ -31,13 +33,13 @@ export function DataPanel() {
     const bundle = await exportBundle()
     downloadFile(`mi-cava-${bundle.exportedAt.slice(0, 10)}.json`, 'application/json', toJson(bundle))
     setLastExportAt(bundle.exportedAt)
-    show('Copia JSON descargada')
+    show(t.settings.data.exportJson)
   }
 
   async function exportCsv() {
     const all = await listWines()
     downloadFile(`mi-cava-${new Date().toISOString().slice(0, 10)}.csv`, 'text/csv', toCsv(all))
-    show('CSV descargado')
+    show(t.settings.data.exportCsv)
   }
 
   async function onFile(event: ChangeEvent<HTMLInputElement>) {
@@ -56,7 +58,7 @@ export function DataPanel() {
     await clearAll()
     setConfirmText('')
     reload()
-    show('Cava vaciada · copia descargada')
+    show(t.settings.data.empty.toast)
   }
 
   const types = Object.entries(stats.byType).filter(([, count]) => count > 0)
@@ -64,15 +66,15 @@ export function DataPanel() {
   return (
     <div className="flex w-full flex-col gap-6">
       <dl className="grid grid-cols-2 gap-3">
-        <Figure label="Botellas" value={String(stats.bottles)} />
-        <Figure label="Referencias" value={String(stats.references)} />
-        <Figure label="Valor estimado" value={formatEuros(stats.valueCents)} />
-        <Figure label="Última exportación" value={lastExport ? formatDate(lastExport) : 'Nunca'} />
+        <Figure label={t.settings.stats.bottles} value={String(stats.bottles)} />
+        <Figure label={t.settings.stats.references} value={String(stats.references)} />
+        <Figure label={t.settings.stats.value} value={formatEuros(stats.valueCents)} />
+        <Figure label={t.settings.stats.lastExport} value={lastExport ? formatDate(lastExport) : t.settings.stats.never} />
       </dl>
 
       {types.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h2 className="text-sm text-muted">Por tipo</h2>
+          <h2 className="text-sm text-muted">{t.settings.stats.byType}</h2>
           <div className="flex h-3 overflow-hidden rounded-full bg-surface-2">
             {types.map(([type, count]) => (
               <span
@@ -86,7 +88,7 @@ export function DataPanel() {
           <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
             {types.map(([type, count]) => (
               <li key={type}>
-                {type === 'sinTipo' ? 'Sin tipo' : type}: {count}
+                {type === 'sinTipo' ? t.types.sinTipo : t.types[type as keyof typeof t.types]}: {count}
               </li>
             ))}
           </ul>
@@ -94,38 +96,38 @@ export function DataPanel() {
       )}
 
       <div className="flex flex-col gap-2">
-        <h2 className="text-sm text-muted">Copia de seguridad</h2>
+        <h2 className="text-sm text-muted">{t.settings.data.title}</h2>
         <Button variant="secondary" onClick={exportJson}>
-          Exportar JSON
+          {t.settings.data.exportJson}
         </Button>
         <Button variant="secondary" onClick={exportCsv}>
-          Exportar CSV
+          {t.settings.data.exportCsv}
         </Button>
         <label className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-lg border border-border px-4 text-sm text-text hover:bg-surface-2">
-          Importar archivo
+          {t.settings.data.import}
           <input type="file" accept=".csv,.json" className="sr-only" onChange={onFile} />
         </label>
         <p className="text-xs text-muted">JSON guarda el historial completo. CSV vale para otras apps.</p>
       </div>
 
       <div className="flex flex-col gap-2">
-        <h2 className="text-sm text-muted">Vaciar cava</h2>
+        <h2 className="text-sm text-muted">{t.settings.data.empty.title}</h2>
         <p className="text-xs text-muted">
-          Se descarga antes una copia JSON. Escribe BORRAR para confirmar.
+          {t.settings.data.empty.confirm}
         </p>
         <input
           className="min-h-11 rounded-lg border border-border bg-surface-2 px-3 text-sm text-text"
           value={confirmText}
           onChange={(event) => setConfirmText(event.target.value)}
           placeholder="BORRAR"
-          aria-label="Escribe BORRAR para confirmar"
+          aria-label={t.settings.data.empty.confirm}
         />
         <Button variant="danger" onClick={emptyCellar} disabled={confirmText.trim() !== 'BORRAR'}>
-          Vaciar cava
+          {t.settings.data.empty.action}
         </Button>
       </div>
 
-      <Sheet open={imported !== null} onClose={() => setImported(null)} title="Importar">
+      <Sheet open={imported !== null} onClose={() => setImported(null)} title={t.importer.title}>
         {imported && (
           <ImportScreen
             key={imported.fileName + imported.content}

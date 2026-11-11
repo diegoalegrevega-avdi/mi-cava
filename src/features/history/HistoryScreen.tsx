@@ -10,6 +10,7 @@ import {
 } from '@/db/repo'
 import { formatDate, formatMonth } from '@/lib/dates'
 import { useToast } from '@/hooks/useToast'
+import { useI18n } from '@/hooks/useI18n'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { WineDetailSheet } from '@/features/cellar/WineDetailSheet'
@@ -18,6 +19,7 @@ type Entry = { wine: WineWithStock; event: StockEvent }
 
 export function HistoryScreen() {
   const { show } = useToast()
+  const { t } = useI18n()
   const [entries, setEntries] = useState<Entry[]>([])
   const [outOfCellar, setOutOfCellar] = useState<WineWithStock[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -53,26 +55,26 @@ export function HistoryScreen() {
   async function handleAdd(wine: WineWithStock) {
     try {
       const event = await addBottles(wine.id, 1)
-      show('De vuelta en la cava', { label: 'Deshacer', onClick: () => void undoEvent(event.id) })
+      show(t.wine.toast.back, { label: t.wine.undo, onClick: () => void undoEvent(event.id) })
     } catch {
-      show('No se pudo añadir')
+      show(t.history.addError)
     }
   }
 
   async function handleConsume(wine: WineWithStock) {
     try {
       const event = await consumeBottle(wine.id)
-      show('Descorchada', { label: 'Deshacer', onClick: () => void undoEvent(event.id) })
+      show(t.wine.toast.consumed, { label: t.wine.undo, onClick: () => void undoEvent(event.id) })
     } catch {
-      show('Sin stock')
+      show(t.wine.toast.noStock)
     }
   }
 
   if (entries.length === 0 && outOfCellar.length === 0) {
     return (
       <EmptyState
-        title="Todavía no hay descorches"
-        description="Cuando descorches una botella aparecerá aquí, agrupada por mes."
+        title={t.history.empty}
+        description={t.history.emptyDesc}
       />
     )
   }
@@ -82,7 +84,7 @@ export function HistoryScreen() {
       {outOfCellar.length > 0 ? (
         <section className="flex flex-col gap-3">
           <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">
-            Fuera de la cava
+            {t.history.outOfCellar}
           </h2>
           <ul className="overflow-hidden rounded-xl border border-border">
             {outOfCellar.map((wine) => (
@@ -97,14 +99,14 @@ export function HistoryScreen() {
                 >
                   <span className="block text-sm font-medium">
                     {wine.name}
-                    {wine.vintage ? ` ${wine.vintage}` : ' NV'}
+                    {wine.vintage ? ` ${wine.vintage}` : ` ${t.wine.noVintage}`}
                   </span>
                   <span className="block text-xs text-muted">
-                    {[wine.winery, wine.location].filter(Boolean).join(' · ') || 'Sin bodega'}
+                    {[wine.winery, wine.location].filter(Boolean).join(' · ') || t.wine.detail.noWinery}
                   </span>
                 </button>
                 <Button variant="secondary" size="sm" onClick={() => void handleAdd(wine)}>
-                  Volver a la cava
+                  {t.history.back}
                 </Button>
               </li>
             ))}
@@ -126,7 +128,7 @@ export function HistoryScreen() {
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="text-sm font-medium">
                     {wine.name}
-                    {wine.vintage ? ` ${wine.vintage}` : ' NV'}
+                    {wine.vintage ? ` ${wine.vintage}` : ` ${t.wine.noVintage}`}
                   </span>
                   <span className="shrink-0 text-xs tabular-nums text-muted">
                     {formatDate(event.at)}

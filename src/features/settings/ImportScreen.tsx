@@ -5,23 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { Field as FieldRow } from '@/components/ui/Field'
 import { autoMap, countPlan, parseCsv, planDrafts, planImport, readJsonFile } from '@/services/importer'
 import type { DateOrder, Field, ImportPlan } from '@/services/importer'
-
-const FIELDS: Array<[Field, string]> = [
-  ['name', 'Nombre'],
-  ['winery', 'Bodega'],
-  ['vintage', 'Añada'],
-  ['type', 'Tipo'],
-  ['varietals', 'Varietales'],
-  ['region', 'Región'],
-  ['country', 'País'],
-  ['stock', 'Botellas'],
-  ['price', 'Precio'],
-  ['purchasedAt', 'Fecha de compra'],
-  ['location', 'Ubicación'],
-  ['drinkFrom', 'Desde'],
-  ['drinkUntil', 'Hasta'],
-  ['notes', 'Notas'],
-]
+import { useI18n } from '@/hooks/useI18n'
 
 export function ImportScreen({
   fileName,
@@ -32,6 +16,25 @@ export function ImportScreen({
   content: string
   onClose: () => void
 }) {
+  const { t } = useI18n()
+
+  const FIELDS: Array<[Field, string]> = [
+    ['name', t.add.name],
+    ['winery', t.add.winery],
+    ['vintage', t.add.vintage],
+    ['type', t.add.type],
+    ['varietals', t.add.varietals],
+    ['region', t.add.region],
+    ['country', t.add.country],
+    ['stock', t.add.bottles],
+    ['price', t.add.price],
+    ['purchasedAt', t.add.purchaseDate],
+    ['location', t.add.location],
+    ['drinkFrom', t.add.from],
+    ['drinkUntil', t.add.to],
+    ['notes', t.add.notes],
+  ]
+
   const isJson = /\.json$/i.test(fileName) || content.trimStart().startsWith('{')
 
   const parsed = useMemo(() => {
@@ -39,13 +42,13 @@ export function ImportScreen({
       try {
         return { json: readJsonFile(content) }
       } catch {
-        return { error: 'El archivo JSON no se puede leer.' }
+        return { error: t.importer.errors.notFound }
       }
     }
     const table = parseCsv(content)
-    if (table.headers.length === 0) return { error: 'El CSV está vacío.' }
+    if (table.headers.length === 0) return { error: t.importer.empty }
     return { table, map: autoMap(table.headers) }
-  }, [isJson, content])
+  }, [isJson, content, t])
 
   const [map, setMap] = useState<Array<Field | null>>(parsed.map ?? [])
   const [dateOrder, setDateOrder] = useState<DateOrder>('dmy')
@@ -75,7 +78,7 @@ export function ImportScreen({
     try {
       if (bundle) {
         const { created, updated } = await restoreBundle(bundle)
-        setResult(`Restaurado: ${created} vinos nuevos, ${updated} actualizados.`)
+        setResult(t.importer.result.restored.replace('{new}', String(created)).replace('{updated}', String(updated)))
       } else if (plan) {
         const extra = plan.possibleDuplicates
           .filter((d) => included.includes(d.line))
@@ -90,10 +93,10 @@ export function ImportScreen({
         }
         await applyImportPlan(finalPlan)
         const counts = countPlan(finalPlan)
-        setResult(`Importado: ${counts.creates} vinos nuevos, ${counts.merges} actualizados.`)
+        setResult(t.importer.result.imported.replace('{creates}', String(counts.creates)).replace('{merges}', String(counts.merges)))
       }
     } catch (error) {
-      setRunError(error instanceof Error ? error.message : 'No se pudo importar')
+      setRunError(error instanceof Error ? error.message : t.importer.errors.notFound)
     } finally {
       setBusy(false)
     }
@@ -105,7 +108,7 @@ export function ImportScreen({
         <p role="status" className="text-sm text-text">
           {result}
         </p>
-        <Button onClick={onClose}>Cerrar</Button>
+        <Button onClick={onClose}>{t.common.close}</Button>
       </div>
     )
   }
@@ -117,7 +120,7 @@ export function ImportScreen({
           {parsed.error}
         </p>
         <Button variant="secondary" onClick={onClose}>
-          Cerrar
+          {t.common.close}
         </Button>
       </div>
     )
@@ -138,10 +141,10 @@ export function ImportScreen({
         )}
         <div className="flex gap-2">
           <Button onClick={apply} disabled={busy}>
-            {busy ? 'Restaurando…' : 'Restaurar'}
+            {busy ? t.importer.restoring : t.importer.restore}
           </Button>
           <Button variant="ghost" onClick={onClose}>
-            Cancelar
+            {t.common.cancel}
           </Button>
         </div>
       </div>
@@ -153,17 +156,17 @@ export function ImportScreen({
     return (
       <div className="flex flex-col gap-4">
         <dl className="grid grid-cols-2 gap-2 text-sm">
-          <Stat label="Vinos nuevos" value={counts.creates + included.length} />
-          <Stat label="Se suman a existentes" value={counts.merges + mergedIds.length} />
-          <Stat label="Filas con error" value={counts.errors} />
-          <Stat label="Posibles duplicados" value={counts.duplicates} />
+          <Stat label={t.importer.plan.creates} value={counts.creates + included.length} />
+          <Stat label={t.importer.plan.merges} value={counts.merges + mergedIds.length} />
+          <Stat label={t.importer.plan.errors} value={counts.errors} />
+          <Stat label={t.importer.plan.duplicates} value={counts.duplicates} />
         </dl>
 
         {plan.errors.length > 0 && (
           <ul className="flex flex-col gap-1 text-sm text-wine">
             {plan.errors.map((error) => (
               <li key={error.line}>
-                Línea {error.line}: {error.message}
+                {t.importer.lineError.replace('{n}', String(error.line)).replace('{msg}', error.message)}
               </li>
             ))}
           </ul>
@@ -193,7 +196,7 @@ export function ImportScreen({
                   Es otro vino
                 </label>
                 <span className="text-text">
-                  {duplicate.name} {duplicate.vintage ?? 'NV'}
+                  {duplicate.name} {duplicate.vintage ?? t.wine.noVintage}
                 </span>
                 <Button
                   size="sm"
@@ -225,10 +228,10 @@ export function ImportScreen({
             onClick={apply}
             disabled={busy || counts.creates + counts.merges + included.length + mergedIds.length === 0}
           >
-            {busy ? 'Importando…' : 'Aplicar'}
+            {busy ? t.common.loading : t.importer.plan.apply}
           </Button>
           <Button variant="ghost" onClick={() => setPlan(null)}>
-            Volver
+            {t.common.cancel}
           </Button>
         </div>
       </div>
@@ -248,9 +251,9 @@ export function ImportScreen({
           </p>
         )}
         <div className="flex gap-2">
-          <Button onClick={review}>Ver resumen</Button>
+          <Button onClick={review}>{t.importer.step2}</Button>
           <Button variant="ghost" onClick={onClose}>
-            Cancelar
+            {t.common.cancel}
           </Button>
         </div>
       </div>

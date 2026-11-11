@@ -2,13 +2,6 @@ import type { Wine } from '@/db/schema'
 
 export type DrinkStatus = 'ready' | 'keep' | 'past' | 'unknown'
 
-export const DRINK_LABEL: Record<DrinkStatus, string> = {
-  ready: 'Listo',
-  keep: 'Guardar',
-  past: 'Pronto',
-  unknown: 'Sin datos',
-}
-
 export function drinkStatus(
   w: Pick<Wine, 'drinkFrom' | 'drinkUntil'>,
   year: number,

@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
 import { cn } from '@/lib/cn'
-import { lookupBarcode, toOffDraft, OFF_ATTRIBUTION, OFF_URL, type OffProduct } from '@/services/openfoodfacts'
+import { lookupBarcode, toOffDraft, OFF_URL, type OffProduct, OFF_ATTRIBUTION } from '@/services/openfoodfacts'
 import { normalizeBarcode } from '@/services/openfoodfacts'
 import { barcodeSupported, detectBarcode } from '@/services/barcode'
+import { useI18n } from '@/hooks/useI18n'
 
 export function BarcodeLookup({ onDraft }: { onDraft: (draft: { name?: string; winery?: string }) => void }) {
+  const { t, locale } = useI18n()
   const [ean, setEan] = useState('')
   const [loading, setLoading] = useState(false)
   const [product, setProduct] = useState<OffProduct | null>(null)
@@ -17,7 +19,7 @@ export function BarcodeLookup({ onDraft }: { onDraft: (draft: { name?: string; w
     const code = normalizeBarcode(ean)
     if (!code) {
       setMode('error')
-      setError('Código de barras no válido.')
+      setError(t.add.barcode.invalid)
       setProduct(null)
       return
     }
@@ -37,7 +39,7 @@ export function BarcodeLookup({ onDraft }: { onDraft: (draft: { name?: string; w
       setMode('idle')
     } catch (cause) {
       setMode('error')
-      setError(cause instanceof Error ? cause.message : 'No se pudo consultar Open Food Facts.')
+      setError(cause instanceof Error ? cause.message : t.add.barcode.readError)
       setProduct(null)
     } finally {
       setLoading(false)
@@ -53,7 +55,7 @@ export function BarcodeLookup({ onDraft }: { onDraft: (draft: { name?: string; w
 
   return (
     <div className="flex flex-col gap-2">
-      <Field label="Código de barras">
+      <Field label={t.add.barcode.label}>
         <div className="flex items-center gap-2">
           <input
             value={ean}
@@ -63,11 +65,11 @@ export function BarcodeLookup({ onDraft }: { onDraft: (draft: { name?: string; w
             className={cn(
               'min-h-11 flex-1 rounded-lg border border-border bg-surface-2 px-3 focus:border-gold focus:outline-none',
             )}
-            aria-label="Código de barras"
+            aria-label={t.add.barcode.label}
             disabled={loading}
           />
           <Button type="button" variant="secondary" onClick={lookup} disabled={loading || !ean.trim()}>
-            {loading ? 'Buscando…' : 'Buscar'}
+            {loading ? t.add.barcode.searching : t.add.barcode.search}
           </Button>
         </div>
       </Field>
@@ -77,7 +79,7 @@ export function BarcodeLookup({ onDraft }: { onDraft: (draft: { name?: string; w
           accept="image/*"
           capture="environment"
           className="sr-only"
-          aria-label="Leer código de barras con la cámara"
+          aria-label={t.add.barcode.camera}
           onChange={async (e) => {
             const file = e.target.files?.[0]
             if (!file) return
@@ -90,11 +92,11 @@ export function BarcodeLookup({ onDraft }: { onDraft: (draft: { name?: string; w
                 void lookup()
               } else {
                 setMode('error')
-                setError('No he encontrado un código de barras en la foto.')
+                setError(t.add.barcode.noBarcode)
               }
             } catch (cause) {
               setMode('error')
-              setError(cause instanceof Error ? cause.message : 'No se pudo leer el código.')
+              setError(cause instanceof Error ? cause.message : t.add.barcode.readError)
             } finally {
               setLoading(false)
               e.target.value = ''
@@ -102,19 +104,19 @@ export function BarcodeLookup({ onDraft }: { onDraft: (draft: { name?: string; w
           }}
         />
       )}
-      {mode === 'noProduct' && <p className="text-sm text-muted">Ese código no está en Open Food Facts.</p>}
-      {mode === 'notWine' && <p className="text-sm text-muted">Ese código no es un vino en Open Food Facts.</p>}
+      {mode === 'noProduct' && <p className="text-sm text-muted">{t.importer.errors.notFound}</p>}
+      {mode === 'notWine' && <p className="text-sm text-muted">{t.importer.errors.notWine}</p>}
       {mode === 'error' && error && <p role="alert" className="text-sm text-wine">{error}</p>}
       {product && (
         <div className="rounded-lg border border-border bg-surface-2 p-3 text-sm">
           <p className="font-medium text-text">{product.name}</p>
-          {product.brand && <p className="text-muted">Bodega: {product.brand}</p>}
+          {product.brand && <p className="text-muted">{t.add.winery}: {product.brand}</p>}
           <div className="mt-2 flex flex-wrap gap-2">
             <Button type="button" variant="primary" onClick={() => { onDraft(toOffDraft(product)); reset() }}>
-              Usar estos datos
+              {t.add.barcode.use}
             </Button>
             <Button type="button" variant="ghost" onClick={reset}>
-              Descartar
+              {t.common.cancel}
             </Button>
           </div>
         </div>
@@ -125,7 +127,7 @@ export function BarcodeLookup({ onDraft }: { onDraft: (draft: { name?: string; w
         rel="noreferrer"
         className="text-xs text-muted hover:underline"
       >
-        {OFF_ATTRIBUTION} (ODbL)
+        {OFF_ATTRIBUTION[locale]}
       </a>
     </div>
   )
