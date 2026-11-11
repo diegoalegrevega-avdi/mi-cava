@@ -33,8 +33,6 @@ export function StatsSection({ wines, events }: StatsSectionProps) {
 
   return (
     <section className="rounded-xl border border-border bg-surface p-4">
-      <h2 className="mb-4 font-serif text-xl">{t.settings.stats.title}</h2>
-
       {/* Four figures */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <Figure label={t.settings.stats.bottles} value={stats.bottles} />

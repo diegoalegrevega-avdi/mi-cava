@@ -6,9 +6,5 @@ export function StatsScreen() {
   const { wines } = useWines()
   const { events } = useEvents()
 
-  return (
-    <section className="rounded-xl border border-border bg-surface p-4">
-      <StatsSection wines={wines} events={events} />
-    </section>
-  )
+  return <StatsSection wines={wines} events={events} />
 }
