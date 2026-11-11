@@ -2,12 +2,9 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
 import { DataPanel } from '@/features/settings/DataPanel'
-import { StatsSection } from '@/features/settings/StatsSection'
 import { CaveConfigPanel } from '@/features/settings/CaveConfig'
 import { useToast } from '@/hooks/useToast'
 import { useTheme } from '@/hooks/useTheme'
-import { useWines } from '@/hooks/useWines'
-import { useEvents } from '@/hooks/useEvents'
 import { useI18n } from '@/hooks/useI18n'
 import { APP_VERSION, REPO_URL } from '@/lib/appInfo'
 import { Brand } from '@/components/Brand'
@@ -20,8 +17,6 @@ function readKey(): string {
 }
 
 export function SettingsScreen() {
-  const { wines } = useWines()
-  const { events } = useEvents()
   const { theme, toggle } = useTheme()
   const { show } = useToast()
   const { t, locale } = useI18n()
@@ -45,11 +40,6 @@ export function SettingsScreen() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <section className="rounded-xl border border-border bg-surface p-4">
-        <h2 className="mb-3 font-serif text-xl">{t.settingsScreen.stats}</h2>
-        <StatsSection wines={wines} events={events} />
-      </section>
-
       <section className="rounded-xl border border-border bg-surface p-4">
         <h2 className="mb-3 font-serif text-xl">{t.settingsScreen.appearance}</h2>
         <div className="flex items-center justify-between gap-3">

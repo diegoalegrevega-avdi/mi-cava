@@ -2,9 +2,9 @@ export type Locale = 'es' | 'en' | 'fr'
 
 export type Dictionary = {
   // Navigation
-  nav: { cava: string; add: string; historial: string; ajustes: string }
+  nav: { cava: string; add: string; historial: string; stats: string; ajustes: string }
   // Titles
-  titles: { cava: string; add: string; historial: string; ajustes: string; cava3d: string }
+  titles: { cava: string; add: string; historial: string; stats: string; ajustes: string; cava3d: string }
   // Cellar
   cellar: {
     search: string
@@ -446,8 +446,8 @@ export type Dictionary = {
 
 export const DICTIONARIES: Record<Locale, Dictionary> = {
   es: {
-    nav: { cava: 'Mi cava', add: 'Añadir', historial: 'Historial', ajustes: 'Ajustes' },
-    titles: { cava: 'Mi cava', add: 'Añadir vino', historial: 'Historial', ajustes: 'Ajustes y datos', cava3d: 'Cava 3D' },
+    nav: { cava: 'Mi cava', add: 'Añadir', historial: 'Historial', stats: 'Estadísticas', ajustes: 'Ajustes' },
+    titles: { cava: 'Mi cava', add: 'Añadir vino', historial: 'Historial', stats: 'Estadísticas', ajustes: 'Ajustes y datos', cava3d: 'Cava 3D' },
     cellar: {
       search: 'Buscar por nombre, bodega, región…',
       empty: { title: 'Tu cava está vacía', description: 'Añade tu primera botella y empieza a llevar la cuenta.', action: 'Añadir vino' },
@@ -879,8 +879,8 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
     }
   },
   en: {
-    nav: { cava: 'My Cellar', add: 'Add', historial: 'History', ajustes: 'Settings' },
-    titles: { cava: 'My Cellar', add: 'Add Wine', historial: 'History', ajustes: 'Settings', cava3d: '3D Cellar' },
+    nav: { cava: 'My Cellar', add: 'Add', historial: 'History', stats: 'Stats', ajustes: 'Settings' },
+    titles: { cava: 'My Cellar', add: 'Add Wine', historial: 'History', stats: 'Statistics', ajustes: 'Settings', cava3d: '3D Cellar' },
     cellar: {
       search: 'Search by name, winery, region…',
       empty: { title: 'Your cellar is empty', description: 'Add your first bottle and start tracking.', action: 'Add wine' },
@@ -1312,8 +1312,8 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
     },
   },
   fr: {
-    nav: { cava: 'Ma Cave', add: 'Ajouter', historial: 'Historique', ajustes: 'Réglages' },
-    titles: { cava: 'Ma Cave', add: 'Ajouter un vin', historial: 'Historique', ajustes: 'Réglages', cava3d: 'Cave 3D' },
+    nav: { cava: 'Ma Cave', add: 'Ajouter', historial: 'Historique', stats: 'Stats', ajustes: 'Réglages' },
+    titles: { cava: 'Ma Cave', add: 'Ajouter un vin', historial: 'Historique', stats: 'Statistiques', ajustes: 'Réglages', cava3d: 'Cave 3D' },
     cellar: {
       search: 'Rechercher par nom, domaine, région…',
       empty: { title: 'Votre cave est vide', description: 'Ajoutez votre première bouteille et commencez le suivi.', action: 'Ajouter un vin' },

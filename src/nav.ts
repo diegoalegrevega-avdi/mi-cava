@@ -1,6 +1,6 @@
-export type NavId = 'cava' | 'add' | 'historial' | 'ajustes' | 'cava3d'
+export type NavId = 'cava' | 'add' | 'historial' | 'stats' | 'ajustes' | 'cava3d'
 
-export type NavLabelKey = 'cava' | 'add' | 'historial' | 'ajustes'
+export type NavLabelKey = 'cava' | 'add' | 'historial' | 'stats' | 'ajustes'
 
 export type NavItem = { id: NavId; hash: string; labelKey: NavLabelKey }
 
@@ -8,6 +8,7 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'cava', hash: '#/cava', labelKey: 'cava' },
   { id: 'add', hash: '#/add', labelKey: 'add' },
   { id: 'historial', hash: '#/historial', labelKey: 'historial' },
+  { id: 'stats', hash: '#/estadisticas', labelKey: 'stats' },
   { id: 'ajustes', hash: '#/ajustes', labelKey: 'ajustes' },
 ]
 

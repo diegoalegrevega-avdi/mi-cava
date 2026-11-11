@@ -10,6 +10,7 @@ describe('nav routing', () => {
   it('maps the tab routes to themselves', () => {
     expect(screenRoute('#/add')).toBe('add')
     expect(screenRoute('#/historial')).toBe('historial')
+    expect(screenRoute('#/estadisticas')).toBe('stats')
     expect(screenRoute('#/ajustes')).toBe('ajustes')
     expect(screenRoute('#/cava')).toBe('cava')
   })

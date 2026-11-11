@@ -7,6 +7,7 @@ import { CellarScreen } from '@/features/cellar/CellarScreen'
 import { Cave3DScreen } from '@/features/cellar/Cave3DScreen'
 import { AddScreen } from '@/features/add/AddScreen'
 import { HistoryScreen } from '@/features/history/HistoryScreen'
+import { StatsScreen } from '@/features/stats/StatsScreen'
 import { SettingsScreen } from '@/features/settings/SettingsScreen'
 import { SupportPrompt } from '@/features/support/SupportPrompt'
 import { ToastProvider, useToast } from '@/hooks/useToast'
@@ -99,6 +100,7 @@ function Screen({ route }: { route: NavId }) {
   if (route === 'cava') return <CellarScreen />
   if (route === 'add') return <AddScreen />
   if (route === 'historial') return <HistoryScreen />
+  if (route === 'stats') return <StatsScreen />
   if (route === 'cava3d') return <Cave3DScreen />
   return <SettingsScreen />
 }
@@ -114,6 +116,7 @@ export default function App() {
     cava: t.titles.cava,
     add: t.titles.add,
     historial: t.titles.historial,
+    stats: t.titles.stats,
     ajustes: t.titles.ajustes,
     cava3d: t.titles.cava3d,
   }
