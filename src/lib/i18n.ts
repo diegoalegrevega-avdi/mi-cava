@@ -185,6 +185,165 @@ export type Dictionary = {
     ariaLabel: (year: number) => string
     total: (count: number, year: number) => string
   }
+  // Food pairing
+  foodPairing: {
+    title: string
+    description: string
+    servingTemp: string
+    pairWith: string
+    avoid: string
+    tip: string
+    searchPlaceholder: string
+    noResults: string
+    categories: {
+      tinto: {
+        carnes: string
+        guisos: string
+        embutidos: string
+        arroces: string
+      }
+      blanco: {
+        pescados: string
+        arroces: string
+        verduras: string
+        aperitivos: string
+      }
+      rosado: {
+        arroces: string
+        tapas: string
+        carnesBlancas: string
+        asiatica: string
+      }
+      espumoso: {
+        aperitivos: string
+        principales: string
+        postres: string
+        picante: string
+      }
+      dulce: {
+        postres: string
+        quesosAzules: string
+        foie: string
+        salados: string
+      }
+      fortificado: {
+        fino: string
+        amontillado: string
+        oloroso: string
+        px: string
+      }
+    }
+    dishes: {
+      // Tinto
+      chuleton: string
+      corderoLechal: string
+      cochinillo: string
+      solomillo: string
+      caza: string
+      cocido: string
+      fabada: string
+      lentejas: string
+      estofado: string
+      raboToro: string
+      chilindron: string
+      jamonIberico: string
+      chorizo: string
+      manchego: string
+      idiazabal: string
+      arrozBogavante: string
+      arrozSetas: string
+      alubias: string
+      // Blanco
+      merluza: string
+      rodaballo: string
+      vieiras: string
+      gambas: string
+      boquerones: string
+      anchoas: string
+      ceviche: string
+      sashimi: string
+      paellaMarisco: string
+      fideua: string
+      arrozCaldoso: string
+      arrozNegro: string
+      esparragos: string
+      piquillos: string
+      ensaladaTomate: string
+      alcachofas: string
+      conservas: string
+      gazpacho: string
+      ajoBlanco: string
+      quesoFresco: string
+      // Rosado
+      paellaValenciana: string
+      paellaMixta: string
+      paellaVerduras: string
+      panTomate: string
+      patatasBravas: string
+      padrón: string
+      pulpo: string
+      ensaladilla: string
+      tostaTomate: string
+      polloAjillo: string
+      conejoAjillo: string
+      lomo: string
+      tortilla: string
+      sushi: string
+      padThai: string
+      curry: string
+      gyozas: string
+      tempura: string
+      // Espumoso
+      tablaQuesos: string
+      ostras: string
+      hummus: string
+      cocidoEspumoso: string
+      corderoAsado: string
+      cochinilloAsado: string
+      zarzuela: string
+      canelones: string
+      turronAlmendra: string
+      turronChocolate: string
+      panettone: string
+      roscón: string
+      tartaManzana: string
+      curryThai: string
+      tacos: string
+      // Dulce
+      chocolate: string
+      tartaSantiago: string
+      cremeBrulee: string
+      tartaTatin: string
+      heladoVainilla: string
+      flan: string
+      tocinoCielo: string
+      yemas: string
+      roquefort: string
+      cabrales: string
+      gorgonzola: string
+      stilton: string
+      quesoSerena: string
+      foie: string
+      pate: string
+      magret: string
+      // Fortificado
+      mariscoCrudo: string
+      pescaito: string
+      sushiSashimi: string
+      alcachofasFort: string
+      esparragosTrigueros: string
+      setas: string
+      currySuave: string
+      ahumados: string
+      quesoSemicurado: string
+      raboToroFort: string
+      cazaMayor: string
+      quesoMuyCurado: string
+      cortezaLavada: string
+      heladoPX: string
+      frutosSecos: string
+    }
+  }
   // Cave config
   caveConfig: {
     title: string
@@ -506,6 +665,158 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       coffee: 'Invítame a un café',
       later: 'Ahora no',
     },
+    foodPairing: {
+      title: 'Maridaje recomendado',
+      description: 'Sugerencias basadas en la gastronomía española tradicional y recomendaciones de sumilleres.',
+      servingTemp: 'Temperatura de servicio',
+      pairWith: 'Marida con',
+      avoid: 'Evitar',
+      tip: 'Consejo',
+      searchPlaceholder: 'Buscar plato o ingrediente…',
+      noResults: 'No se encontraron maridajes para esa búsqueda',
+      categories: {
+        tinto: {
+          carnes: 'Carnes rojas y asados',
+          guisos: 'Guisos y platos de cuchara',
+          embutidos: 'Embutidos y quesos curados',
+          arroces: 'Arroces y legumbres contundentes'
+        },
+        blanco: {
+          pescados: 'Pescados y mariscos',
+          arroces: 'Arroces marineros y fideuás',
+          verduras: 'Verduras, hortalizas y conservas',
+          aperitivos: 'Aperitivos y cocina fría'
+        },
+        rosado: {
+          arroces: 'Arroces y paellas (el comodín perfecto)',
+          tapas: 'Tapas con tomate, vinagre y especias',
+          carnesBlancas: 'Carnes blancas, embutidos suaves y quesos',
+          asiatica: 'Cocina asiática y picante moderado'
+        },
+        espumoso: {
+          aperitivos: 'Aperitivo y entrantes fríos (rey del inicio)',
+          principales: 'Platos principales versátiles',
+          postres: 'Postres (según dulzor)',
+          picante: 'Comida picante y exótica'
+        },
+        dulce: {
+          postres: 'Postres por afinidad (dulce con dulce)',
+          quesosAzules: 'Quesos azules y de pasta blanda fuerte',
+          foie: 'Foie gras y patés grasos',
+          salados: 'Platos salados con toque agridulce'
+        },
+        fortificado: {
+          fino: 'Fino / Manzanilla — Aperitivo, marisco y jamón',
+          amontillado: 'Amontillado / Palo Cortado — Verduras difíciles, especias',
+          oloroso: 'Oloroso — Caza, guisos contundentes, quesos muy curados',
+          px: 'Pedro Ximénez / Moscatel — Postres, quesos azules, foie'
+        }
+      },
+      dishes: {
+        chuleton: 'Chuletón a la brasa',
+        corderoLechal: 'Cordero lechal asado',
+        cochinillo: 'Cochinillo asado',
+        solomillo: 'Solomillo de ternera',
+        caza: 'Carne de caza (jabalí, ciervo, corzo)',
+        cocido: 'Cocido madrileño',
+        fabada: 'Fabada asturiana',
+        lentejas: 'Lentejas con chorizo',
+        estofado: 'Estofado de ternera',
+        raboToro: 'Rabo de toro',
+        chilindron: 'Guiso de cordero al chilindrón',
+        jamonIberico: 'Jamón ibérico de bellota',
+        chorizo: 'Chorizo, salchichón, lomo',
+        manchego: 'Queso manchego curado',
+        idiazabal: 'Idiazábal',
+        arrozBogavante: 'Arroz con bogavante',
+        arrozSetas: 'Arroz meloso de setas',
+        alubias: 'Alubias con sacramentos',
+        merluza: 'Merluza a la plancha / en salsa verde',
+        rodaballo: 'Rodaballo al horno',
+        vieiras: 'Vieiras a la gallega',
+        gambas: 'Gambas al ajillo',
+        boquerones: 'Boquerones fritos',
+        anchoas: 'Anchoas',
+        ceviche: 'Ceviche',
+        sashimi: 'Sashimi',
+        paellaMarisco: 'Paella de marisco',
+        fideua: 'Fideuá de Gandía',
+        arrozCaldoso: 'Arroz caldoso de bogavante',
+        arrozNegro: 'Arroz negro',
+        esparragos: 'Espárragos de Navarra',
+        piquillos: 'Pimientos del piquillo rellenos',
+        ensaladaTomate: 'Ensalada de tomate y ventresca',
+        alcachofas: 'Alcachofas confitadas',
+        conservas: 'Conservas de atún / caballa',
+        gazpacho: 'Gazpacho y salmorejo',
+        ajoBlanco: 'Ajo blanco',
+        quesoFresco: 'Quesos frescos (burgos, mozzarella)',
+        paellaValenciana: 'Paella valenciana',
+        paellaMixta: 'Paella mixta (pollo + marisco)',
+        paellaVerduras: 'Paella de verduras',
+        panTomate: 'Pan con tomate',
+        patatasBravas: 'Patatas bravas',
+        padrón: 'Pimientos de Padrón',
+        pulpo: 'Pulpo a la gallega',
+        ensaladilla: 'Ensaladilla rusa',
+        tostaTomate: 'Tosta de tomate y anchoa',
+        polloAjillo: 'Pollo al ajillo',
+        conejoAjillo: 'Conejo al ajillo',
+        lomo: 'Lomo embuchado',
+        tortilla: 'Tortilla de patatas',
+        sushi: 'Sushi y sashimi',
+        padThai: 'Pad thai suave',
+        curry: 'Curry verde ligero',
+        gyozas: 'Gyozas',
+        tempura: 'Tempura',
+        tablaQuesos: 'Tabla de quesos variados',
+        ostras: 'Ostras y marisco crudo',
+        hummus: 'Hummus con crudités',
+        cocidoEspumoso: 'Cocido madrileño (Brut Nature Reserva)',
+        corderoAsado: 'Cordero asado (Gran Reserva)',
+        cochinilloAsado: 'Cochinillo asado (Extra Brut Gran Reserva)',
+        zarzuela: 'Zarzuela de pescado y marisco',
+        canelones: 'Canelones / lasaña',
+        turronAlmendra: 'Turrón de almendra (Extra Brut Gran Reserva)',
+        turronChocolate: 'Turrón de chocolate (Rosado)',
+        panettone: 'Panettone de chocolate (Semiseco)',
+        roscón: 'Roscón de reyes (Brut Reserva)',
+        tartaManzana: 'Tarta de manzana / crema de limón (Semiseco)',
+        curryThai: 'Curry tailandés',
+        tacos: 'Comida mexicana (tacos, mole suave)',
+        chocolate: 'Chocolate negro (70%+ cacao)',
+        tartaSantiago: 'Tarta de Santiago',
+        cremeBrulee: 'Creme brûlée',
+        tartaTatin: 'Tarta Tatin',
+        heladoVainilla: 'Helado de vainilla con PX',
+        flan: 'Flan de huevo',
+        tocinoCielo: 'Tocino de cielo',
+        yemas: 'Yemas de Santa Teresa',
+        roquefort: 'Roquefort',
+        cabrales: 'Cabrales',
+        gorgonzola: 'Gorgonzola',
+        stilton: 'Stilton',
+        quesoSerena: 'Queso de la Serena',
+        foie: 'Foie gras de pato',
+        pate: 'Paté de hígado',
+        magret: 'Magret de pato con reducción de PX',
+        mariscoCrudo: 'Marisco crudo (ostras, almejas, percebes)',
+        pescaito: 'Pescaito frito (Manzanilla)',
+        sushiSashimi: 'Sushi / sashimi',
+        alcachofasFort: 'Alcachofas (incluso a la plancha)',
+        esparragosTrigueros: 'Espárragos trigueros',
+        setas: 'Setas y hongos',
+        currySuave: 'Curry suave / cocina india',
+        ahumados: 'Ahumados (salmón, bacalao)',
+        quesoSemicurado: 'Quesos semicurados',
+        raboToroFort: 'Rabo de toro',
+        cazaMayor: 'Caza mayor (jabalí, ciervo)',
+        quesoMuyCurado: 'Quesos muy curados (Idiazábal ahumado, Parmigiano 36m)',
+        cortezaLavada: 'Quesos de corteza lavada',
+        heladoPX: 'Helado de vainilla bañado en PX',
+        frutosSecos: 'Frutos secos y caramelo'
+      }
+    }
   },
   en: {
     nav: { cava: 'My Cellar', add: 'Add', historial: 'History', ajustes: 'Settings' },
@@ -741,6 +1052,158 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       about: 'About',
       cave3d: '3D Cellar',
     },
+    foodPairing: {
+      title: 'Recommended Pairings',
+      description: 'Suggestions based on traditional Spanish gastronomy and sommelier recommendations.',
+      servingTemp: 'Serving Temperature',
+      pairWith: 'Pairs with',
+      avoid: 'Avoid',
+      tip: 'Tip',
+      searchPlaceholder: 'Search dish or ingredient…',
+      noResults: 'No pairings found for that search',
+      categories: {
+        tinto: {
+          carnes: 'Red meats and roasts',
+          guisos: 'Stews and spoon dishes',
+          embutidos: 'Cured meats and aged cheeses',
+          arroces: 'Hearty rice dishes and legumes'
+        },
+        blanco: {
+          pescados: 'Fish and seafood',
+          arroces: 'Seafood rice dishes and fideuà',
+          verduras: 'Vegetables, greens and preserves',
+          aperitivos: 'Appetizers and cold dishes'
+        },
+        rosado: {
+          arroces: 'Rice dishes and paellas (the perfect wildcard)',
+          tapas: 'Tapas with tomato, vinegar and mild spices',
+          carnesBlancas: 'White meats, mild cured meats and cheeses',
+          asiatica: 'Asian cuisine and moderate spice'
+        },
+        espumoso: {
+          aperitivos: 'Aperitifs and cold starters (king of the start)',
+          principales: 'Versatile main dishes',
+          postres: 'Desserts (depending on sweetness)',
+          picante: 'Spicy and exotic food'
+        },
+        dulce: {
+          postres: 'Desserts by affinity (sweet with sweet)',
+          quesosAzules: 'Blue cheeses and strong soft cheeses',
+          foie: 'Foie gras and rich pâtés',
+          salados: 'Savory dishes with sweet-sour touch'
+        },
+        fortificado: {
+          fino: 'Fino / Manzanilla — Aperitif, seafood and ham',
+          amontillado: 'Amontillado / Palo Cortado — Tricky vegetables, spices',
+          oloroso: 'Oloroso — Game, hearty stews, very aged cheeses',
+          px: 'Pedro Ximénez / Moscatel — Desserts, blue cheeses, foie'
+        }
+      },
+      dishes: {
+        chuleton: 'Grilled ribeye',
+        corderoLechal: 'Roast suckling lamb',
+        cochinillo: 'Roast suckling pig',
+        solomillo: 'Beef tenderloin',
+        caza: 'Game meat (wild boar, venison, roe deer)',
+        cocido: 'Madrid-style stew',
+        fabada: 'Asturian bean stew',
+        lentejas: 'Lentils with chorizo',
+        estofado: 'Beef stew',
+        raboToro: 'Oxtail stew',
+        chilindron: 'Lamb chilindrón stew',
+        jamonIberico: 'Iberian acorn-fed ham',
+        chorizo: 'Chorizo, salchichón, lomo',
+        manchego: 'Aged Manchego cheese',
+        idiazabal: 'Idiazábal',
+        arrozBogavante: 'Lobster rice',
+        arrozSetas: 'Mushroom rice',
+        alubias: 'Beans with pork',
+        merluza: 'Hake (grilled / in green sauce)',
+        rodaballo: 'Roast turbot',
+        vieiras: 'Galician-style scallops',
+        gambas: 'Garlic shrimp',
+        boquerones: 'Fried anchovies',
+        anchoas: 'Anchovies',
+        ceviche: 'Ceviche',
+        sashimi: 'Sashimi',
+        paellaMarisco: 'Seafood paella',
+        fideua: 'Gandía-style fideuà',
+        arrozCaldoso: 'Lobster broth rice',
+        arrozNegro: 'Black rice',
+        esparragos: 'Navarre asparagus',
+        piquillos: 'Stuffed piquillo peppers',
+        ensaladaTomate: 'Tomato and ventresca salad',
+        alcachofas: 'Confit artichokes',
+        conservas: 'Tuna / mackerel preserves',
+        gazpacho: 'Gazpacho and salmorejo',
+        ajoBlanco: 'White garlic soup',
+        quesoFresco: 'Fresh cheeses (burgos, mozzarella)',
+        paellaValenciana: 'Valencian paella',
+        paellaMixta: 'Mixed paella (chicken + seafood)',
+        paellaVerduras: 'Vegetable paella',
+        panTomate: 'Bread with tomato',
+        patatasBravas: 'Patatas bravas',
+        padrón: 'Padrón peppers',
+        pulpo: 'Galician-style octopus',
+        ensaladilla: 'Russian salad',
+        tostaTomate: 'Tomato and anchovy toast',
+        polloAjillo: 'Garlic chicken',
+        conejoAjillo: 'Garlic rabbit',
+        lomo: 'Cured pork loin',
+        tortilla: 'Spanish omelette',
+        sushi: 'Sushi and sashimi',
+        padThai: 'Mild pad thai',
+        curry: 'Mild green curry',
+        gyozas: 'Gyozas',
+        tempura: 'Tempura',
+        tablaQuesos: 'Assorted cheese board',
+        ostras: 'Oysters and raw seafood',
+        hummus: 'Hummus with crudités',
+        cocidoEspumoso: 'Madrid stew (Brut Nature Reserva)',
+        corderoAsado: 'Roast lamb (Gran Reserva)',
+        cochinilloAsado: 'Roast suckling pig (Extra Brut Gran Reserva)',
+        zarzuela: 'Seafood and fish zarzuela',
+        canelones: 'Cannelloni / lasagna',
+        turronAlmendra: 'Almond nougat (Extra Brut Gran Reserva)',
+        turronChocolate: 'Chocolate nougat (Rosé)',
+        panettone: 'Chocolate panettone (Semi-dry)',
+        roscón: 'King cake (Brut Reserva)',
+        tartaManzana: 'Apple tart / lemon cream (Semi-dry)',
+        curryThai: 'Thai curry',
+        tacos: 'Mexican food (tacos, mild mole)',
+        chocolate: 'Dark chocolate (70%+ cacao)',
+        tartaSantiago: 'Santiago almond cake',
+        cremeBrulee: 'Crème brûlée',
+        tartaTatin: 'Tarte Tatin',
+        heladoVainilla: 'Vanilla ice cream with PX',
+        flan: 'Caramel flan',
+        tocinoCielo: 'Tocino de cielo',
+        yemas: 'Saint Teresa yolks',
+        roquefort: 'Roquefort',
+        cabrales: 'Cabrales',
+        gorgonzola: 'Gorgonzola',
+        stilton: 'Stilton',
+        quesoSerena: 'La Serena cheese',
+        foie: 'Duck foie gras',
+        pate: 'Liver pâté',
+        magret: 'Duck breast with PX reduction',
+        mariscoCrudo: 'Raw seafood (oysters, clams, percebes)',
+        pescaito: 'Fried fish (Manzanilla)',
+        sushiSashimi: 'Sushi / sashimi',
+        alcachofasFort: 'Artichokes (even grilled)',
+        esparragosTrigueros: 'Wild asparagus',
+        setas: 'Mushrooms',
+        currySuave: 'Mild curry / Indian cuisine',
+        ahumados: 'Smoked (salmon, cod)',
+        quesoSemicurado: 'Semi-aged cheeses',
+        raboToroFort: 'Oxtail stew',
+        cazaMayor: 'Big game (wild boar, venison)',
+        quesoMuyCurado: 'Very aged cheeses (smoked Idiazábal, Parmigiano 36m)',
+        cortezaLavada: 'Washed-rind cheeses',
+        heladoPX: 'Vanilla ice cream drizzled with PX',
+        frutosSecos: 'Nuts and caramel'
+      }
+    },
   },
   fr: {
     nav: { cava: 'Ma Cave', add: 'Ajouter', historial: 'Historique', ajustes: 'Réglages' },
@@ -975,6 +1438,158 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       data: 'Vos données',
       about: 'À propos',
       cave3d: 'Cave 3D',
+    },
+    foodPairing: {
+      title: 'Accords recommandés',
+      description: 'Suggestions basées sur la gastronomie espagnole traditionnelle et recommandations de sommeliers.',
+      servingTemp: 'Température de service',
+      pairWith: 'Accompagne',
+      avoid: 'À éviter',
+      tip: 'Conseil',
+      searchPlaceholder: 'Rechercher un plat ou ingrédient…',
+      noResults: 'Aucun accord trouvé pour cette recherche',
+      categories: {
+        tinto: {
+          carnes: 'Viandes rouges et rôtis',
+          guisos: 'Ragoûts et plats en sauce',
+          embutidos: 'Charcuteries et fromages affinés',
+          arroces: 'Riz consistants et légumineuses'
+        },
+        blanco: {
+          pescados: 'Poissons et fruits de mer',
+          arroces: 'Riz aux fruits de mer et fideuà',
+          verduras: 'Légumes, conserves et crudités',
+          aperitivos: 'Apéritifs et cuisine froide'
+        },
+        rosado: {
+          arroces: 'Riz et paellas (le joker parfait)',
+          tapas: 'Tapas au tomate, vinaigre et épices douces',
+          carnesBlancas: 'Viandes blanches, charcuteries douces et fromages',
+          asiatica: 'Cuisine asiatique et épices modérées'
+        },
+        espumoso: {
+          aperitivos: 'Apéritifs et entrées froides (roi du début)',
+          principales: 'Plats principaux polyvalents',
+          postres: 'Desserts (selon le niveau de sucre)',
+          picante: 'Cuisine épicée et exotique'
+        },
+        dulce: {
+          postres: 'Desserts par affinité (doux avec doux)',
+          quesosAzules: 'Fromages bleus et pâtes molles fortes',
+          foie: 'Foie gras et pâtés riches',
+          salados: 'Plats salés à touche aigre-douce'
+        },
+        fortificado: {
+          fino: 'Fino / Manzanilla — Apéritif, fruits de mer et jambon',
+          amontillado: 'Amontillado / Palo Cortado — Légumes difficiles, épices',
+          oloroso: 'Oloroso — Gibier, ragoûts consistants, fromages très affinés',
+          px: 'Pedro Ximénez / Moscatel — Desserts, fromages bleus, foie'
+        }
+      },
+      dishes: {
+        chuleton: 'Entrecôte grillée',
+        corderoLechal: 'Agneau de lait rôti',
+        cochinillo: 'Cochon de lait rôti',
+        solomillo: 'Filet de bœuf',
+        caza: 'Gibier (sanglier, cerf, chevreuil)',
+        cocido: 'Cocido madrilène',
+        fabada: 'Fabada asturienne',
+        lentejas: 'Lentilles au chorizo',
+        estofado: 'Ragoût de bœuf',
+        raboToro: 'Queue de bœuf',
+        chilindron: 'Agneau au chilindrón',
+        jamonIberico: 'Jambon ibérique de gland',
+        chorizo: 'Chorizo, saucisson, lomo',
+        manchego: 'Manchego affiné',
+        idiazabal: 'Idiazábal',
+        arrozBogavante: 'Riz au homard',
+        arrozSetas: 'Riz crémeux aux champignons',
+        alubias: 'Haricots avec sacramentos',
+        merluza: 'Merlu (grillé / en sauce verte)',
+        rodaballo: 'Turbot rôti',
+        vieiras: 'Coquilles Saint-Jacques à la galicienne',
+        gambas: 'Crevettes à l\'ail',
+        boquerones: 'Anchois frits',
+        anchoas: 'Anchois',
+        ceviche: 'Ceviche',
+        sashimi: 'Sashimi',
+        paellaMarisco: 'Paella aux fruits de mer',
+        fideua: 'Fideuà de Gandía',
+        arrozCaldoso: 'Riz au bouillon de homard',
+        arrozNegro: 'Riz noir',
+        esparragos: 'Asperges de Navarre',
+        piquillos: 'Piments piquillos farcis',
+        ensaladaTomate: 'Salade tomate et ventrèche',
+        alcachofas: 'Artichauts confits',
+        conservas: 'Conserves de thon / maquereau',
+        gazpacho: 'Gazpacho et salmorejo',
+        ajoBlanco: 'Ajo blanco',
+        quesoFresco: 'Fromages frais (burgos, mozzarella)',
+        paellaValenciana: 'Paella valencienne',
+        paellaMixta: 'Paella mixte (poulet + fruits de mer)',
+        paellaVerduras: 'Paella aux légumes',
+        panTomate: 'Pain à la tomate',
+        patatasBravas: 'Patatas bravas',
+        padrón: 'Piments de Padrón',
+        pulpo: 'Poulpe à la galicienne',
+        ensaladilla: 'Salade russe',
+        tostaTomate: 'Tartine tomate et anchois',
+        polloAjillo: 'Poulet à l\'ail',
+        conejoAjillo: 'Lapin à l\'ail',
+        lomo: 'Lomo embuché',
+        tortilla: 'Tortilla de pommes de terre',
+        sushi: 'Sushi et sashimi',
+        padThai: 'Pad thaï doux',
+        curry: 'Curry vert doux',
+        gyozas: 'Gyozas',
+        tempura: 'Tempura',
+        tablaQuesos: 'Plateau de fromages variés',
+        ostras: 'Huîtres et fruits de mer crus',
+        hummus: 'Houmous avec crudités',
+        cocidoEspumoso: 'Cocido madrilène (Brut Nature Reserva)',
+        corderoAsado: 'Agneau rôti (Gran Reserva)',
+        cochinilloAsado: 'Cochon de lait rôti (Extra Brut Gran Reserva)',
+        zarzuela: 'Zarzuela de poisson et fruits de mer',
+        canelones: 'Cannelloni / lasagnes',
+        turronAlmendra: 'Nougat aux amandes (Extra Brut Gran Reserva)',
+        turronChocolate: 'Nougat au chocolat (Rosé)',
+        panettone: 'Panettone au chocolat (Demi-sec)',
+        roscón: 'Roscón de Reyes (Brut Reserva)',
+        tartaManzana: 'Tarte aux pommes / crème citron (Demi-sec)',
+        curryThai: 'Curry thaï',
+        tacos: 'Cuisine mexicaine (tacos, mole doux)',
+        chocolate: 'Chocolat noir (70%+ cacao)',
+        tartaSantiago: 'Tarte de Saint-Jacques',
+        cremeBrulee: 'Crème brûlée',
+        tartaTatin: 'Tarte Tatin',
+        heladoVainilla: 'Glace vanille au PX',
+        flan: 'Flan au caramel',
+        tocinoCielo: 'Tocino de cielo',
+        yemas: 'Yemas de Santa Teresa',
+        roquefort: 'Roquefort',
+        cabrales: 'Cabrales',
+        gorgonzola: 'Gorgonzola',
+        stilton: 'Stilton',
+        quesoSerena: 'Fromage de La Serena',
+        foie: 'Foie gras de canard',
+        pate: 'Pâté de foie',
+        magret: 'Magret de canard au PX',
+        mariscoCrudo: 'Fruits de mer crus (huîtres, palourdes, percebes)',
+        pescaito: 'Pescaito frito (Manzanilla)',
+        sushiSashimi: 'Sushi / sashimi',
+        alcachofasFort: 'Artichauts (même grillés)',
+        esparragosTrigueros: 'Asperges sauvages',
+        setas: 'Champignons',
+        currySuave: 'Curry doux / cuisine indienne',
+        ahumados: 'Fumés (saumon, cabillaud)',
+        quesoSemicurado: 'Fromages demi-affinés',
+        raboToroFort: 'Queue de bœuf',
+        cazaMayor: 'Grand gibier (sanglier, cerf)',
+        quesoMuyCurado: 'Fromages très affinés (Idiazábal fumé, Parmigiano 36m)',
+        cortezaLavada: 'Fromages à croûte lavée',
+        heladoPX: 'Glace vanille arrosée de PX',
+        frutosSecos: 'Fruits secs et caramel'
+      }
     },
   },
 }
