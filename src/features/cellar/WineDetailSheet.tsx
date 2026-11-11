@@ -12,6 +12,8 @@ import { drinkStatus } from '@/domain/drinkWindow'
 import { formatDate, formatDateTime } from '@/lib/dates'
 import { useToast } from '@/hooks/useToast'
 import { useI18n } from '@/hooks/useI18n'
+import { getPairingForType } from '@/domain/foodPairing'
+import type { WineType } from '@/db/schema'
 
 export function WineDetailSheet({
   wine,
@@ -28,6 +30,15 @@ export function WineDetailSheet({
 }) {
   const { show } = useToast()
   const { t } = useI18n()
+
+  // Get food pairing for this wine's type
+  const pairing = wine.type ? getPairingForType(wine.type as WineType) : null
+
+  // Helper to safely access category translations
+  const catLabel = (catKey: string) => {
+    const catDict = t.foodPairing.categories[pairing!.type as WineType]
+    return catDict?.[catKey as keyof typeof catDict] || catKey
+  }
   const [notes, setNotes] = useState(wine.notes)
   const [location, setLocation] = useState(wine.location)
   const [from, setFrom] = useState(wine.drinkFrom?.toString() ?? '')
@@ -132,6 +143,65 @@ export function WineDetailSheet({
             className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2"
           />
         </Field>
+
+        {pairing && (
+          <section className="rounded-lg border border-border bg-surface-2 p-3">
+            <h3 className="mb-3 text-sm font-medium text-muted flex items-center gap-2">
+              <span className="text-gold">🍽️</span>
+              {t.foodPairing.title}
+            </h3>
+            <p className="mb-3 text-xs text-muted">{t.foodPairing.description}</p>
+            <div className="mb-3 flex flex-wrap gap-1.5">
+              {pairing.pairings.slice(0, 4).map((cat, i) => (
+                <span key={i} className="px-2 py-1 rounded-full bg-surface text-xs text-muted border border-border">
+                  {catLabel(cat.category)}
+                </span>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <span className="font-medium text-gold">{t.foodPairing.servingTemp}</span>
+                <p className="text-muted">{pairing.servingTemp}</p>
+              </div>
+              <div>
+                <span className="font-medium text-gold">{t.foodPairing.tip}</span>
+                <p className="text-muted">{pairing.tip}</p>
+              </div>
+            </div>
+            <details className="mt-2">
+              <summary className="text-xs text-gold cursor-pointer hover:underline">
+                {t.foodPairing.pairWith}…
+              </summary>
+              <div className="mt-2 space-y-2 text-xs">
+                {pairing.pairings.map((cat, i) => (
+                  <div key={i} className="rounded bg-surface p-2">
+                    <p className="font-medium text-text">
+                      {catLabel(cat.category)}
+                    </p>
+                    <ul className="list-disc list-inside mt-1 text-muted">
+                      {cat.dishes.slice(0, 6).map((dish, j) => (
+                        <li key={j}>
+                          {(t.foodPairing.dishes as Record<string, string>)[dish] || dish}
+                        </li>
+                      ))}
+                      {cat.dishes.length > 6 && <li className="text-gold">+{cat.dishes.length - 6} más</li>}
+                    </ul>
+                  </div>
+                ))}
+                {pairing.avoid && pairing.avoid.length > 0 && (
+                  <div className="rounded bg-surface/50 border border-wine/20 p-2">
+                    <p className="font-medium text-wine">{t.foodPairing.avoid}</p>
+                    <ul className="list-disc list-inside mt-1 text-muted text-xs">
+                      {pairing.avoid.map((item, i) => (
+                        <li key={i}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </details>
+          </section>
+        )}
 
         <div className="flex items-end gap-2">
           <div className="flex-1">
