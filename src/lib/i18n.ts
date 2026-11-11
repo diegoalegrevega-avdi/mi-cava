@@ -441,7 +441,7 @@ export type Dictionary = {
     later: string
   }
   // PWA update
-  pwa: { update: string; reload: string }
+  pwa: { update: string; reload: string; install: string }
 }
 
 export const DICTIONARIES: Record<Locale, Dictionary> = {
@@ -680,7 +680,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       mappingHint: 'Revisa qué columna es cada cosa. Nada se escribe hasta que pulses Aplicar.',
     },
     common: { save: 'Guardar', cancel: 'Cancelar', delete: 'Borrar', confirm: 'Confirmar', close: 'Cerrar', loading: 'Cargando…', error: 'Error', yes: 'Sí', no: 'No' },
-    pwa: { update: 'Nueva versión disponible', reload: 'Recargar' },
+    pwa: { update: 'Nueva versión disponible', reload: 'Recargar', install: 'Guardar como app' },
     support: {
       title: '¿Te resulta útil Mi Cava?',
       body: 'Es gratis y sin anuncios. Si te ahorra tiempo, invítame a un café y ayudo a mantenerla viva.',
@@ -1045,7 +1045,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       mappingHint: 'Check which column is which. Nothing is written until you press Apply.',
     },
     common: { save: 'Save', cancel: 'Cancel', delete: 'Delete', confirm: 'Confirm', close: 'Close', loading: 'Loading…', error: 'Error', yes: 'Yes', no: 'No' },
-    pwa: { update: 'New version available', reload: 'Reload' },
+    pwa: { update: 'New version available', reload: 'Reload', install: 'Save as an app' },
     support: {
       title: 'Finding Mi Cava useful?',
       body: 'It is free and ad-free. If it saves you time, buy me a coffee and help keep it running.',
@@ -1478,7 +1478,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       mappingHint: 'Vérifiez quelle colonne correspond à quoi. Rien n\'est écrit avant que vous appuyiez sur Appliquer.',
     },
     common: { save: 'Enregistrer', cancel: 'Annuler', delete: 'Supprimer', confirm: 'Confirmer', close: 'Fermer', loading: 'Chargement…', error: 'Erreur', yes: 'Oui', no: 'Non' },
-    pwa: { update: 'Nouvelle version disponible', reload: 'Recharger' },
+    pwa: { update: 'Nouvelle version disponible', reload: 'Recharger', install: 'Enregistrer comme application' },
     support: {
       title: 'Mi Cava vous est utile ?',
       body: 'C’est gratuit et sans publicité. Si ça vous fait gagner du temps, offrez-moi un café pour m’aider à la maintenir.',

@@ -76,7 +76,7 @@ function InstallPrompt() {
   return (
     <div className="fixed bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 z-50">
       <div className="mx-auto max-w-sm rounded-xl border border-border bg-surface p-4 shadow-lg">
-        <p className="mb-3 text-sm text-text">{t.common.save} como app</p>
+        <p className="mb-3 text-sm text-text">{t.pwa.install}</p>
         <div className="flex gap-2">
           <button
             onClick={handleInstall}
@@ -135,7 +135,7 @@ export default function App() {
               <h1 className="truncate font-serif text-2xl">{TITLES[route]}</h1>
             </div>
             <div className="flex items-center gap-2">
-              <IconButton label={theme === 'dark' ? 'Tema claro' : 'Tema oscuro'} onClick={toggle}>
+              <IconButton label={theme === 'dark' ? t.settings.appearance.light : t.settings.appearance.dark} onClick={toggle}>
                 {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
               </IconButton>
               <LanguageSelector />
