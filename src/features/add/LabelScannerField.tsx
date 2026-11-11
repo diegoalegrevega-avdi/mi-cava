@@ -1,7 +1,9 @@
 import { useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
+import type { WineType } from '@/db/schema'
 import { BarcodeLookup } from './BarcodeLookup'
 import { readGeminiKey, scanLabel, geminiDraft, type LabelDraft } from '@/services/labelScanner'
+import type { DetectedField } from '@/services/labelFields'
 import { useI18n } from '@/hooks/useI18n'
 
 export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) => void }) {
@@ -9,7 +11,7 @@ export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) =>
   const inputRef = useRef<HTMLInputElement>(null)
   const [phase, setPhase] = useState<'idle' | 'working' | 'done'>('idle')
   const [progress, setProgress] = useState(0)
-  const [fields, setFields] = useState<{ label: string }[]>([])
+  const [fields, setFields] = useState<DetectedField[]>([])
   const [text, setText] = useState('')
   const [error, setError] = useState('')
 
@@ -50,6 +52,19 @@ export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) =>
   }
 
   const hasKey = useMemo(() => readGeminiKey() !== null, [])
+
+  const fieldText = (item: DetectedField): string => {
+    switch (item.field) {
+      case 'vintage':
+        return t.add.scanner.fields.vintage(item.value as number)
+      case 'type':
+        return t.types[item.value as WineType]
+      case 'varietals':
+        return (item.value as string[]).join(', ')
+      default:
+        return String(item.value)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-dashed border-border p-3">
@@ -98,10 +113,10 @@ export function LabelScannerField({ onDraft }: { onDraft: (draft: LabelDraft) =>
         <div className="flex flex-wrap gap-1.5">
           {fields.map((f, i) => (
             <span
-              key={`${f.label}-${i}`}
+              key={`${f.field}-${i}`}
               className="rounded-full border border-border px-2 py-1 text-xs text-muted"
             >
-              {f.label}
+              {fieldText(f)}
             </span>
           ))}
           <span className="self-center text-xs text-muted">{t.add.scanner.fillEmpty}</span>

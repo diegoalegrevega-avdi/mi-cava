@@ -27,8 +27,8 @@ export function readGeminiKey(): string | null {
 
 export async function scanLabel(file: File, ocr?: Ocr, onProgress?: (p: OcrProgress) => void): Promise<LabelReading> {
   const engine = ocr ?? createOcr()
-  const text = await engine(file, onProgress)
-  const fields = extractLabelFields(text, new Date().getFullYear())
+  const { text, lines } = await engine(file, onProgress)
+  const fields = extractLabelFields(text, new Date().getFullYear(), lines)
   return { text, fields, draft: toLabelDraft(fields) }
 }
 

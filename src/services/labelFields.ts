@@ -1,14 +1,14 @@
 import type { WineType } from '@/db/schema';
 import { normalize } from '@/domain/normalize';
+import type { OcrLine } from '@/services/ocr';
 import type { LabelDraft } from '@/services/labelScanner';
 
 export type FieldConfidence = 'alta' | 'media';
 
 export interface DetectedField {
-  field: 'vintage' | 'type' | 'region' | 'country' | 'varietals' | 'winery';
+  field: 'name' | 'vintage' | 'type' | 'region' | 'country' | 'varietals' | 'winery';
   value: number | WineType | string | string[];
   confidence: FieldConfidence;
-  label: string;
 }
 
 interface Region {
@@ -170,16 +170,30 @@ const WINERY_START = /^(bodegas?|cellers?|cellars?|winery|chateau|domaine|casa|v
 const YEAR_LINE_HINT = /\b(ano|cosecha|vintage|reserva|crianza)\b/;
 const YEAR = /\b(19\d{2}|20\d{2})\b/g;
 
+/** Legal/serving text that is never the wine name, the winery or a grape. */
+const JUNK = [
+  /\b(alc|vol|alcohol)\b/i,
+  /\d+([.,]\d+)?\s*%/,
+  /\d+\s*(ml|cl|litros?)\b/i,
+  /contiene|sulfit|sulphit|contains/i,
+  /producto de|produce of|product of|embotellado|bottled|envasado/i,
+  /https?:|www\.|@/i,
+  /denominaci|\bdop\b|\bigp\b|indicaci[oó]n geogr/i,
+  /tel[eé]fono|\btel\b|\btlf\b/i,
+  /^[\d\s.,:;+\-()/]+$/,
+];
+
+function isJunk(value: string): boolean {
+  const text = value.trim();
+  return text.length < 2 || JUNK.some((pattern) => pattern.test(text));
+}
+
 function escape(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function containsPhrase(haystack: string, phrase: string): boolean {
   return new RegExp(`(^|[^a-z0-9])${escape(normalize(phrase))}(?![a-z0-9])`).test(haystack);
-}
-
-function capitalize(value: string): string {
-  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 function findRegion(text: string): Region | null {
@@ -219,6 +233,8 @@ function findVarietals(text: string): string[] {
 function findWinery(lines: string[], taken: Set<string>): { name: string; confidence: FieldConfidence } | null {
   for (const line of lines) {
     const value = line.trim();
+    if (isJunk(value)) continue;
+    if (taken.has(normalize(value))) continue;
     if (WINERY_START.test(normalize(value))) return { name: value, confidence: 'alta' };
   }
   for (const line of lines) {
@@ -226,6 +242,7 @@ function findWinery(lines: string[], taken: Set<string>): { name: string; confid
     const letters = value.replace(/[^\p{L}]/gu, '');
     if (letters.length < 4 || letters.length > 40) continue;
     if (value !== value.toUpperCase() || /\d/.test(value)) continue;
+    if (isJunk(value)) continue;
     const key = normalize(value);
     if (NOISE.has(key) || taken.has(key)) continue;
     return { name: value, confidence: 'media' };
@@ -233,43 +250,74 @@ function findWinery(lines: string[], taken: Set<string>): { name: string; confid
   return null;
 }
 
-export function extractLabelFields(text: string, currentYear: number): DetectedField[] {
+function findName(lines: OcrLine[], taken: Set<string>): { name: string; confidence: FieldConfidence } | null {
+  const usable = lines.filter((line) => {
+    const value = line.text.trim();
+    if (value.length < 2 || value.length > 40) return false;
+    if (isJunk(value)) return false;
+    if (taken.has(normalize(value))) return false;
+    return value.replace(/[^\p{L}]/gu, '').length >= 2;
+  });
+  // "Bodegas X" is the producer, so only use it when there is nothing else.
+  const candidates = usable.filter((line) => !WINERY_START.test(normalize(line.text)));
+  const pool = candidates.length > 0 ? candidates : usable;
+  if (pool.length === 0) return null;
+
+  const average = lines.reduce((sum, line) => sum + line.height, 0) / lines.length;
+  const tallest = pool.reduce((best, line) => (line.height > best.height ? line : best), pool[0]!);
+  // The brand is printed bigger than the legal text; when nothing stands out, take the top line.
+  if (tallest.height >= average * 1.15) return { name: tallest.text.trim(), confidence: 'media' };
+
+  const top = Math.min(...lines.map((line) => line.y));
+  const bottom = Math.max(...lines.map((line) => line.y));
+  const cutoff = top + (bottom - top) * 0.3;
+  const first = pool.find((line) => line.y <= cutoff) ?? pool[0]!;
+  return { name: first.text.trim(), confidence: 'media' };
+}
+
+export function extractLabelFields(
+  text: string,
+  currentYear: number,
+  layout: OcrLine[] = [],
+): DetectedField[] {
   if (text.trim() === '') return [];
   const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
   const flat = normalize(text.replace(/\r?\n/g, ' '));
   const fields: DetectedField[] = [];
 
   const vintage = findVintage(lines, currentYear);
-  if (vintage) {
-    fields.push({ field: 'vintage', value: vintage.value, confidence: vintage.confidence, label: `Añada ${vintage.value}` });
-  }
+  if (vintage) fields.push({ field: 'vintage', value: vintage.value, confidence: vintage.confidence });
 
   const type = findType(flat);
-  if (type) fields.push({ field: 'type', value: type, confidence: 'alta', label: capitalize(type) });
+  if (type) fields.push({ field: 'type', value: type, confidence: 'alta' });
 
   const region = findRegion(flat);
   if (region) {
-    fields.push({ field: 'region', value: region.name, confidence: 'alta', label: region.name });
-    fields.push({ field: 'country', value: region.country, confidence: 'alta', label: region.country });
+    fields.push({ field: 'region', value: region.name, confidence: 'alta' });
+    fields.push({ field: 'country', value: region.country, confidence: 'alta' });
   }
 
   const varietals = findVarietals(flat);
-  if (varietals.length > 0) {
-    fields.push({
-      field: 'varietals',
-      value: varietals,
-      confidence: 'alta',
-      label: varietals.map(capitalize).join(', '),
-    });
-  }
+  if (varietals.length > 0) fields.push({ field: 'varietals', value: varietals, confidence: 'alta' });
 
   const taken = new Set<string>([
     ...REGIONS.map((r) => normalize(r.name)),
     ...GRAPES.map(normalize),
     ...NOISE,
   ]);
+
+  // Only with real layout data: without line sizes there is no way to tell the
+  // brand from a legal notice, and guessing would put the wrong text in the name.
+  if (layout.length > 0) {
+    const name = findName(layout, taken);
+    if (name) {
+      fields.unshift({ field: 'name', value: name.name, confidence: name.confidence });
+      taken.add(normalize(name.name));
+    }
+  }
+
   const winery = findWinery(lines, taken);
-  if (winery) fields.push({ field: 'winery', value: winery.name, confidence: winery.confidence, label: winery.name });
+  if (winery) fields.push({ field: 'winery', value: winery.name, confidence: winery.confidence });
 
   return fields;
 }

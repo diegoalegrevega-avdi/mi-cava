@@ -85,6 +85,7 @@ export type Dictionary = {
       failed: string
       fillEmpty: string
       viewText: string
+      fields: { vintage: (year: number) => string }
     }
     barcode: { label: string; invalid: string; searching: string; search: string; camera: string; noBarcode: string; readError: string; use: string }
     windowHint: string
@@ -529,6 +530,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         failed: 'Gemini no reconoció la etiqueta.',
         fillEmpty: 'Solo se rellenan los campos vacíos.',
         viewText: 'Ver texto leído',
+        fields: { vintage: (year) => `Añada ${year}` },
       },
     },
     history: {
@@ -962,6 +964,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         failed: 'Gemini did not recognize the label.',
         fillEmpty: 'Only empty fields are filled in.',
         viewText: 'View read text',
+        fields: { vintage: (year) => `Vintage ${year}` },
       },
     },
     history: {
@@ -1395,6 +1398,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         failed: "Gemini n'a pas reconnu l'étiquette.",
         fillEmpty: 'Seuls les champs vides sont remplis.',
         viewText: 'Voir le texte lu',
+        fields: { vintage: (year) => `Millésime ${year}` },
       },
     },
     history: {
