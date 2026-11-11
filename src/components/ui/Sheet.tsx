@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
+import { useI18n } from '@/hooks/useI18n'
 
 export function Sheet({
   open,
@@ -11,6 +12,7 @@ export function Sheet({
   title: string
   children: ReactNode
 }) {
+  const { t } = useI18n()
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -26,7 +28,7 @@ export function Sheet({
     <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
       <button
         type="button"
-        aria-label="Cerrar"
+        aria-label={t.common.close}
         tabIndex={-1}
         onClick={onClose}
         className="absolute inset-0 bg-black/60"
@@ -42,7 +44,7 @@ export function Sheet({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Cerrar"
+            aria-label={t.common.close}
             className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-text"
           >
             <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8">

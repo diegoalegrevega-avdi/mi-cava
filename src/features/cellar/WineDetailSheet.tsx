@@ -205,7 +205,7 @@ export function WineDetailSheet({
 
         <div className="flex items-end gap-2">
           <div className="flex-1">
-            <Field label={t.wine.detail.adjustStock} hint={`Ahora: ${wine.stock}`}>
+            <Field label={t.wine.detail.adjustStock} hint={t.wine.detail.stockNow(wine.stock)}>
               <input
                 value={target}
                 onChange={(e) => setTarget(e.target.value)}

@@ -34,6 +34,7 @@ export type Dictionary = {
       to: string
       movements: string
       adjustStock: string
+      stockNow: (count: number) => string
       bottles: string
       adjust: string
       addNote: string
@@ -412,6 +413,13 @@ export type Dictionary = {
     restoring: string
     empty: string
     lineError: string
+    duplicatesHint: string
+    sameWine: string
+    otherWine: string
+    column: (n: number) => string
+    review: string
+    jsonSummary: (count: number) => string
+    mappingHint: string
   }
   // Generic
   common: {
@@ -467,6 +475,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         to: 'Hasta',
         movements: 'Movimientos',
         adjustStock: 'Ajustar stock',
+        stockNow: (count) => `Ahora: ${count}`,
         bottles: 'Botellas reales',
         adjust: 'Ajustar',
         addNote: 'Añadir nota al último descorche',
@@ -662,6 +671,13 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       restoring: 'Restaurando…',
       empty: 'El CSV está vacío.',
       lineError: 'Línea {n}: {msg}',
+      duplicatesHint: 'Mismo nombre y añada en otra bodega. Elige en cada uno si es el mismo vino (suma botellas) o uno distinto (se añade).',
+      sameWine: 'Es el mismo',
+      otherWine: 'Es otro vino',
+      column: (n) => `Columna ${n}`,
+      review: 'Ver resumen',
+      jsonSummary: (count) => `${count} vinos en el archivo. Se revisan contra tu cava: los que ya tienes suman botellas, los demás se añaden. Nada se escribe hasta que pulses Aplicar.`,
+      mappingHint: 'Revisa qué columna es cada cosa. Nada se escribe hasta que pulses Aplicar.',
     },
     common: { save: 'Guardar', cancel: 'Cancelar', delete: 'Borrar', confirm: 'Confirmar', close: 'Cerrar', loading: 'Cargando…', error: 'Error', yes: 'Sí', no: 'No' },
     pwa: { update: 'Nueva versión disponible', reload: 'Recargar' },
@@ -892,6 +908,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         to: 'To',
         movements: 'Movements',
         adjustStock: 'Adjust stock',
+        stockNow: (count) => `Now: ${count}`,
         bottles: 'Real bottles',
         adjust: 'Adjust',
         addNote: 'Add note to last uncork',
@@ -1019,6 +1036,13 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       restoring: 'Restoring…',
       empty: 'The CSV is empty.',
       lineError: 'Line {n}: {msg}',
+      duplicatesHint: 'Same name and vintage at another winery. For each one, choose whether it is the same wine (bottles add up) or a different one (it gets added).',
+      sameWine: 'Same wine',
+      otherWine: 'Different wine',
+      column: (n) => `Column ${n}`,
+      review: 'See summary',
+      jsonSummary: (count) => `${count} wines in the file. They are checked against your cellar: the ones you already have add bottles, the rest get added. Nothing is written until you press Apply.`,
+      mappingHint: 'Check which column is which. Nothing is written until you press Apply.',
     },
     common: { save: 'Save', cancel: 'Cancel', delete: 'Delete', confirm: 'Confirm', close: 'Close', loading: 'Loading…', error: 'Error', yes: 'Yes', no: 'No' },
     pwa: { update: 'New version available', reload: 'Reload' },
@@ -1317,6 +1341,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         to: 'Jusqu\'à',
         movements: 'Mouvements',
         adjustStock: 'Ajuster le stock',
+        stockNow: (count) => `Actuel : ${count}`,
         bottles: 'Bouteilles réelles',
         adjust: 'Ajuster',
         addNote: 'Ajouter une note au dernier débouchage',
@@ -1444,6 +1469,13 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       restoring: 'Restauration…',
       empty: 'Le CSV est vide.',
       lineError: 'Ligne {n}: {msg}',
+      duplicatesHint: 'Même nom et même millésime dans un autre domaine. Pour chacun, choisissez s\'il s\'agit du même vin (les bouteilles s\'additionnent) ou d\'un autre (il est ajouté).',
+      sameWine: 'Même vin',
+      otherWine: 'Autre vin',
+      column: (n) => `Colonne ${n}`,
+      review: 'Voir le résumé',
+      jsonSummary: (count) => `${count} vins dans le fichier. Ils sont comparés à votre cave : ceux que vous avez déjà ajoutent des bouteilles, les autres sont ajoutés. Rien n'est écrit avant que vous appuyiez sur Appliquer.`,
+      mappingHint: 'Vérifiez quelle colonne correspond à quoi. Rien n\'est écrit avant que vous appuyiez sur Appliquer.',
     },
     common: { save: 'Enregistrer', cancel: 'Annuler', delete: 'Supprimer', confirm: 'Confirmer', close: 'Fermer', loading: 'Chargement…', error: 'Erreur', yes: 'Oui', no: 'Non' },
     pwa: { update: 'Nouvelle version disponible', reload: 'Recharger' },

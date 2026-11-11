@@ -175,8 +175,7 @@ export function ImportScreen({
         {plan.possibleDuplicates.length > 0 && (
           <fieldset className="flex flex-col gap-2">
             <legend className="mb-1 text-sm text-muted">
-              Mismo nombre y añada en otra bodega. Elige en cada uno si es el mismo vino (suma
-              botellas) o uno distinto (se añade).
+              {t.importer.duplicatesHint}
             </legend>
             {plan.possibleDuplicates.map((duplicate) => (
               <div key={duplicate.line} className="flex flex-wrap items-center gap-3 text-sm">
@@ -193,7 +192,7 @@ export function ImportScreen({
                       )
                     }
                   />
-                  Es otro vino
+                  {t.importer.otherWine}
                 </label>
                 <span className="text-text">
                   {duplicate.name} {duplicate.vintage ?? t.wine.noVintage}
@@ -210,7 +209,7 @@ export function ImportScreen({
                     )
                   }
                 >
-                  Es el mismo
+                  {t.importer.sameWine}
                 </Button>
               </div>
             ))}
@@ -242,8 +241,7 @@ export function ImportScreen({
     return (
       <div className="flex flex-col gap-4">
         <p className="text-sm text-muted">
-          {jsonDrafts.drafts.length} vinos en el archivo. Se revisan contra tu cava: los que ya
-          tienes suman botellas, los demás se añaden. Nada se escribe hasta que pulses Aplicar.
+          {t.importer.jsonSummary(jsonDrafts.drafts.length)}
         </p>
         {runError && (
           <p role="alert" className="text-sm text-wine">
@@ -264,12 +262,12 @@ export function ImportScreen({
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm text-muted">
-        Revisa qué columna es cada cosa. Nada se escribe hasta que pulses Aplicar.
+        {t.importer.mappingHint}
       </p>
 
       <div className="flex flex-col gap-3">
         {table.headers.map((header, column) => (
-          <FieldRow key={`${header}-${column}`} label={header || `Columna ${column + 1}`}>
+          <FieldRow key={`${header}-${column}`} label={header || t.importer.column(column + 1)}>
             <select
               className="min-h-11 w-full rounded-lg border border-border bg-surface-2 px-3 text-sm text-text"
               value={map[column] ?? ''}
@@ -281,7 +279,7 @@ export function ImportScreen({
                 )
               }
             >
-              <option value="">Ignorar</option>
+              <option value="">{t.importer.mapping.ignore}</option>
               {FIELDS.map(([field, label]) => (
                 <option key={field} value={field}>
                   {label}
@@ -300,11 +298,11 @@ export function ImportScreen({
       </div>
 
       <fieldset className="flex flex-wrap gap-4">
-        <legend className="mb-1 text-sm text-muted">Formato de las fechas</legend>
+        <legend className="mb-1 text-sm text-muted">{t.importer.mapping.dateFormat}</legend>
         {(
           [
-            ['dmy', 'dd/mm/aaaa'],
-            ['mdy', 'mm/dd/aaaa'],
+            ['dmy', t.importer.mapping.ddmmyy],
+            ['mdy', t.importer.mapping.mmddyy],
           ] as Array<[DateOrder, string]>
         ).map(([order, label]) => (
           <label key={order} className="flex items-center gap-2 text-sm">
@@ -321,9 +319,9 @@ export function ImportScreen({
       </fieldset>
 
       <div className="flex gap-2">
-        <Button onClick={review}>Ver resumen</Button>
+        <Button onClick={review}>{t.importer.review}</Button>
         <Button variant="ghost" onClick={onClose}>
-          Cancelar
+          {t.common.cancel}
         </Button>
       </div>
     </div>
