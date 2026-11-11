@@ -16,10 +16,7 @@ export interface WineTypePairing {
   type: WineType
   label: string
   description: string
-  servingTemp: string
   pairings: FoodPairing[]
-  avoid?: string[]
-  tip?: string
 }
 
 export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
@@ -27,7 +24,6 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
     type: 'tinto',
     label: 'Tinto',
     description: 'Vinos elaborados con uvas negras. Cuerpo medio-alto, taninos presentes. Intensidad variable según crianza.',
-    servingTemp: 'Joven 12-15°C · Crianza 14-16°C · Reserva/Gran Reserva 16-18°C',
     pairings: [
       {
         category: 'carnes',
@@ -50,15 +46,12 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
         description: 'Vinos con cuerpo (Reserva/Gran Reserva) acompañan la complejidad del arroz caldoso.'
       }
     ],
-    avoid: ['Pescados delicados', 'Mariscos crudos', 'Ensaladas con vinagreta fuerte', 'Postres dulces'],
-    tip: 'A mayor crianza, mayor temperatura de servicio. Un Gran Reserva a 18°C expresa mejor sus aromas terciarios.'
   },
 
   blanco: {
     type: 'blanco',
     label: 'Blanco',
     description: 'Elaborados con uvas blancas. Ligeros a medios, acidez refrescante. Versátiles: jóvenes, fermentados en barrica, sobre lías.',
-    servingTemp: 'Joven 6-8°C · Fermentado en barrica 8-10°C · Sobre lías 10-12°C',
     pairings: [
       {
         category: 'pescados',
@@ -81,15 +74,12 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
         description: 'Fino/Manzanilla funcionan mejor con jamón, pero blancos secos jóvenes son alternativa versátil.'
       }
     ],
-    avoid: ['Carnes rojas potentes', 'Guisos muy grasos', 'Quesos azules intensos', 'Postres muy dulces'],
-    tip: 'Blancos con barrica (Rioja, Rueda, Somontano) ganan cuerpo para arroces y pescados en salsa; jóvenes van mejor con crudos y aperitivos.'
   },
 
   rosado: {
     type: 'rosado',
     label: 'Rosado',
     description: 'Maceración breve de uva tinta. Frescura de blanco + fruta roja y cuerpo ligero de tinto. El gran comodín gastronómico.',
-    servingTemp: 'Seco y ligero 6-8°C · Con cuerpo 8-10°C · Con toque dulzor 8-10°C',
     pairings: [
       {
         category: 'arroces',
@@ -112,15 +102,12 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
         description: 'Dulzor natural y baja tannicidad equilibran el picante sin avivar el alcohol (como pasaría con un tinto).'
       }
     ],
-    avoid: ['Arroces muy yodados (negro, a banda concentrado)', 'Carnes de caza', 'Quesos azules potentes', 'Postres muy dulces'],
-    tip: 'Si no sabes qué paella te espera, lleva un rosado seco de Garnacha o Pinot Noir a 8-10°C: aciertas el 90% de las veces.'
   },
 
   espumoso: {
     type: 'espumoso',
     label: 'Espumoso',
     description: 'Segunda fermentación en botella (método tradicional) o tanque (Charmat). Burbuja fina, acidez viva. Brut Nature (0 g/L), Extra Brut, Brut, Extra Seco, Seco, Semiseco, Dulce.',
-    servingTemp: 'Joven/Brut Nature 6-8°C · Reserva/Gran Reserva 8-10°C · Rosado 6-8°C',
     pairings: [
       {
         category: 'aperitivos',
@@ -143,15 +130,12 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
         description: 'Burbujas y acidez refrescan el paladar frente al picante; azúcar residual (Extra Seco/Semiseco) calma el chile.'
       }
     ],
-    avoid: ['Postres muy dulces con Brut Nature (amargor)', 'Carnes de caza muy potentes con Brut joven', 'Quesos azules con espumosos secos'],
-    tip: 'No solo para brindar: un Brut Nature Reserva acompaña todo un menú. Sirve 6-8°C (joven) o 8-10°C (Gran Reserva); nunca helado (pierde aromas).'
   },
 
   dulce: {
     type: 'dulce',
     label: 'Dulce',
     description: 'Azúcar residual >45 g/l (en España 100-200 g/l). Moscatel, Pedro Ximénez, Malvasía, Mistela, Vino de hielo, Vendimia tardía. Untuosos, aromáticos, graduación 15-17%.',
-    servingTemp: 'Moscatel/Malvasía 8-10°C · Pedro Ximénez 10-13°C · Vendimia tardía 8-10°C',
     pairings: [
       {
         category: 'postres',
@@ -174,15 +158,12 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
         description: 'Versatilidad inesperada: grasa y acidez balsámica equilibran el dulzor. Evitar platos muy simples (jamón solo).'
       }
     ],
-    avoid: ['Pescados y mariscos delicados', 'Ensaladas con vinagreta', 'Platos muy picantes', 'Carnes rojas a la brasa sin salsa'],
-    tip: 'Copa pequeña (catavinos o blanca estrecha), nunca llena: necesita aire. Frío pero no helado (10-13°C PX). Botella abierta dura semanas.'
   },
 
   fortificado: {
     type: 'fortificado',
     label: 'Fortificado',
     description: 'Vinos generosos (Jerez, Montilla-Moriles, Málaga, Condado de Huelva). Encabezados 15-22%. Fino/Manzanilla (biológica), Amontillado/Palo Cortado (mixta), Oloroso (oxidativa), PX/Moscatel (dulces).',
-    servingTemp: 'Fino/Manzanilla 6-8°C · Amontillado/Palo Cortado 12-14°C · Oloroso 14-16°C · PX 10-13°C',
     pairings: [
       {
         category: 'fino',
@@ -205,13 +186,6 @@ export const WINE_FOOD_PAIRINGS: Record<WineType, WineTypePairing> = {
         description: 'Dulces naturales 100-200 g/L azúcar. 10-13°C. Untuosidad extrema. Ver ficha "Dulce" para detalle completo.'
       }
     ],
-    avoid: [
-      'Fino/Manzanilla: carnes rojas, quesos azules, platos muy especiados',
-      'Amontillado: postres dulces, mariscos delicados',
-      'Oloroso: mariscos crudos, pescados blancos ligeros',
-      'PX: pescados, ensaladas, platos picantes'
-    ],
-    tip: 'Copa catavinos o blanca estrecha. Fino/Manzanilla: beber joven (abierto 1-2 días). Oloroso/PX: aguantan semanas abiertos. Temperatura clave: frío no es lo mismo para todos.'
   }
 }
 

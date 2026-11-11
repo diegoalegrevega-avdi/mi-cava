@@ -195,6 +195,7 @@ export type Dictionary = {
     tip: string
     searchPlaceholder: string
     noResults: string
+    more: (count: number) => string
     categories: {
       tinto: {
         carnes: string
@@ -343,6 +344,11 @@ export type Dictionary = {
       heladoPX: string
       frutosSecos: string
     }
+    notes: Record<'tinto' | 'blanco' | 'rosado' | 'espumoso' | 'dulce' | 'fortificado', {
+      servingTemp: string
+      tip: string
+      avoid: string[]
+    }>
   }
   // Cave config
   caveConfig: {
@@ -674,6 +680,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       tip: 'Consejo',
       searchPlaceholder: 'Buscar plato o ingrediente…',
       noResults: 'No se encontraron maridajes para esa búsqueda',
+      more: (count) => `+${count} más`,
       categories: {
         tinto: {
           carnes: 'Carnes rojas y asados',
@@ -815,6 +822,43 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         cortezaLavada: 'Quesos de corteza lavada',
         heladoPX: 'Helado de vainilla bañado en PX',
         frutosSecos: 'Frutos secos y caramelo'
+      },
+      notes: {
+        tinto: {
+          servingTemp: 'Joven 12-15°C · Crianza 14-16°C · Reserva/Gran Reserva 16-18°C',
+          tip: 'A mayor crianza, mayor temperatura de servicio. Un Gran Reserva a 18°C expresa mejor sus aromas terciarios.',
+          avoid: ['Pescados delicados', 'Mariscos crudos', 'Ensaladas con vinagreta fuerte', 'Postres dulces']
+        },
+        blanco: {
+          servingTemp: 'Joven 6-8°C · Fermentado en barrica 8-10°C · Sobre lías 10-12°C',
+          tip: 'Blancos con barrica (Rioja, Rueda, Somontano) ganan cuerpo para arroces y pescados en salsa; jóvenes van mejor con crudos y aperitivos.',
+          avoid: ['Carnes rojas potentes', 'Guisos muy grasos', 'Quesos azules intensos', 'Postres muy dulces']
+        },
+        rosado: {
+          servingTemp: 'Seco y ligero 6-8°C · Con cuerpo 8-10°C · Con toque dulzor 8-10°C',
+          tip: 'Si no sabes qué paella te espera, lleva un rosado seco de Garnacha o Pinot Noir a 8-10°C: aciertas el 90% de las veces.',
+          avoid: ['Arroces muy yodados (negro, a banda concentrado)', 'Carnes de caza', 'Quesos azules potentes', 'Postres muy dulces']
+        },
+        espumoso: {
+          servingTemp: 'Joven/Brut Nature 6-8°C · Reserva/Gran Reserva 8-10°C · Rosado 6-8°C',
+          tip: 'No solo para brindar: un Brut Nature Reserva acompaña todo un menú. Sirve 6-8°C (joven) o 8-10°C (Gran Reserva); nunca helado (pierde aromas).',
+          avoid: ['Postres muy dulces con Brut Nature (amargor)', 'Carnes de caza muy potentes con Brut joven', 'Quesos azules con espumosos secos']
+        },
+        dulce: {
+          servingTemp: 'Moscatel/Malvasía 8-10°C · Pedro Ximénez 10-13°C · Vendimia tardía 8-10°C',
+          tip: 'Copa pequeña (catavinos o blanca estrecha), nunca llena: necesita aire. Frío pero no helado (10-13°C PX). Botella abierta dura semanas.',
+          avoid: ['Pescados y mariscos delicados', 'Ensaladas con vinagreta', 'Platos muy picantes', 'Carnes rojas a la brasa sin salsa']
+        },
+        fortificado: {
+          servingTemp: 'Fino/Manzanilla 6-8°C · Amontillado/Palo Cortado 12-14°C · Oloroso 14-16°C · PX 10-13°C',
+          tip: 'Copa catavinos o blanca estrecha. Fino/Manzanilla: beber joven (abierto 1-2 días). Oloroso/PX: aguantan semanas abiertos. Temperatura clave: frío no es lo mismo para todos.',
+          avoid: [
+            'Fino/Manzanilla: carnes rojas, quesos azules, platos muy especiados',
+            'Amontillado: postres dulces, mariscos delicados',
+            'Oloroso: mariscos crudos, pescados blancos ligeros',
+            'PX: pescados, ensaladas, platos picantes'
+          ]
+        }
       }
     }
   },
@@ -1061,6 +1105,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       tip: 'Tip',
       searchPlaceholder: 'Search dish or ingredient…',
       noResults: 'No pairings found for that search',
+      more: (count) => `+${count} more`,
       categories: {
         tinto: {
           carnes: 'Red meats and roasts',
@@ -1202,6 +1247,43 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         cortezaLavada: 'Washed-rind cheeses',
         heladoPX: 'Vanilla ice cream drizzled with PX',
         frutosSecos: 'Nuts and caramel'
+      },
+      notes: {
+        tinto: {
+          servingTemp: 'Young 12-15°C · Crianza 14-16°C · Reserva/Gran Reserva 16-18°C',
+          tip: 'The longer the ageing, the warmer the serving temperature. A Gran Reserva at 18°C expresses its tertiary aromas best.',
+          avoid: ['Delicate fish', 'Raw seafood', 'Salads with strong vinaigrette', 'Sweet desserts']
+        },
+        blanco: {
+          servingTemp: 'Young 6-8°C · Barrel-fermented 8-10°C · On lees 10-12°C',
+          tip: 'Barrel-aged whites (Rioja, Rueda, Somontano) gain body for rice dishes and fish in sauce; young whites work better with raw dishes and appetizers.',
+          avoid: ['Powerful red meats', 'Very fatty stews', 'Intense blue cheeses', 'Very sweet desserts']
+        },
+        rosado: {
+          servingTemp: 'Dry and light 6-8°C · Full-bodied 8-10°C · Slightly sweet 8-10°C',
+          tip: 'If you do not know which paella is coming, bring a dry Garnacha or Pinot Noir rosé at 8-10°C: you will get it right 90% of the time.',
+          avoid: ['Very iodine-heavy rice dishes (black rice, concentrated a banda)', 'Game meats', 'Powerful blue cheeses', 'Very sweet desserts']
+        },
+        espumoso: {
+          servingTemp: 'Young/Brut Nature 6-8°C · Reserva/Gran Reserva 8-10°C · Rosé 6-8°C',
+          tip: 'Not just for toasts: a Brut Nature Reserva carries a whole menu. Serve at 6-8°C (young) or 8-10°C (Gran Reserva); never ice-cold (it loses aromas).',
+          avoid: ['Very sweet desserts with Brut Nature (bitterness)', 'Very powerful game meats with young Brut', 'Blue cheeses with dry sparkling wines']
+        },
+        dulce: {
+          servingTemp: 'Moscatel/Malvasía 8-10°C · Pedro Ximénez 10-13°C · Late harvest 8-10°C',
+          tip: 'Small glass (tasting glass or narrow white wine glass), never full: it needs air. Chilled but not ice-cold (10-13°C for PX). An open bottle keeps for weeks.',
+          avoid: ['Delicate fish and seafood', 'Dressed salads', 'Very spicy dishes', 'Grilled red meats without sauce']
+        },
+        fortificado: {
+          servingTemp: 'Fino/Manzanilla 6-8°C · Amontillado/Palo Cortado 12-14°C · Oloroso 14-16°C · PX 10-13°C',
+          tip: 'Tasting glass or narrow white wine glass. Fino/Manzanilla: drink young (1-2 days once open). Oloroso/PX: keep for weeks once open. Temperature is key: cold is not the same for all of them.',
+          avoid: [
+            'Fino/Manzanilla: red meats, blue cheeses, heavily spiced dishes',
+            'Amontillado: sweet desserts, delicate seafood',
+            'Oloroso: raw seafood, light white fish',
+            'PX: fish, salads, spicy dishes'
+          ]
+        }
       }
     },
   },
@@ -1448,6 +1530,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
       tip: 'Conseil',
       searchPlaceholder: 'Rechercher un plat ou ingrédient…',
       noResults: 'Aucun accord trouvé pour cette recherche',
+      more: (count) => `+${count} de plus`,
       categories: {
         tinto: {
           carnes: 'Viandes rouges et rôtis',
@@ -1589,6 +1672,43 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         cortezaLavada: 'Fromages à croûte lavée',
         heladoPX: 'Glace vanille arrosée de PX',
         frutosSecos: 'Fruits secs et caramel'
+      },
+      notes: {
+        tinto: {
+          servingTemp: 'Jeune 12-15°C · Crianza 14-16°C · Reserva/Gran Reserva 16-18°C',
+          tip: 'Plus l\'élevage est long, plus la température de service est élevée. Un Gran Reserva à 18°C exprime mieux ses arômes tertiaires.',
+          avoid: ['Poissons délicats', 'Fruits de mer crus', 'Salades à vinaigrette forte', 'Desserts sucrés']
+        },
+        blanco: {
+          servingTemp: 'Jeune 6-8°C · Fermenté en barrique 8-10°C · Sur lies 10-12°C',
+          tip: 'Les blancs élevés en barrique (Rioja, Rueda, Somontano) gagnent en corps pour les riz et les poissons en sauce ; les jeunes vont mieux avec les crus et les apéritifs.',
+          avoid: ['Viandes rouges puissantes', 'Ragoûts très gras', 'Fromages bleus intenses', 'Desserts très sucrés']
+        },
+        rosado: {
+          servingTemp: 'Sec et léger 6-8°C · Corsé 8-10°C · Légèrement doux 8-10°C',
+          tip: 'Si vous ne savez pas quelle paella vous attend, apportez un rosé sec de Garnacha ou de Pinot Noir à 8-10°C : vous viserez juste 90 % du temps.',
+          avoid: ['Riz très iodés (noir, a banda concentré)', 'Viandes de gibier', 'Fromages bleus puissants', 'Desserts très sucrés']
+        },
+        espumoso: {
+          servingTemp: 'Jeune/Brut Nature 6-8°C · Reserva/Gran Reserva 8-10°C · Rosé 6-8°C',
+          tip: 'Pas seulement pour trinquer : un Brut Nature Reserva accompagne tout un menu. Servez à 6-8°C (jeune) ou 8-10°C (Gran Reserva) ; jamais glacé (il perd ses arômes).',
+          avoid: ['Desserts très sucrés avec un Brut Nature (amertume)', 'Viandes de gibier très puissantes avec un Brut jeune', 'Fromages bleus avec des effervescents secs']
+        },
+        dulce: {
+          servingTemp: 'Moscatel/Malvasía 8-10°C · Pedro Ximénez 10-13°C · Vendanges tardives 8-10°C',
+          tip: 'Petit verre (verre de dégustation ou verre blanc étroit), jamais plein : il a besoin d\'air. Frais mais pas glacé (10-13°C pour le PX). Une bouteille ouverte se garde des semaines.',
+          avoid: ['Poissons et fruits de mer délicats', 'Salades vinaigrette', 'Plats très épicés', 'Viandes rouges grillées sans sauce']
+        },
+        fortificado: {
+          servingTemp: 'Fino/Manzanilla 6-8°C · Amontillado/Palo Cortado 12-14°C · Oloroso 14-16°C · PX 10-13°C',
+          tip: 'Verre de dégustation ou verre blanc étroit. Fino/Manzanilla : à boire jeune (1-2 jours une fois ouvert). Oloroso/PX : se gardent des semaines ouverts. La température est clé : le froid n\'est pas le même pour tous.',
+          avoid: [
+            'Fino/Manzanilla : viandes rouges, fromages bleus, plats très épicés',
+            'Amontillado : desserts sucrés, fruits de mer délicats',
+            'Oloroso : fruits de mer crus, poissons blancs légers',
+            'PX : poissons, salades, plats épicés'
+          ]
+        }
       }
     },
   },

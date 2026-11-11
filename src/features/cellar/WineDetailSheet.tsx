@@ -161,11 +161,11 @@ export function WineDetailSheet({
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div>
                 <span className="font-medium text-gold">{t.foodPairing.servingTemp}</span>
-                <p className="text-muted">{pairing.servingTemp}</p>
+                <p className="text-muted">{t.foodPairing.notes[pairing.type].servingTemp}</p>
               </div>
               <div>
                 <span className="font-medium text-gold">{t.foodPairing.tip}</span>
-                <p className="text-muted">{pairing.tip}</p>
+                <p className="text-muted">{t.foodPairing.notes[pairing.type].tip}</p>
               </div>
             </div>
             <details className="mt-2">
@@ -184,15 +184,15 @@ export function WineDetailSheet({
                           {(t.foodPairing.dishes as Record<string, string>)[dish] || dish}
                         </li>
                       ))}
-                      {cat.dishes.length > 6 && <li className="text-gold">+{cat.dishes.length - 6} más</li>}
+                      {cat.dishes.length > 6 && <li className="text-gold">{t.foodPairing.more(cat.dishes.length - 6)}</li>}
                     </ul>
                   </div>
                 ))}
-                {pairing.avoid && pairing.avoid.length > 0 && (
+                {t.foodPairing.notes[pairing.type].avoid.length > 0 && (
                   <div className="rounded bg-surface/50 border border-wine/20 p-2">
                     <p className="font-medium text-wine">{t.foodPairing.avoid}</p>
                     <ul className="list-disc list-inside mt-1 text-muted text-xs">
-                      {pairing.avoid.map((item, i) => (
+                      {t.foodPairing.notes[pairing.type].avoid.map((item, i) => (
                         <li key={i}>{item}</li>
                       ))}
                     </ul>

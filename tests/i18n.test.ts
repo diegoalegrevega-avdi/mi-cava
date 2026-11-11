@@ -29,3 +29,23 @@ describe('i18n wine labels', () => {
     expect(DICTIONARIES.fr.drink.ready).not.toBe(DICTIONARIES.es.drink.ready)
   })
 })
+
+describe('i18n food pairing', () => {
+  const PAIRING_TYPES = TYPES.filter((type) => type !== 'sinTipo')
+
+  it('translates serving temperature, tip and avoid list for every wine type', () => {
+    // Proper nouns and numbers stay the same across locales; these Spanish words must not.
+    const spanishOnly = /Joven|Fermentado en barrica|Sobre lías|Seco y ligero|Con cuerpo|Con toque dulzor|Vendimia tardía/
+
+    for (const locale of ['en', 'fr'] as const) {
+      for (const type of PAIRING_TYPES) {
+        const translated = DICTIONARIES[locale].foodPairing.notes[type]
+        const spanish = DICTIONARIES.es.foodPairing.notes[type]
+        expect(translated.servingTemp, `${locale}.notes.${type}.servingTemp`).not.toMatch(spanishOnly)
+        expect(translated.tip, `${locale}.notes.${type}.tip`).not.toBe(spanish.tip)
+        expect(translated.avoid, `${locale}.notes.${type}.avoid`).not.toEqual(spanish.avoid)
+        expect(translated.avoid.length).toBe(spanish.avoid.length)
+      }
+    }
+  })
+})
