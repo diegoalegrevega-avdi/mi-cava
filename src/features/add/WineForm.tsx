@@ -19,10 +19,12 @@ export function WineForm({
   initial,
   submitLabel,
   onSubmit,
+  editing = false,
 }: {
   initial?: Partial<WineDraft>
   submitLabel: string
   onSubmit: (draft: WineDraft) => Promise<void>
+  editing?: boolean
 }) {
   const currentYear = new Date().getFullYear()
   const [values, setValues] = useState<WineFormValues>(() => ({
@@ -32,12 +34,13 @@ export function WineForm({
           name: initial.name ?? '',
           winery: initial.winery ?? '',
           vintage: initial.vintage ? String(initial.vintage) : '',
+          nv: initial.vintage == null,
           type: initial.type ?? '',
           varietals: initial.varietals?.join(', ') ?? '',
           region: initial.region ?? '',
           country: initial.country ?? '',
           purchasedAt: initial.purchasedAt ?? emptyWineForm().purchasedAt,
-          price: '',
+          price: initial.priceCents != null ? String(initial.priceCents / 100).replace('.', ',') : '',
           location: initial.location ?? '',
           drinkFrom: initial.drinkFrom ? String(initial.drinkFrom) : '',
           drinkUntil: initial.drinkUntil ? String(initial.drinkUntil) : '',
@@ -108,7 +111,7 @@ export function WineForm({
 
     busy.current = true
     try {
-      if (!confirmed) {
+      if (!confirmed && !editing) {
         const { possible } = findDuplicate(await listWines(), result.draft)
         if (possible.length > 0) {
           setConfirming(true)
@@ -118,7 +121,7 @@ export function WineForm({
 
       setSaving(true)
       await onSubmit(result.draft)
-      setValues(emptyWineForm())
+      if (!editing) setValues(emptyWineForm())
       setConfirming(false)
       setErrors({})
     } finally {
@@ -198,27 +201,29 @@ export function WineForm({
           />
         </Field>
 
-        <Field label={t.add.bottles}>
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="secondary"
-              aria-label={t.add.bottles}
-              onClick={() => set('stock', Math.max(1, values.stock - 1))}
-            >
-              −
-            </Button>
-            <span className="min-w-10 text-center text-lg tabular-nums">{values.stock}</span>
-            <Button
-              type="button"
-              variant="secondary"
-              aria-label={t.add.bottles}
-              onClick={() => set('stock', values.stock + 1)}
-            >
-              +
-            </Button>
-          </div>
-        </Field>
+        {!editing && (
+          <Field label={t.add.bottles}>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                aria-label={t.add.bottles}
+                onClick={() => set('stock', Math.max(1, values.stock - 1))}
+              >
+                −
+              </Button>
+              <span className="min-w-10 text-center text-lg tabular-nums">{values.stock}</span>
+              <Button
+                type="button"
+                variant="secondary"
+                aria-label={t.add.bottles}
+                onClick={() => set('stock', values.stock + 1)}
+              >
+                +
+              </Button>
+            </div>
+          </Field>
+        )}
       </section>
 
       <section className="flex flex-col gap-3">

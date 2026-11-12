@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/useToast'
 import { useI18n } from '@/hooks/useI18n'
 import { getPairingForType } from '@/domain/foodPairing'
 import type { WineType } from '@/db/schema'
+import { WineForm } from '@/features/add/WineForm'
 
 export function WineDetailSheet({
   wine,
@@ -30,6 +31,11 @@ export function WineDetailSheet({
 }) {
   const { show } = useToast()
   const { t } = useI18n()
+  const [editing, setEditing] = useState(false)
+  function closeSheet() {
+    setEditing(false)
+    onClose()
+  }
 
   // Get food pairing for this wine's type
   const pairing = wine.type ? getPairingForType(wine.type as WineType) : null
@@ -80,18 +86,37 @@ export function WineDetailSheet({
     if (!Number.isFinite(value) || value < 0) return
     const event = await adjustStock(wine.id, value)
     setTarget('')
-    if (event) show(`${wine.name}: ${value} botellas`)
+    if (event) show(t.wine.detail.stockSet(value))
   }
 
   async function noteConsumption() {
     if (!lastConsume) return
-    const note = window.prompt('Nota del descorche')
+    const note = window.prompt(t.wine.detail.notePrompt)
     if (!note) return
     await setEventNote(lastConsume.id, note)
   }
 
   return (
-    <Sheet open={open} onClose={onClose} title={wine.name}>
+    <Sheet open={open} onClose={closeSheet} title={wine.name}>
+      {editing ? (
+        <WineForm
+          key={wine.id}
+          editing
+          initial={wine}
+          submitLabel={t.common.save}
+          onSubmit={async (draft) => {
+            const { stock: _stock, ...patch } = draft
+            void _stock // stock lives in stock events, not on the wine record
+            await updateWine(wine.id, patch)
+            setNotes(draft.notes)
+            setLocation(draft.location)
+            setFrom(draft.drinkFrom?.toString() ?? '')
+            setUntil(draft.drinkUntil?.toString() ?? '')
+            show(t.wine.toast.updated)
+            setEditing(false)
+          }}
+        />
+      ) : (
       <div className="flex flex-col gap-4">
         <div>
           <p className="text-sm text-muted">
@@ -99,7 +124,12 @@ export function WineDetailSheet({
           </p>
           <div className="mt-2 flex items-center justify-between gap-3">
             <DrinkBadge status={drinkStatus(wine, new Date().getFullYear())} />
-            <StockStepper wine={wine} onAdd={onAdd} onConsume={onConsume} />
+            <div className="flex items-center gap-1">
+              <StockStepper wine={wine} onAdd={onAdd} onConsume={onConsume} />
+              <Button variant="ghost" size="sm" onClick={() => setEditing(true)} aria-label={t.wine.detail.edit}>
+                {t.wine.detail.edit}
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -223,7 +253,7 @@ export function WineDetailSheet({
         <section>
           <h3 className="mb-2 text-sm font-medium text-muted">{t.wine.detail.movements}</h3>
           {events.length === 0 ? (
-            <p className="text-sm text-muted">Sin movimientos.</p>
+            <p className="text-sm text-muted">{t.wine.detail.noMovements}</p>
           ) : (
             <ul className="flex flex-col gap-2 text-sm">
               {[...events].reverse().map((e) => (
@@ -255,6 +285,7 @@ export function WineDetailSheet({
           {t.wine.detail.purchased} {formatDate(wine.purchasedAt ?? '') || '—'}
         </p>
       </div>
+      )}
     </Sheet>
   )
 }

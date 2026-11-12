@@ -9,6 +9,7 @@ import {
   listActiveConsumptions,
   listWines,
   undoEvent,
+  updateWine,
 } from '@/db/repo'
 
 const draft = (over: Partial<WineDraft>): WineDraft => ({
@@ -30,6 +31,16 @@ const draft = (over: Partial<WineDraft>): WineDraft => ({
 
 describe('repo', () => {
   beforeEach(() => _resetForTests())
+
+  it('edita un vino (tinto -> blanco) sin tocar su stock ni su historial', async () => {
+    const { wine } = await createWine(draft({ name: 'Tinto', type: 'tinto', vintage: 2019, stock: 3 }))
+    await updateWine(wine.id, { type: 'blanco', name: 'Blanco', priceCents: 1200 })
+
+    const edited = (await getWine(wine.id))!
+    expect(edited).toMatchObject({ name: 'Blanco', type: 'blanco', priceCents: 1200, vintage: 2019 })
+    expect(edited.stock).toBe(3)
+    expect(edited.createdAt).toBe(wine.createdAt)
+  })
 
   it('crea, suma, descorcha hasta 0 y conserva el vino con su historial', async () => {
     const { wine } = await createWine(draft({ name: 'Tinto', vintage: 2019, winery: 'B', stock: 2 }))

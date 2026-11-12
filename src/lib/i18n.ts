@@ -35,6 +35,10 @@ export type Dictionary = {
       movements: string
       adjustStock: string
       stockNow: (count: number) => string
+      stockSet: (count: number) => string
+      edit: string
+      notePrompt: string
+      noMovements: string
       bottles: string
       adjust: string
       addNote: string
@@ -48,7 +52,7 @@ export type Dictionary = {
       noUncorks: string
       events: { add: string; consume: string; import: string; undo: string }
     }
-    toast: { added: string; consumed: string; undo: string; back: string; noStock: string; notesSaved: string }
+    toast: { added: string; consumed: string; undo: string; back: string; noStock: string; notesSaved: string; updated: string }
   }
   // Add form
   add: {
@@ -477,6 +481,10 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         movements: 'Movimientos',
         adjustStock: 'Ajustar stock',
         stockNow: (count) => `Ahora: ${count}`,
+        stockSet: (count) => `Botellas: ${count}`,
+        edit: 'Editar',
+        notePrompt: 'Nota del descorche',
+        noMovements: 'Sin movimientos.',
         bottles: 'Botellas reales',
         adjust: 'Ajustar',
         addNote: 'Añadir nota al último descorche',
@@ -490,7 +498,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         noUncorks: 'Aún sin descorches',
         events: { add: 'Botella añadida', consume: 'Descorchada', import: 'Ajuste de stock', undo: 'Deshecho' },
       },
-      toast: { added: 'Botella añadida a {name}', consumed: 'Descorchada', undo: 'Deshacer', back: 'De vuelta en la cava', noStock: 'Sin stock', notesSaved: 'Notas guardadas' },
+      toast: { added: 'Botella añadida a {name}', consumed: 'Descorchada', undo: 'Deshacer', back: 'De vuelta en la cava', noStock: 'Sin stock', notesSaved: 'Notas guardadas', updated: 'Cambios guardados' },
     },
     add: {
       title: 'Añadir vino',
@@ -911,6 +919,10 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         movements: 'Movements',
         adjustStock: 'Adjust stock',
         stockNow: (count) => `Now: ${count}`,
+        stockSet: (count) => `Bottles: ${count}`,
+        edit: 'Edit',
+        notePrompt: 'Uncorking note',
+        noMovements: 'No movements.',
         bottles: 'Real bottles',
         adjust: 'Adjust',
         addNote: 'Add note to last uncork',
@@ -924,7 +936,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         noUncorks: 'No uncorkings yet',
         events: { add: 'Bottle added', consume: 'Uncorked', import: 'Stock adjustment', undo: 'Undone' },
       },
-      toast: { added: 'Bottle added to {name}', consumed: 'Uncorked', undo: 'Undo', back: 'Back in cellar', noStock: 'No stock', notesSaved: 'Notes saved' },
+      toast: { added: 'Bottle added to {name}', consumed: 'Uncorked', undo: 'Undo', back: 'Back in cellar', noStock: 'No stock', notesSaved: 'Notes saved', updated: 'Changes saved' },
     },
     add: {
       title: 'Add Wine',
@@ -1345,6 +1357,10 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         movements: 'Mouvements',
         adjustStock: 'Ajuster le stock',
         stockNow: (count) => `Actuel : ${count}`,
+        stockSet: (count) => `Bouteilles : ${count}`,
+        edit: 'Modifier',
+        notePrompt: 'Note du débouchage',
+        noMovements: 'Aucun mouvement.',
         bottles: 'Bouteilles réelles',
         adjust: 'Ajuster',
         addNote: 'Ajouter une note au dernier débouchage',
@@ -1358,7 +1374,7 @@ export const DICTIONARIES: Record<Locale, Dictionary> = {
         noUncorks: 'Aucun débouchage',
         events: { add: 'Bouteille ajoutée', consume: 'Débouchée', import: 'Ajustement du stock', undo: 'Annulé' },
       },
-      toast: { added: 'Bouteille ajoutée à {name}', consumed: 'Débouchée', undo: 'Annuler', back: 'De retour dans la cave', noStock: 'Pas de stock', notesSaved: 'Notes sauvegardées' },
+      toast: { added: 'Bouteille ajoutée à {name}', consumed: 'Débouchée', undo: 'Annuler', back: 'De retour dans la cave', noStock: 'Pas de stock', notesSaved: 'Notes sauvegardées', updated: 'Modifications enregistrées' },
     },
     add: {
       title: 'Ajouter un vin',
